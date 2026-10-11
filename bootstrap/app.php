@@ -12,6 +12,9 @@ return Application::configure(basePath: dirname(__DIR__))
         health: '/up',
     )
     ->withMiddleware(function (Middleware $middleware): void {
+        // Pengguna yang sudah masuk dialihkan ke beranda perannya dari halaman tamu (login, register).
+        $middleware->redirectUsersTo(fn () => route(auth()->user()->role->ruteBeranda()));
+
         $middleware->alias([
             'role' => PastikanPeran::class,
         ]);
