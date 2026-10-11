@@ -62,6 +62,52 @@ class SopirTest extends TestCase
         $this->get(route('sopir.dashboard'))->assertOk()->assertSee('Belum ada penugasan. Halaman ini diperbarui otomatis.');
     }
 
+    public function test_penugasan_menampilkan_tombol_navigasi_ke_lokasi_jemput(): void
+    {
+        $this->pesananDitugaskan();
+
+        $html = $this->actingAs($this->sopir)->get(route('sopir.dashboard'))->assertOk()->getContent();
+
+        $this->assertStringContainsString('href="geo:-0.88,131.25?q=-0.88,131.25(Lokasi%20jemput)"', $html);
+        $this->assertStringContainsString('href="https://www.openstreetmap.org/?mlat=-0.88&amp;mlon=131.25#map=17/-0.88/131.25"', $html);
+        $this->assertMatchesRegularExpression('/<a href="geo:[^"]*"[^>]*>[^<]*(<svg.*?<\/svg>)?\s*Buka navigasi\s*<\/a>/s', $html);
+        $this->assertStringContainsString('target="_blank" rel="noopener"', $html);
+
+        // Tombol berada tepat di bawah lokasi jemput, di bagian atas kartu (sebelum rincian dan peta).
+        $this->assertGreaterThan(strpos($html, 'Jalan Penugasan'), strpos($html, 'Buka navigasi'));
+        $this->assertLessThan(strpos($html, 'Layanan'), strpos($html, 'Buka navigasi'));
+    }
+
+    public function test_navigasi_memakai_alamat_teks_bila_pesanan_tanpa_koordinat(): void
+    {
+        $pesanan = $this->pesananDitugaskan();
+        $pesanan->update(['lat_jemput' => null, 'lng_jemput' => null, 'lokasi_jemput' => 'Jalan Basuki Rahmat Km 8']);
+
+        $html = $this->actingAs($this->sopir)->get(route('sopir.dashboard'))->assertOk()->getContent();
+
+        $this->assertStringContainsString('href="geo:0,0?q=Jalan%20Basuki%20Rahmat%20Km%208"', $html);
+        $this->assertStringContainsString('href="https://www.openstreetmap.org/search?query=Jalan%20Basuki%20Rahmat%20Km%208"', $html);
+    }
+
+    public function test_tanpa_penugasan_tidak_ada_tombol_navigasi(): void
+    {
+        $this->actingAs($this->sopir)->get(route('sopir.dashboard'))->assertOk()->assertDontSee('Buka navigasi');
+    }
+
+    public function test_templat_navigasi_hanya_memakai_layanan_openstreetmap_dan_skema_geo(): void
+    {
+        $templat = config('sigap.navigasi');
+
+        $this->assertSame(['aplikasi', 'aplikasi_alamat', 'web', 'web_alamat'], array_keys($templat));
+        foreach (['aplikasi', 'aplikasi_alamat'] as $kunci) {
+            $this->assertStringStartsWith('geo:', $templat[$kunci]);
+        }
+        foreach (['web', 'web_alamat'] as $kunci) {
+            $this->assertSame('www.openstreetmap.org', parse_url($templat[$kunci], PHP_URL_HOST), 'Layanan luar hanya OpenStreetMap (config/sigap.php).');
+            $this->assertSame('https', parse_url($templat[$kunci], PHP_URL_SCHEME));
+        }
+    }
+
     public function test_aksi_utama_sopir_berada_di_bilah_lekat_dan_tolak_tersembunyi_di_pengungkap(): void
     {
         $pesanan = $this->pesananDitugaskan();

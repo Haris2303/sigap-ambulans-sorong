@@ -34,6 +34,18 @@ class KatalogUiTest extends TestCase
             ->assertSee('data-konfirmasi', false);
     }
 
+    public function test_katalog_ui_memuat_pengungkap_bilah_aksi_dan_navigasi(): void
+    {
+        $this->get('/_ui')
+            ->assertOk()
+            ->assertSee('Pengungkap dan bilah aksi')
+            ->assertSee('data-bilah-aksi', false)
+            ->assertSee('<details', false)
+            ->assertSee('Buka navigasi')
+            ->assertSee('geo:-0.8762,131.2558', false)
+            ->assertSee('geo:0,0?q=Jalan%20Basuki%20Rahmat%20Km%208', false);
+    }
+
     public function test_katalog_ui_memuat_komponen_dasar_dasbor(): void
     {
         $this->get('/_ui')

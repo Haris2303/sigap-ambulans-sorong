@@ -43,6 +43,7 @@
                 <div class="mt-5">
                     <p class="text-label-l text-on-surface-variant">Lokasi jemput</p>
                     <p class="text-title-m">{{ $penugasan->lokasi_jemput }}</p>
+                    <x-ui.navigasi class="mt-3" :lat="$penugasan->lat_jemput" :lng="$penugasan->lng_jemput" :alamat="$penugasan->lokasi_jemput" />
                 </div>
 
                 <x-ui.rincian :bingkai="false" class="mt-4 -mx-6">

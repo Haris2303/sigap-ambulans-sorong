@@ -25,6 +25,16 @@ return [
         'osrm_url' => 'https://router.project-osrm.org/route/v1',
     ],
 
+    // Tautan navigasi sopir ke lokasi jemput (App\Support\Navigasi). {lat}, {lng}, dan {alamat} diisi otomatis. `aplikasi` membuka aplikasi
+    // peta bawaan perangkat (skema geo:, Android); `web` adalah cadangan di peramban dan hanya memakai OpenStreetMap, layanan yang sudah dipakai
+    // aplikasi. Templat berakhiran _alamat dipakai bila pesanan tidak punya koordinat.
+    'navigasi' => [
+        'aplikasi' => 'geo:{lat},{lng}?q={lat},{lng}(Lokasi%20jemput)',
+        'aplikasi_alamat' => 'geo:0,0?q={alamat}',
+        'web' => 'https://www.openstreetmap.org/?mlat={lat}&mlon={lng}#map=17/{lat}/{lng}',
+        'web_alamat' => 'https://www.openstreetmap.org/search?query={alamat}',
+    ],
+
     'per_halaman' => 20,
 
     // Sandi akun demo. Kosong: "password" di local/testing, selain itu acak dan dicetak sekali.

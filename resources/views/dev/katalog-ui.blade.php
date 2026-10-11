@@ -124,6 +124,11 @@
         </x-ui.panel>
     </x-ui.bagian>
 
+    <x-ui.bagian judul="Navigasi ke lokasi jemput">
+        <x-ui.navigasi :lat="-0.8762" :lng="131.2558" alamat="Jalan Basuki Rahmat Km 8" />
+        <x-ui.navigasi class="mt-3" alamat="Jalan Basuki Rahmat Km 8" />
+    </x-ui.bagian>
+
     <x-ui.bagian judul="Tabel dan paginasi">
         <x-ui.tabel>
             <x-slot:kepala>
