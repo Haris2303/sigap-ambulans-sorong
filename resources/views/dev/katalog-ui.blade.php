@@ -92,6 +92,24 @@
         </x-ui.panel>
     </x-ui.bagian>
 
+    <x-ui.bagian judul="Grafik">
+        <div class="flex flex-wrap gap-5">
+            <x-ui.panel class="min-w-0 flex-[2] basis-80">
+                <h3 class="text-card-title">Pesanan 7 hari terakhir</h3>
+                <p class="mb-2 text-body-m text-on-surface-variant">5 sampai 11 Okt 2026</p>
+                <x-ui.chart.bar :labels="$labelBatang" :values="$nilaiBatang" :highlight="6" title="Grafik batang pesanan per hari" unit="pesanan" />
+            </x-ui.panel>
+            <x-ui.panel class="min-w-0 flex-1 basis-64">
+                <h3 class="text-card-title">Status pesanan</h3>
+                <p class="mb-2 text-body-m text-on-surface-variant">10 pesanan terbaru</p>
+                <x-ui.chart.donut :segments="$segmenStatus" center-label="pesanan" title="Diagram cincin status 10 pesanan terbaru" />
+            </x-ui.panel>
+        </div>
+        <x-ui.panel class="mt-5 max-w-sm">
+            <x-ui.chart.donut :segments="[]" center-label="pesanan" title="Diagram cincin status pesanan" />
+        </x-ui.panel>
+    </x-ui.bagian>
+
     <x-ui.bagian judul="Ringkasan angka">
         <x-ui.ringkasan>
             <x-ui.ringkasan-sel label="Menunggu verifikasi" :nilai="3" nada="peringatan" keterangan="Perlu tindakan Dinkes" />

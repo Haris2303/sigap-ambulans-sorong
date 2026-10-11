@@ -32,7 +32,7 @@ Setelah M1 sampai M7, pemilik proyek memilih gaya dasbor Material yang lebih kay
 
 - [x] D1 Aturan dan token: `DESIGN.md` (warna `canvas` dan `chart-sky`, lima gaya tipe dasbor, bayangan `card`, `card-raised`, `nav-active`, token komponen baru dan yang berubah, prosa dan Do's and Don'ts), `agent/tokens.mjs` (bayangan dengan warna per tingkat dan lapisan ambient opsional), `agent/konsistensi.json` (`token-lama` tidak lagi melarang `canvas`; `warna-css` mengizinkan tiga token bayangan baru) beserta kasus uji, dan `docs/KIT_UI.md` bagian 10 (rencana komponen). Belum ada perubahan pada Blade dan `app.css`; latar `canvas` dipasang di D4.
 - [x] D2 Komponen dasar: `panel` (kartu berbayang, prop `flush`), `stat` (putih dan utama), `icon-chip`, `tile`, `tabs` dan `tab`, `avatar`, lencana pil, tombol `on-primary`, ikon `user-check`, ukuran ikon 18/20/22/24/26, kelas bersama di `Tampilan` (`KARTU`, `kelasChip`, `inisial`). Tes render di `KomponenDasborTest`, `KomponenUiTest`, `TampilanTest`, dan katalog `/_ui`. Aturan `istilah-baku` diberi satu pengecualian sempit untuk nama ikon Lucide `ambulance`.
-- [ ] D3 Grafik (bar dan donat, geometri PHP murni).
+- [x] D3 Grafik: `x-ui.chart.bar` dan `x-ui.chart.donut` (SVG sisi server tanpa pustaka), `App\Support\Chart\BarGeometry`, `DonutGeometry`, `Angka`, `Warna`, `PesananStatus::warnaGrafik()`; uji unit geometri terhadap data pratinjau, tes render, dan bagian Grafik di katalog `/_ui`. `x-ui.grafik-batang` lama tetap sampai D5/D7.
 - [ ] D4 Kerangka aplikasi (bilah atas, laci, latar `canvas`, jarak halaman).
 - [ ] D5 Dasbor Dinkes (`RingkasanDasbor`, tab, batas query).
 - [ ] D6 Peran lain dan sapuan halaman.

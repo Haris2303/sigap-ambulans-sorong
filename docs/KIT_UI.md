@@ -2,7 +2,7 @@
 
 > Pasangan `DESIGN.md` (identitas visual, token, larangan gaya). Dokumen ini menjawab "bagaimana dibangun di kode": tumpukan, kelas yang tersedia, komponen Blade, pola halaman. Tujuan: **semua halaman terasa satu aplikasi**. Halaman hanya merakit komponen; gaya tidak pernah ditulis per halaman. Sesi agen otonom tidak boleh mengubah dokumen ini; sesi interaktif boleh, bersama `DESIGN.md`.
 >
-> **Arah dasbor Material (keputusan pemilik proyek, `docs/DESAIN_DASBOR_MATERIAL.md`) mengalahkan aturan Don't dan Layout lama.** Token dan aturan konsistensi sudah ada (langkah D1) dan komponen dasar sudah dibangun (langkah D2: `panel` kartu, `stat`, `icon-chip`, `tile`, `tabs`/`tab`, `avatar`, lencana pil, tombol `on-primary`, ikon `user-check`). Grafik, bilah atas, laci, latar `canvas`, dan dasbor belum; resep layout di §3 untuk laci dan bilah atas masih resep M3 sebelumnya sampai D4. Daftar yang belum dibangun ada di §10.
+> **Arah dasbor Material (keputusan pemilik proyek, `docs/DESAIN_DASBOR_MATERIAL.md`) mengalahkan aturan Don't dan Layout lama.** Token dan aturan konsistensi sudah ada (langkah D1) dan komponen dasar sudah dibangun (langkah D2: `panel` kartu, `stat`, `icon-chip`, `tile`, `tabs`/`tab`, `avatar`, lencana pil, tombol `on-primary`, ikon `user-check`). Grafik sudah (langkah D3: `chart.bar`, `chart.donut`); bilah atas, laci, latar `canvas`, dan dasbor belum; resep layout di §3 untuk laci dan bilah atas masih resep M3 sebelumnya sampai D4. Daftar yang belum dibangun ada di §10.
 >
 > **Material 3.** Token, aturan konsistensi, komponen, layout, dan halaman sudah Material 3. Nama token atau kelas lama ditolak oleh aturan `token-lama` di `agent/konsistensi.json` (pesannya memuat padanan baru). Catatan keputusan dan langkah migrasi ada di `docs/MIGRASI_M3.md`.
 
@@ -107,6 +107,8 @@ Semua layout menerima `judul` dan menampilkan `<x-ui.flash />` di atas isi. Hala
 | `rincian` | slot daftar `rincian-baris` (`label`, slot nilai) | daftar definisi `<dl>`: label `text-on-surface-variant` di kiri, nilai di kanan, garis antarbaris. Dipakai di semua halaman detail |
 | `waktu` | `nilai`, `relatif?` | zona Asia/Jayapura, `d M Y H:i`; `relatif` menambah "x menit lalu"; `tabular-nums` |
 | `grafik-batang` | `data` (label→angka), `nada?` | batang CSS murni; satu-satunya tempat boleh `style="width:…"`. Kolom label `w-24 shrink-0 whitespace-nowrap text-body-s text-on-surface-variant` (tidak pecah baris), jalur `bg-surface-container-highest`, nilai `w-10 shrink-0 text-right tabular-nums` |
+| `chart.bar` | `labels` (string "Sen 05/10" yang dipecah di spasi pertama menjadi baris hari dan tanggal, atau pasangan `['Sen', '05/10']`), `values` (bilangan bulat, jumlahnya sama dengan `labels`), `highlight?` (indeks batang berwarna `primary`; lainnya `chart-sky`), `title`, `unit?` | grafik batang SVG sisi server (`<x-ui.chart.bar>`), viewBox `0 0 640 346`, dibungkus `overflow-x-auto` dengan lebar minimum 480px. Sumbu maksimum bilangan genap terkecil minimal 2; nilai 0 digambar sebagai batang rintisan; setiap batang berlabel nilai; `role="img"` dengan `aria-label` "{title}: Sen 05/10 1 pesanan, ...". Geometri di `App\Support\Chart\BarGeometry`. Menggantikan `grafik-batang` (dihapus di D7) |
+| `chart.donut` | `segments` (daftar `['label', 'value', 'color']`; `color` = nama token `primary\|success\|error\|warning\|outline\|chart-sky`), `title`, `center-label?` | grafik donat SVG sisi server (`<x-ui.chart.donut>`), viewBox `0 0 160 160`: segmen berurutan nilai terbesar dulu (seri sama mengikuti urutan masukan), celah 3px, total di tengah (`text-stat-l`), legenda teks berisi titik, label, nilai, dan persentase (hanya nilai lebih dari 0). Total 0 menggambar cincin `surface-container-highest` dan tanpa legenda. `aria-label` "{title}: 5 selesai, 2 dibatalkan, ...". Geometri di `App\Support\Chart\DonutGeometry`; warna lewat `App\Support\Chart\Warna` |
 | `paginasi` | `data` (paginator) | membuat markup sendiri dari `$data->linkCollection()` (tampilan paginasi bawaan Laravel memakai palet Tailwind lama dan **tidak boleh** dipakai); bahasa Indonesia ("Sebelumnya", "Berikutnya", "Menampilkan 1–20 dari 134"); halaman aktif `bg-secondary-container` |
 | `linimasa` | `log` (koleksi `PesananLog`) | sesuai `DESIGN.md` bagian Components: kolom waktu tetap, titik, label status, pelaku/peran, catatan; langkah terakhir `font-medium` |
 | `ketersediaan` | `faskes` | bed IGD x/y, bed rawat inap x/y, dokter umum, dokter spesialis, ambulans tersedia, "diperbarui …" / "Belum diperbarui" / "Data lama" (lencana `peringatan`) |
@@ -148,18 +150,15 @@ Pada berkas di bawah `resources/views/` (kecuali `pdf/`): kelas warna/gaya di lu
 
 ## 10. Komponen dasbor (rencana)
 
-Komponen dasar (D2) sudah dibangun dan didokumentasikan di §2 dan §4; contoh di bawah tabel ini. Yang tersisa mengikuti `docs/DESAIN_DASBOR_MATERIAL.md` bagian 5.8 sampai 5.13 dan 6, dengan status **belum diimplementasikan**; ukuran dan geometri lengkap ada di sana. Setelah dibangun, barisnya dipindah ke §4.
+Komponen dasar (D2) dan grafik (D3) sudah dibangun dan didokumentasikan di §2 dan §4; contoh di bawah tabel ini. Yang tersisa mengikuti `docs/DESAIN_DASBOR_MATERIAL.md` bagian 5.8, 5.9, dan 6, dengan status **belum diimplementasikan**; ukuran lengkap ada di sana. Setelah dibangun, barisnya dipindah ke §4.
 
 | Komponen | Props / ringkasan | Langkah | Status |
 |---|---|---|---|
-| `x-ui.chart.bar` | `labels`, `values`, `highlight`, `title`; SVG server-side, viewBox `0 0 640 346`, label nilai terlihat, `role="img"` dengan `aria-label` | D3 | belum diimplementasikan |
-| `x-ui.chart.donut` | `segments` (`label`, `value`, `color`), `centerLabel`, `title`; SVG server-side, legenda teks | D3 | belum diimplementasikan |
-| `App\Support\Chart\BarGeometry`, `DonutGeometry` | hitungan geometri murni, diuji unit | D3 | belum diimplementasikan |
 | Bilah atas (`layouts.app`) | kartu melayang 64px, `shadow-card`: tombol menu (di bawah `lg`), kolom cari (`GET` daftar pesanan `?q=`), lonceng pesanan menunggu verifikasi, avatar | D4 | belum diimplementasikan |
 | Laci navigasi (`layouts.app`) | latar putih 280px, item 48px berbentuk pil, item aktif `primary` dengan `shadow-nav-active`, label grup, blok pengguna dengan keluar sebagai form POST, satu bilah gulir vertikal | D4 | belum diimplementasikan |
 | Dasbor Dinkes | susunan di `docs/DESAIN_DASBOR_MATERIAL.md` bagian 6, data dari `App\Services\RingkasanDasbor` | D5 | belum diimplementasikan |
 
-Pemakaian warna chip menurut nada: primary = `primary-container` / `on-primary-container`; warning = `warning-container` / `on-warning-container`; success = `success-container` / `on-success-container`; error = `error-container` / `on-error-container`. Warna segmen donat tetap per status Enum (selesai `success`, dibatalkan `outline`, ditolak `error`, menunggu verifikasi `warning`, terverifikasi `primary`, ditugaskan sampai dalam perjalanan `chart-sky`); status baru di Enum diberi warna dengan prinsip yang sama dan dicatat di sini.
+Pemakaian warna chip menurut nada: primary = `primary-container` / `on-primary-container`; warning = `warning-container` / `on-warning-container`; success = `success-container` / `on-success-container`; error = `error-container` / `on-error-container`. Warna segmen donat tetap per status Enum lewat `PesananStatus::warnaGrafik()` (selesai `success`, dibatalkan `outline`, ditolak `error`, menunggu verifikasi `warning`, terverifikasi `primary`, ditugaskan, diterima, dan dalam perjalanan `chart-sky`); status baru di Enum wajib diberi warna dengan prinsip yang sama (dijaga `WarnaTest`) dan dicatat di sini.
 
 ### Contoh pemakaian komponen dasar dasbor
 
@@ -191,3 +190,20 @@ Pemakaian warna chip menurut nada: primary = `primary-container` / `on-primary-c
 {{-- Avatar selalu bersama nama --}}
 <x-ui.avatar :nama="$pengguna->name" /> <span>{{ $pengguna->name }}</span>
 ```
+
+### Contoh pemakaian grafik
+
+```blade
+<x-ui.panel>
+    <h2 class="text-card-title">Pesanan 7 hari terakhir</h2>
+    <x-ui.chart.bar :labels="$labelHari" :values="$nilaiHari" :highlight="6" title="Grafik batang pesanan per hari" unit="pesanan" />
+</x-ui.panel>
+
+<x-ui.panel>
+    <h2 class="text-card-title">Status pesanan</h2>
+    {{-- $segmen: [['label' => $status->label(), 'value' => $jumlah, 'color' => $status->warnaGrafik()], ...] dalam urutan Enum --}}
+    <x-ui.chart.donut :segments="$segmen" center-label="pesanan" title="Diagram cincin status 10 pesanan terbaru" />
+</x-ui.panel>
+```
+
+Geometri murni (`BarGeometry::buat($values, $highlight)`, `DonutGeometry::buat($segments)`) diuji unit terhadap nilai pratinjau di `docs/referensi/` (batang 1,0,0,0,0,0,1 dan donat 5,2,1,1,1). Penyimpangan yang disengaja dari teks dokumen arah: radius sudut batang mengecil bila batang lebih pendek dari 8px, dan celah donat mengecil menjadi separuh bagian bagi segmen yang lebih kecil dari 6px, supaya tidak ada koordinat terbalik dan segmen kecil tetap terlihat.

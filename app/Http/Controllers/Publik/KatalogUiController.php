@@ -50,6 +50,13 @@ class KatalogUiController extends Controller
             'faskes' => [$faskesSegar, $faskesLama, $faskesBaru],
             'halaman' => new LengthAwarePaginator(array_fill(0, 20, 'x'), 134, 20, 2, ['path' => route('ui.katalog')]),
             'grafik' => ['Sen' => 3, 'Sel' => 7, 'Rab' => 5, 'Kam' => 0, 'Jum' => 9, 'Sab' => 4, 'Min' => 2],
+            // Data pratinjau grafik (docs/referensi): batang 1,0,0,0,0,0,1 dan donat 5,2,1,1,1 dengan warna tetap per status.
+            'labelBatang' => ['Sen 05/10', 'Sel 06/10', 'Rab 07/10', 'Kam 08/10', 'Jum 09/10', 'Sab 10/10', 'Min 11/10'],
+            'nilaiBatang' => [1, 0, 0, 0, 0, 0, 1],
+            'segmenStatus' => collect([
+                [PesananStatus::Selesai, 5], [PesananStatus::Dibatalkan, 2], [PesananStatus::Ditolak, 1],
+                [PesananStatus::Terverifikasi, 1], [PesananStatus::DalamPerjalanan, 1],
+            ])->map(fn (array $s) => ['label' => $s[0]->label(), 'value' => $s[1], 'color' => $s[0]->warnaGrafik()])->all(),
             'statusPesanan' => PesananStatus::cases(),
         ]);
     }

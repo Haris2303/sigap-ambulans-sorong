@@ -43,6 +43,19 @@ enum PesananStatus: string
         };
     }
 
+    /** Warna tetap per status pada grafik donat (nama token; docs/DESAIN_DASBOR_MATERIAL.md 5.12). Status baru wajib diberi warna. */
+    public function warnaGrafik(): string
+    {
+        return match ($this) {
+            self::Selesai => 'success',
+            self::Dibatalkan => 'outline',
+            self::Ditolak => 'error',
+            self::Menunggu => 'warning',
+            self::Terverifikasi => 'primary',
+            self::Ditugaskan, self::Diterima, self::DalamPerjalanan => 'chart-sky',
+        };
+    }
+
     public function final(): bool
     {
         return in_array($this, [self::Selesai, self::Ditolak, self::Dibatalkan], true);
