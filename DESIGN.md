@@ -1,168 +1,215 @@
 ---
 version: alpha
 name: SIGAP Ambulans
-description: Sistem Informasi Layanan Ambulans Terpadu Dinas Kesehatan Kota Sorong. Antarmuka layanan publik berbasis Material Design 3 (baseline, bukan Expressive) yang padat informasi dan terbaca cepat di ponsel maupun layar operator.
+description: Sistem Informasi Layanan Ambulans Terpadu Dinas Kesehatan Kota Sorong. Antarmuka layanan publik arah B "Terang lembut" (docs/RETEMA_B.md) dengan peran warna Material Design 3, terbaca cepat di ponsel maupun layar operator.
 colors:
-  primary: "#216487"
+  primary: "#1368CE"
   on-primary: "#FFFFFF"
-  primary-container: "#C6E7FF"
-  on-primary-container: "#004C6C"
-  secondary-container: "#D2E5F4"
-  on-secondary-container: "#374955"
-  error: "#BA1A1A"
+  primary-container: "#E4EEFF"
+  on-primary-container: "#0F55A8"
+  secondary: "#102A56"
+  on-secondary: "#FFFFFF"
+  secondary-container: "#EEF1F7"
+  on-secondary-container: "#475066"
+  tertiary: "#7A5AF8"
+  on-tertiary: "#FFFFFF"
+  tertiary-container: "#EDE8FF"
+  on-tertiary-container: "#5B3FD0"
+  success: "#0B7A53"
+  on-success: "#FFFFFF"
+  success-container: "#DDF6EA"
+  on-success-container: "#0B7A53"
+  warning: "#A86300"
+  on-warning: "#FFFFFF"
+  warning-container: "#FFF1D6"
+  on-warning-container: "#8A5200"
+  error: "#CC3A24"
   on-error: "#FFFFFF"
-  error-container: "#FFDAD6"
-  on-error-container: "#93000A"
-  success: "#006D43"
-  success-container: "#92F7BC"
-  on-success-container: "#002111"
-  warning: "#775A00"
-  warning-container: "#FFDF99"
-  on-warning-container: "#251A00"
-  chart-sky: "#7FB9DA"
-  canvas: "#EBF1F6"
-  surface: "#F6FAFE"
+  error-container: "#FFE9E4"
+  on-error-container: "#B8341F"
+  surface: "#F3F5FB"
+  canvas: "#F3F5FB"
   surface-container-lowest: "#FFFFFF"
-  surface-container-low: "#F0F4F9"
-  surface-container: "#EBEEF3"
-  surface-container-high: "#E5E8ED"
-  surface-container-highest: "#DFE3E7"
-  on-surface: "#181C20"
-  on-surface-variant: "#41484D"
-  outline: "#71787E"
-  outline-variant: "#C1C7CE"
-  inverse-surface: "#2D3135"
-  inverse-on-surface: "#EEF1F6"
-  inverse-primary: "#92CEF5"
-  scrim: "#00000052"
+  surface-container-low: "#F7F8FD"
+  surface-container: "#F3F5FB"
+  surface-container-high: "#EEF1F7"
+  surface-container-highest: "#E7EAF3"
+  on-surface: "#1B2437"
+  on-surface-variant: "#5F6B80"
+  outline: "#7F8AA0"
+  outline-variant: "#D0D6E4"
+  inverse-surface: "#1B2437"
+  inverse-on-surface: "#FFFFFF"
+  inverse-primary: "#8DB8FF"
+  selected: "#EEF4FF"
+  scrim: "#1B2437"
+  chart-mint: "#0FA582"
+  chart-coral: "#FF6B57"
+  chart-amber: "#F5A524"
+  chart-slate: "#A3ADC2"
+  # Token lama: dipakai grafik batang dan donat dasbor Material, dihapus di R9.
+  chart-sky: "#7FB9DA"
 typography:
+  stat-hero:
+    fontFamily: Plus Jakarta Sans
+    fontSize: 56px
+    fontWeight: 800
+    lineHeight: 62px
+    letterSpacing: -0.03em
+  stat-l:
+    fontFamily: Plus Jakarta Sans
+    fontSize: 38px
+    fontWeight: 800
+    lineHeight: 44px
+    letterSpacing: -0.03em
+  page-title:
+    fontFamily: Plus Jakarta Sans
+    fontSize: 30px
+    fontWeight: 800
+    lineHeight: 38px
+    letterSpacing: -0.025em
+  page-title-s:
+    fontFamily: Plus Jakarta Sans
+    fontSize: 26px
+    fontWeight: 800
+    lineHeight: 34px
+    letterSpacing: -0.025em
+  title-xl:
+    fontFamily: Plus Jakarta Sans
+    fontSize: 22px
+    fontWeight: 800
+    lineHeight: 28px
+    letterSpacing: -0.02em
+  title-l:
+    fontFamily: Plus Jakarta Sans
+    fontSize: 18px
+    fontWeight: 800
+    lineHeight: 26px
+    letterSpacing: -0.01em
+  title-m:
+    fontFamily: Plus Jakarta Sans
+    fontSize: 16px
+    fontWeight: 700
+    lineHeight: 24px
+    letterSpacing: 0em
+  brand:
+    fontFamily: Plus Jakarta Sans
+    fontSize: 19px
+    fontWeight: 800
+    lineHeight: 24px
+    letterSpacing: -0.02em
+  ring-value:
+    fontFamily: Plus Jakarta Sans
+    fontSize: 16px
+    fontWeight: 800
+    lineHeight: 20px
+    letterSpacing: 0em
+  body-l:
+    fontFamily: Plus Jakarta Sans
+    fontSize: 16px
+    fontWeight: 400
+    lineHeight: 24px
+    letterSpacing: 0em
+  body-m:
+    fontFamily: Plus Jakarta Sans
+    fontSize: 14px
+    fontWeight: 400
+    lineHeight: 20px
+    letterSpacing: 0em
+  body-s:
+    fontFamily: Plus Jakarta Sans
+    fontSize: 13px
+    fontWeight: 400
+    lineHeight: 18px
+    letterSpacing: 0em
+  label-l:
+    fontFamily: Plus Jakarta Sans
+    fontSize: 14px
+    fontWeight: 600
+    lineHeight: 20px
+    letterSpacing: 0em
+  label-m:
+    fontFamily: Plus Jakarta Sans
+    fontSize: 12px
+    fontWeight: 600
+    lineHeight: 16px
+    letterSpacing: 0em
+  chip:
+    fontFamily: Plus Jakarta Sans
+    fontSize: 12px
+    fontWeight: 700
+    lineHeight: 16px
+    letterSpacing: 0em
+  # Gaya lama: masih dipakai komponen dasbor Material, dihapus di R9 bila tak terpakai.
   display-l:
-    fontFamily: Roboto
+    fontFamily: Plus Jakarta Sans
     fontSize: 57px
     fontWeight: 400
     lineHeight: 64px
     letterSpacing: -0.25px
   display-m:
-    fontFamily: Roboto
+    fontFamily: Plus Jakarta Sans
     fontSize: 45px
     fontWeight: 400
     lineHeight: 52px
     letterSpacing: 0px
   display-s:
-    fontFamily: Roboto
+    fontFamily: Plus Jakarta Sans
     fontSize: 36px
     fontWeight: 400
     lineHeight: 44px
     letterSpacing: 0px
   headline-l:
-    fontFamily: Roboto
+    fontFamily: Plus Jakarta Sans
     fontSize: 32px
     fontWeight: 400
     lineHeight: 40px
     letterSpacing: 0px
   headline-m:
-    fontFamily: Roboto
+    fontFamily: Plus Jakarta Sans
     fontSize: 28px
     fontWeight: 400
     lineHeight: 36px
     letterSpacing: 0px
   headline-s:
-    fontFamily: Roboto
+    fontFamily: Plus Jakarta Sans
     fontSize: 24px
     fontWeight: 400
     lineHeight: 32px
     letterSpacing: 0px
-  title-l:
-    fontFamily: Roboto
-    fontSize: 22px
-    fontWeight: 400
-    lineHeight: 28px
-    letterSpacing: 0px
-  title-m:
-    fontFamily: Roboto
-    fontSize: 16px
-    fontWeight: 500
-    lineHeight: 24px
-    letterSpacing: 0.15px
   title-s:
-    fontFamily: Roboto
+    fontFamily: Plus Jakarta Sans
     fontSize: 14px
     fontWeight: 500
     lineHeight: 20px
     letterSpacing: 0.1px
-  body-l:
-    fontFamily: Roboto
-    fontSize: 16px
-    fontWeight: 400
-    lineHeight: 24px
-    letterSpacing: 0.5px
-  body-m:
-    fontFamily: Roboto
-    fontSize: 14px
-    fontWeight: 400
-    lineHeight: 20px
-    letterSpacing: 0.25px
-  body-s:
-    fontFamily: Roboto
-    fontSize: 12px
-    fontWeight: 400
-    lineHeight: 16px
-    letterSpacing: 0.4px
-  label-l:
-    fontFamily: Roboto
-    fontSize: 14px
-    fontWeight: 500
-    lineHeight: 20px
-    letterSpacing: 0.1px
-  label-m:
-    fontFamily: Roboto
-    fontSize: 12px
-    fontWeight: 500
-    lineHeight: 16px
-    letterSpacing: 0.5px
   label-s:
-    fontFamily: Roboto
+    fontFamily: Plus Jakarta Sans
     fontSize: 11px
     fontWeight: 500
     lineHeight: 16px
     letterSpacing: 0.5px
-  page-title:
-    fontFamily: Roboto
-    fontSize: 28px
-    fontWeight: 500
-    lineHeight: 36px
-    letterSpacing: 0px
   card-title:
-    fontFamily: Roboto
+    fontFamily: Plus Jakarta Sans
     fontSize: 20px
     fontWeight: 500
     lineHeight: 28px
     letterSpacing: 0px
-  stat-hero:
-    fontFamily: Roboto
-    fontSize: 56px
-    fontWeight: 500
-    lineHeight: 60px
-    letterSpacing: 0px
-  stat-l:
-    fontFamily: Roboto
-    fontSize: 32px
-    fontWeight: 500
-    lineHeight: 36px
-    letterSpacing: 0px
   stat-m:
-    fontFamily: Roboto
+    fontFamily: Plus Jakarta Sans
     fontSize: 28px
     fontWeight: 500
     lineHeight: 32px
     letterSpacing: 0px
 rounded:
-  xs: 4px
-  sm: 8px
-  md: 12px
-  lg: 16px
-  xl: 28px
+  sm: 10px
+  md: 14px
+  lg: 18px
+  xl: 24px
+  2xl: 28px
   full: 9999px
+  # Token lama: isian dan snackbar Material, dihapus di R9 bila tak terpakai.
+  xs: 4px
 spacing:
   base: 4px
   xs: 4px
@@ -176,10 +223,25 @@ spacing:
   drawer: 280px
   content-max: 1152px
 elevation:
-  shadow-color: "{colors.scrim}"
+  shadow-color: "rgb(30 41 100)"
   level-0:
     container: "{colors.surface}"
     shadow: none
+  card:
+    key: 0px 10px 30px -12px
+    key-opacity: 0.14
+    ambient: 0px 1px 2px 0px
+    ambient-opacity: 0.04
+  control:
+    key: 0px 4px 14px -8px
+    key-opacity: 0.20
+  chip:
+    key: 0px 2px 8px -2px
+    key-opacity: 0.20
+  overlay:
+    key: 0px 24px 60px -20px
+    key-opacity: 0.35
+  # Tingkat lama: dipertahankan sampai pemakaiannya dialihkan (R2 sampai R8), dihapus di R9.
   level-1:
     container: "{colors.surface-container-low}"
     key: 0px 1px 2px 0px
@@ -198,12 +260,6 @@ elevation:
     key-opacity: 0.30
     ambient: 0px 4px 8px 3px
     ambient-opacity: 0.15
-  card:
-    color: "{colors.on-surface}"
-    key: 0px 1px 3px 0px
-    key-opacity: 0.10
-    ambient: 0px 6px 16px 0px
-    ambient-opacity: 0.06
   card-raised:
     color: "{colors.on-surface}"
     key: 0px 1px 3px 0px
@@ -223,249 +279,403 @@ state:
   disabled-container: 0.12
 motion:
   duration-short-ms: 150
-  duration-medium-ms: 250
+  duration-medium-ms: 200
   easing-standard: "cubic-bezier(0.2, 0, 0, 1)"
 components:
   app-background:
     backgroundColor: "{colors.canvas}"
     textColor: "{colors.on-surface}"
     typography: "{typography.body-l}"
-  top-app-bar:
-    backgroundColor: "{colors.surface-container-lowest}"
-    textColor: "{colors.on-surface}"
-    typography: "{typography.title-l}"
-    rounded: "{rounded.lg}"
-    height: 64px
-    padding: "{spacing.lg}"
-  navigation-drawer:
+  sidebar:
     backgroundColor: "{colors.surface-container-lowest}"
     textColor: "{colors.on-surface-variant}"
-    width: "{spacing.drawer}"
-    padding: "{spacing.lg}"
-  nav-item:
-    textColor: "{colors.on-surface-variant}"
-    typography: "{typography.label-l}"
-    rounded: "{rounded.full}"
-    height: 48px
-    padding: "{spacing.lg}"
-  nav-item-active:
+    rounded: "{rounded.2xl}"
+    width: 248px
+    padding: 16px
+  brand-mark:
     backgroundColor: "{colors.primary}"
     textColor: "{colors.on-primary}"
+    rounded: "{rounded.md}"
+    size: 42px
+  nav-item:
+    backgroundColor: "{colors.surface-container-lowest}"
+    textColor: "{colors.on-surface-variant}"
+    typography: "{typography.label-l}"
+    rounded: "{rounded.md}"
+    height: 48px
+    padding: 14px
+  nav-item-hover:
+    backgroundColor: "{colors.surface-container-low}"
+    textColor: "{colors.on-surface-variant}"
+  nav-item-active:
+    backgroundColor: "{colors.primary-container}"
+    textColor: "{colors.primary}"
   nav-badge:
     backgroundColor: "{colors.error}"
     textColor: "{colors.on-error}"
-    typography: "{typography.label-m}"
+    typography: "{typography.chip}"
     rounded: "{rounded.full}"
-    height: 20px
-    padding: "{spacing.xs}"
-  button-filled:
-    backgroundColor: "{colors.primary}"
-    textColor: "{colors.on-primary}"
-    typography: "{typography.label-l}"
-    rounded: "{rounded.full}"
-    height: 40px
-    padding: "{spacing.xl}"
-  button-tonal:
-    backgroundColor: "{colors.secondary-container}"
-    textColor: "{colors.on-secondary-container}"
-    typography: "{typography.label-l}"
-    rounded: "{rounded.full}"
-    height: 40px
-    padding: "{spacing.xl}"
-  button-outlined:
+    height: 22px
+  user-block:
     backgroundColor: "{colors.surface}"
-    textColor: "{colors.primary}"
-    typography: "{typography.label-l}"
-    rounded: "{rounded.full}"
-    height: 40px
-    padding: "{spacing.xl}"
-  button-text:
-    backgroundColor: "{colors.surface}"
-    textColor: "{colors.primary}"
-    typography: "{typography.label-l}"
-    rounded: "{rounded.full}"
-    height: 40px
-    padding: "{spacing.lg}"
-  button-error:
-    backgroundColor: "{colors.error}"
-    textColor: "{colors.on-error}"
-    typography: "{typography.label-l}"
-    rounded: "{rounded.full}"
-    height: 40px
-    padding: "{spacing.xl}"
-  text-field:
+    textColor: "{colors.on-surface}"
+    rounded: "{rounded.lg}"
+    padding: 12px
+  top-app-bar:
     backgroundColor: "{colors.surface-container-lowest}"
     textColor: "{colors.on-surface}"
-    typography: "{typography.body-l}"
-    rounded: "{rounded.xs}"
-    height: 56px
-    padding: "{spacing.lg}"
-  text-field-label:
+    rounded: "{rounded.xl}"
+    padding: 8px
+  drawer:
     backgroundColor: "{colors.surface-container-lowest}"
     textColor: "{colors.on-surface-variant}"
-    typography: "{typography.label-l}"
-  text-field-supporting:
+    rounded: "{rounded.2xl}"
+    width: 316px
+    padding: 16px
+  icon-button:
     backgroundColor: "{colors.surface-container-lowest}"
-    textColor: "{colors.on-surface-variant}"
-    typography: "{typography.body-s}"
-  text-field-error:
+    textColor: "{colors.on-surface}"
+    rounded: "{rounded.lg}"
+    size: 48px
+  notification-dot:
+    backgroundColor: "{colors.error}"
+    rounded: "{rounded.full}"
+    size: 10px
+  public-top-bar:
     backgroundColor: "{colors.surface-container-lowest}"
-    textColor: "{colors.error}"
-    typography: "{typography.body-s}"
-  text-field-outline:
-    backgroundColor: "{colors.outline}"
-    height: 1px
+    textColor: "{colors.on-surface}"
+    typography: "{typography.title-m}"
+    height: 60px
+  bottom-bar:
+    backgroundColor: "{colors.surface-container-lowest}"
+    padding: 16px
   panel:
     backgroundColor: "{colors.surface-container-lowest}"
     textColor: "{colors.on-surface}"
     typography: "{typography.body-m}"
-    rounded: "{rounded.lg}"
-    padding: "{spacing.xl}"
-  panel-outline:
-    backgroundColor: "{colors.outline-variant}"
-    height: 1px
-  table-header:
-    backgroundColor: "{colors.surface-container-low}"
-    textColor: "{colors.on-surface-variant}"
+    rounded: "{rounded.xl}"
+    padding: 24px
+  button-primary:
+    backgroundColor: "{colors.primary}"
+    textColor: "{colors.on-primary}"
     typography: "{typography.label-l}"
-    height: 48px
-    padding: "{spacing.lg}"
-  table-cell:
+    rounded: "{rounded.md}"
+    height: 44px
+    padding: 20px
+  button-secondary:
+    backgroundColor: "{colors.surface-container}"
+    textColor: "{colors.on-surface}"
+    typography: "{typography.label-l}"
+    rounded: "{rounded.md}"
+    height: 44px
+    padding: 20px
+  button-ghost:
+    backgroundColor: "{colors.surface-container-lowest}"
+    textColor: "{colors.primary}"
+    typography: "{typography.label-l}"
+    rounded: "{rounded.md}"
+    height: 44px
+    padding: 12px
+  button-danger:
+    backgroundColor: "{colors.error-container}"
+    textColor: "{colors.on-error-container}"
+    typography: "{typography.label-l}"
+    rounded: "{rounded.md}"
+    height: 44px
+    padding: 20px
+  button-on-secondary:
+    backgroundColor: "{colors.surface-container-lowest}"
+    textColor: "{colors.secondary}"
+    typography: "{typography.label-l}"
+    rounded: "{rounded.md}"
+    height: 44px
+    padding: 20px
+  text-field:
     backgroundColor: "{colors.surface-container-lowest}"
     textColor: "{colors.on-surface}"
     typography: "{typography.body-m}"
-    height: 52px
-    padding: "{spacing.lg}"
-  summary-cell:
+    rounded: "{rounded.md}"
+    height: 48px
+    padding: 14px
+  text-field-outline:
+    backgroundColor: "{colors.outline}"
+    height: 1px
+  text-field-label:
     backgroundColor: "{colors.surface-container-lowest}"
     textColor: "{colors.on-surface}"
-    typography: "{typography.display-s}"
-    padding: "{spacing.lg}"
-  badge-neutral:
-    backgroundColor: "{colors.surface-container-highest}"
+    typography: "{typography.label-l}"
+  text-field-supporting:
+    backgroundColor: "{colors.surface-container-lowest}"
     textColor: "{colors.on-surface-variant}"
     typography: "{typography.label-m}"
-    rounded: "{rounded.full}"
-    height: 24px
-    padding: "{spacing.sm}"
-  badge-info:
+  text-field-error:
+    backgroundColor: "{colors.surface-container-lowest}"
+    textColor: "{colors.error}"
+    typography: "{typography.label-m}"
+  choice:
+    backgroundColor: "{colors.surface-container-lowest}"
+    textColor: "{colors.on-surface}"
+    typography: "{typography.label-l}"
+    rounded: "{rounded.md}"
+    padding: 12px
+  choice-selected:
+    backgroundColor: "{colors.selected}"
+    textColor: "{colors.on-surface}"
+  choice-icon:
+    backgroundColor: "{colors.surface-container}"
+    textColor: "{colors.on-surface-variant}"
+    rounded: "{rounded.sm}"
+    size: 30px
+  choice-icon-selected:
+    backgroundColor: "{colors.primary}"
+    textColor: "{colors.on-primary}"
+    rounded: "{rounded.sm}"
+    size: 30px
+  tab-track:
+    backgroundColor: "{colors.surface-container}"
+    rounded: "{rounded.md}"
+    padding: 4px
+  tab:
+    backgroundColor: "{colors.surface-container}"
+    textColor: "{colors.on-surface-variant}"
+    typography: "{typography.label-m}"
+    rounded: "{rounded.sm}"
+    height: 36px
+  tab-active:
+    backgroundColor: "{colors.surface-container-lowest}"
+    textColor: "{colors.on-surface}"
+  tab-floating-track:
+    backgroundColor: "{colors.surface-container-lowest}"
+    rounded: "{rounded.lg}"
+    padding: 4px
+  tab-floating:
+    backgroundColor: "{colors.surface-container-lowest}"
+    textColor: "{colors.on-surface-variant}"
+    typography: "{typography.label-l}"
+    rounded: "{rounded.md}"
+    height: 38px
+  tab-floating-active:
+    backgroundColor: "{colors.primary}"
+    textColor: "{colors.on-primary}"
+  badge-primary:
     backgroundColor: "{colors.primary-container}"
     textColor: "{colors.on-primary-container}"
-    typography: "{typography.label-m}"
+    typography: "{typography.chip}"
     rounded: "{rounded.full}"
-    height: 24px
-    padding: "{spacing.sm}"
+    height: 26px
+    padding: 11px
   badge-warning:
     backgroundColor: "{colors.warning-container}"
     textColor: "{colors.on-warning-container}"
-    typography: "{typography.label-m}"
+    typography: "{typography.chip}"
     rounded: "{rounded.full}"
-    height: 24px
-    padding: "{spacing.sm}"
+    height: 26px
+    padding: 11px
   badge-success:
     backgroundColor: "{colors.success-container}"
     textColor: "{colors.on-success-container}"
-    typography: "{typography.label-m}"
+    typography: "{typography.chip}"
     rounded: "{rounded.full}"
-    height: 24px
-    padding: "{spacing.sm}"
-  badge-danger:
+    height: 26px
+    padding: 11px
+  badge-error:
     backgroundColor: "{colors.error-container}"
     textColor: "{colors.on-error-container}"
-    typography: "{typography.label-m}"
+    typography: "{typography.chip}"
     rounded: "{rounded.full}"
-    height: 24px
-    padding: "{spacing.sm}"
-  status-dot-success:
-    backgroundColor: "{colors.success}"
+    height: 26px
+    padding: 11px
+  badge-tertiary:
+    backgroundColor: "{colors.tertiary-container}"
+    textColor: "{colors.on-tertiary-container}"
+    typography: "{typography.chip}"
     rounded: "{rounded.full}"
-    size: 10px
-  status-dot-warning:
-    backgroundColor: "{colors.warning}"
+    height: 26px
+    padding: 11px
+  badge-neutral:
+    backgroundColor: "{colors.secondary-container}"
+    textColor: "{colors.on-secondary-container}"
+    typography: "{typography.chip}"
     rounded: "{rounded.full}"
-    size: 10px
-  dialog:
-    backgroundColor: "{colors.surface-container-high}"
-    textColor: "{colors.on-surface}"
-    typography: "{typography.body-m}"
-    rounded: "{rounded.xl}"
-    padding: "{spacing.xl}"
-    width: 560px
-  dialog-scrim:
-    backgroundColor: "{colors.scrim}"
-  snackbar:
-    backgroundColor: "{colors.inverse-surface}"
-    textColor: "{colors.inverse-on-surface}"
-    typography: "{typography.body-m}"
-    rounded: "{rounded.xs}"
-    padding: "{spacing.lg}"
-  snackbar-action:
-    backgroundColor: "{colors.inverse-surface}"
-    textColor: "{colors.inverse-primary}"
-    typography: "{typography.label-l}"
-  button-on-primary:
-    backgroundColor: "{colors.on-primary}"
-    textColor: "{colors.primary}"
-    typography: "{typography.label-l}"
-    rounded: "{rounded.full}"
-    height: 40px
-    padding: "{spacing.xl}"
-  stat-card:
-    backgroundColor: "{colors.surface-container-lowest}"
-    textColor: "{colors.on-surface}"
-    typography: "{typography.stat-l}"
-    rounded: "{rounded.lg}"
-    padding: 20px
-  stat-card-featured:
-    backgroundColor: "{colors.primary}"
-    textColor: "{colors.on-primary}"
-    typography: "{typography.stat-hero}"
-    rounded: "{rounded.lg}"
-    padding: "{spacing.xl}"
+    height: 26px
+    padding: 11px
   icon-chip:
     backgroundColor: "{colors.primary-container}"
-    textColor: "{colors.on-primary-container}"
+    textColor: "{colors.primary}"
     rounded: "{rounded.md}"
     size: 40px
   icon-chip-lg:
     backgroundColor: "{colors.primary-container}"
-    textColor: "{colors.on-primary-container}"
-    rounded: "{rounded.md}"
-    size: 52px
-  tile:
-    backgroundColor: "{colors.surface-container-low}"
-    textColor: "{colors.on-surface}"
-    typography: "{typography.stat-m}"
-    rounded: "{rounded.md}"
-    padding: "{spacing.lg}"
-  tab:
-    backgroundColor: "{colors.surface-container-lowest}"
-    textColor: "{colors.on-surface-variant}"
-    typography: "{typography.label-l}"
-    height: 44px
-    padding: "{spacing.lg}"
-  tab-active:
-    backgroundColor: "{colors.surface-container-lowest}"
     textColor: "{colors.primary}"
+    rounded: "{rounded.md}"
+    size: 44px
   avatar:
     backgroundColor: "{colors.primary-container}"
     textColor: "{colors.on-primary-container}"
-    typography: "{typography.label-l}"
+    typography: "{typography.chip}"
     rounded: "{rounded.full}"
     size: 40px
-  search-field:
-    backgroundColor: "{colors.surface-container}"
+  stat-card:
+    backgroundColor: "{colors.surface-container-lowest}"
     textColor: "{colors.on-surface}"
-    typography: "{typography.body-l}"
+    typography: "{typography.stat-l}"
+    rounded: "{rounded.xl}"
+    padding: 24px
+  hero-stat:
+    backgroundColor: "{colors.secondary}"
+    textColor: "{colors.on-secondary}"
+    typography: "{typography.stat-hero}"
+    rounded: "{rounded.xl}"
+    padding: 24px
+  hero-stat-caption:
+    backgroundColor: "{colors.secondary}"
+    textColor: "{colors.primary-container}"
+    typography: "{typography.body-m}"
+  sparkline:
+    backgroundColor: "{colors.primary}"
+    width: 92px
+    height: 38px
+  sparkline-warning:
+    backgroundColor: "{colors.chart-amber}"
+    width: 92px
+    height: 38px
+  sparkline-success:
+    backgroundColor: "{colors.chart-mint}"
+    width: 92px
+    height: 38px
+  table-header:
+    backgroundColor: "{colors.surface-container-lowest}"
+    textColor: "{colors.on-surface-variant}"
+    typography: "{typography.label-m}"
+    padding: 8px
+  table-row:
+    backgroundColor: "{colors.surface-container-lowest}"
+    textColor: "{colors.on-surface}"
+    typography: "{typography.body-m}"
+    rounded: "{rounded.lg}"
+    padding: 12px
+  table-row-hover:
+    backgroundColor: "{colors.surface-container-low}"
+    textColor: "{colors.on-surface}"
+  ring-tile:
+    backgroundColor: "{colors.surface-container-low}"
+    textColor: "{colors.on-surface}"
+    typography: "{typography.ring-value}"
+    rounded: "{rounded.lg}"
+    padding: 14px
+  ring-track:
+    backgroundColor: "{colors.surface-container-highest}"
+    size: 64px
+  ring-fill:
+    backgroundColor: "{colors.primary}"
+    size: 64px
+  ring-fill-low:
+    backgroundColor: "{colors.chart-coral}"
+    size: 64px
+  ring-low-text:
+    backgroundColor: "{colors.surface-container-low}"
+    textColor: "{colors.on-error-container}"
+  chart-series-masuk:
+    backgroundColor: "{colors.primary}"
+  chart-series-selesai:
+    backgroundColor: "{colors.chart-mint}"
+  chart-status-menunggu:
+    backgroundColor: "{colors.chart-amber}"
+  chart-status-terverifikasi:
+    backgroundColor: "{colors.primary}"
+  chart-status-aktif:
+    backgroundColor: "{colors.tertiary}"
+  chart-status-selesai:
+    backgroundColor: "{colors.chart-mint}"
+  chart-status-ditolak:
+    backgroundColor: "{colors.chart-coral}"
+  chart-status-dibatalkan:
+    backgroundColor: "{colors.chart-slate}"
+  chart-grid:
+    backgroundColor: "{colors.surface-container-highest}"
+    height: 1px
+  chart-tooltip:
+    backgroundColor: "{colors.inverse-surface}"
+    textColor: "{colors.inverse-on-surface}"
+    padding: 14px
+  legend-pill:
+    backgroundColor: "{colors.surface}"
+    textColor: "{colors.on-surface}"
+    typography: "{typography.label-m}"
     rounded: "{rounded.full}"
-    height: 48px
-    padding: "{spacing.lg}"
+    height: 32px
+    padding: 12px
+  empty-state:
+    backgroundColor: "{colors.surface-container-lowest}"
+    textColor: "{colors.on-surface-variant}"
+    typography: "{typography.body-s}"
+    rounded: "{rounded.md}"
+    padding: 22px
+  empty-state-icon:
+    backgroundColor: "{colors.surface-container}"
+    textColor: "{colors.on-surface-variant}"
+    rounded: "{rounded.md}"
+    size: 44px
+  note-info:
+    backgroundColor: "{colors.primary-container}"
+    textColor: "{colors.on-primary-container}"
+    typography: "{typography.label-l}"
+    rounded: "{rounded.md}"
+    padding: 12px
+  note-warning:
+    backgroundColor: "{colors.warning-container}"
+    textColor: "{colors.on-warning-container}"
+    typography: "{typography.label-l}"
+    rounded: "{rounded.md}"
+    padding: 12px
+  note-success:
+    backgroundColor: "{colors.success-container}"
+    textColor: "{colors.on-success-container}"
+    typography: "{typography.label-l}"
+    rounded: "{rounded.md}"
+    padding: 12px
+  note-error:
+    backgroundColor: "{colors.error-container}"
+    textColor: "{colors.on-error-container}"
+    typography: "{typography.label-l}"
+    rounded: "{rounded.md}"
+    padding: 12px
+  snackbar:
+    backgroundColor: "{colors.inverse-surface}"
+    textColor: "{colors.inverse-on-surface}"
+    typography: "{typography.body-m}"
+    rounded: "{rounded.md}"
+    padding: 14px
+  snackbar-action:
+    backgroundColor: "{colors.inverse-surface}"
+    textColor: "{colors.inverse-primary}"
+    typography: "{typography.label-l}"
+  dialog:
+    backgroundColor: "{colors.surface-container-lowest}"
+    textColor: "{colors.on-surface}"
+    typography: "{typography.body-m}"
+    rounded: "{rounded.2xl}"
+    padding: 24px
+    width: 448px
+  dialog-scrim:
+    backgroundColor: "{colors.scrim}"
+  timeline-line:
+    backgroundColor: "{colors.outline-variant}"
+    width: 2px
+  timeline-dot-current:
+    backgroundColor: "{colors.primary}"
+    rounded: "{rounded.full}"
+    size: 12px
+  progress-track:
+    backgroundColor: "{colors.surface-container}"
+    rounded: "{rounded.full}"
+    height: 6px
+  progress-fill:
+    backgroundColor: "{colors.primary}"
+    rounded: "{rounded.full}"
+    height: 6px
   chart-bar:
     backgroundColor: "{colors.chart-sky}"
-    rounded: "{rounded.sm}"
-    width: 36px
-  chart-bar-highlight:
-    backgroundColor: "{colors.primary}"
     rounded: "{rounded.sm}"
     width: 36px
 ---
@@ -476,131 +686,179 @@ components:
 
 SIGAP Ambulans dipakai empat kelompok orang dengan kebutuhan berbeda: masyarakat yang sedang panik dan memegang ponsel, operator Dinkes yang menyaring dan menugaskan pesanan seharian di layar lebar, petugas Faskes yang memperbarui ketersediaan bed dan dokter, serta sopir yang membaca layar sekilas di dalam kendaraan. Antarmuka harus terbaca dalam satu pandang dan tidak pernah menghalangi.
 
-Sistem desainnya adalah **Material Design 3 baseline** (bukan Expressive): skema warna tonal, skala tipe M3, bentuk bersudut membulat, lapisan keadaan (state layer) untuk umpan balik sentuhan, dan, sesuai keputusan pemilik proyek (`docs/DESAIN_DASBOR_MATERIAL.md`), gaya dasbor Material yang lebih kaya: kartu putih berbayang di atas latar bertint, chip ikon pembawa makna, grafik, tab, dan avatar. Mode gelap belum dibuat, tetapi seluruh warna disusun dengan peran M3 sehingga skema gelap dapat ditambahkan tanpa mengubah markup.
+Arahnya **B "Terang lembut"** (keputusan pemilik proyek, `docs/RETEMA_B.md`; papan acuan di `docs/referensi-b/`): terang dan ramah. Latar `surface` yang sangat muda kebiruan, kartu putih bersudut besar dengan bayangan lembut, bilah samping putih yang melayang, huruf Plus Jakarta Sans dengan judul tebal (800) dan angka besar. Warna dipakai untuk satu tugas: membawa makna. Biru `primary` untuk aksi dan item aktif, kartu navy (`secondary`) untuk satu hal yang paling butuh tindakan, dan keluarga warna status (kuning, biru, ungu, hijau, merah, abu) untuk chip, lencana, dan grafik. Tidak ada gradien dekoratif, ilustrasi, emoji, atau warna tanpa arti. Nama peran warna mengikuti Material Design 3; mode gelap tidak dibuat.
 
-Kepadatan informasi tetap menjadi tujuan utama. Dasbor boleh memiliki satu kartu utama berwarna primary; halaman lain tetap tenang. Pada halaman detail pesanan, **linimasa pesanan** (waktu, status, pelaku, catatan) tetap menjadi bagian yang paling mudah dibaca. Antarmuka ini bukan situs pemasaran: tidak ada hero bergambar, ilustrasi dekoratif, atau kalimat penjualan. Kata-katanya faktual, berbahasa Indonesia, huruf awal kapital hanya pada awal kalimat.
+Data yang ditampilkan nyata dan spesifik (kode pesanan, nama, menit menunggu), bukan angka hiasan. Warna kaya hanya ada di dasbor dan di tempat status berada; halaman data master dan formulir tenang: kartu putih, tipografi, dan jarak yang rapi. Antarmuka ini bukan situs pemasaran: tidak ada hero bergambar, ilustrasi dekoratif, atau kalimat penjualan. Kata-katanya faktual, berbahasa Indonesia, huruf awal kapital hanya pada awal kalimat.
 
 ## Colors
 
-Skema dihasilkan dari satu warna benih dan dibekukan sebagai nilai heksadesimal di bagian token. Cara menurunkannya dicatat di sini karena alat penghasilnya tidak disimpan di repositori:
-
-- Benih `#0B5C80` (HCT: hue 237,9; chroma 37,1; tone 36,5), varian **TonalSpot**, kontras standar (0), spesifikasi M3 2021, skema terang. Perangkat: `@material/material-color-utilities` 0.4.0.
-- Warna kustom **success** (sumber `#2E7D32`) dan **warning** (sumber `#F9A825`) diharmonisasi ke benih dengan `Blend.harmonize`, lalu diambil nada 40 (warna), 90 (container), dan 10 (on-container) dari paletnya, sama seperti peran `primary`. Peran `on-success` dan `on-warning` sengaja tidak dibuat karena tidak ada isian padat yang memerlukan teks di atasnya.
-- **Canvas** (`#EBF1F6`) dan **Chart-sky** (`#7FB9DA`) ditambahkan oleh keputusan pemilik proyek untuk gaya dasbor; keduanya bukan keluaran generator dan tidak diturunkan dari skema.
-- Peran `secondary` dan `tertiary` tidak dipakai kecuali `secondary-container` dan `on-secondary-container` (item menu aktif, tombol tonal, pilihan terpilih). Antarmuka ini tetap punya satu aksen.
-- `primary` adalah nada 40 dari palet benih (`#216487`), bukan benih itu sendiri. Benih hanya dipakai untuk menurunkan skema.
+Palet arah B diambil dari papan `docs/referensi-b/` dan dibekukan sebagai nilai heksadesimal di bagian token; palet ini tidak diturunkan dari warna benih. Nama peran M3 yang sudah ada dipertahankan supaya komponen lama tetap jalan. Pasangan kontras wajib dicatat di `agent/kontras.json` dan dijaga `KontrasTokenTest`: teks minimal 4,5:1, bukan teks (batas isian, garis grafik utama, ikon) minimal 3:1.
 
 Peran:
 
-- **Canvas (#EBF1F6):** latar halaman semua peran. **Surface (#F6FAFE)** dan **On-surface (#181C20):** dialog, area formulir bila perlu, dan teks utama. Kontras teks utama lebih dari 16:1.
-- **Surface-container-lowest (#FFFFFF)** sampai **-highest (#DFE3E7):** lima tingkat permukaan. Lowest untuk kartu (panel), tabel, laci, bilah atas, dan isian; low untuk petak di dalam kartu, blok pengguna di laci, dan kepala tabel; container untuk kolom cari dan menu tarik; high untuk dialog, garis pemisah baris di dalam kartu, garis kisi grafik, dan tepi kanan laci; highest untuk lencana netral.
-- **On-surface-variant (#41484D):** teks sekunder, label isian, keterangan, ikon menu. Kontras lebih dari 8:1 di atas Surface.
-- **Primary (#216487)**, **On-primary**, **Primary-container (#C6E7FF)**, **On-primary-container (#004C6C):** satu-satunya aksen. Primary untuk tombol utama, tautan, fokus, titik status info, item menu aktif, dan kartu statistik utama; container untuk lencana, pesan informasi, chip ikon biru, dan avatar. Hanya **satu tombol utama per layar**.
-- **Secondary-container (#D2E5F4)** dan **On-secondary-container (#374955):** tombol tonal dan pilihan terpilih pada daftar pilihan.
-- **Error (#BA1A1A)**, **Error-container (#FFDAD6)**, **On-error-container (#93000A):** hanya untuk bahaya: tolak, batalkan, galat, pesanan gawat, dan hitungan menunggu pada menu.
-- **Success (#006D43)**, **Warning (#775A00)** dengan container dan on-container masing-masing: pasangan lembut pada lencana dan pesan, pasangan container pada chip ikon (maksimum 52px), warna titik status, dan segmen grafik. Hanya untuk makna status; tidak pernah sebagai latar tombol atau area besar.
-- **Outline (#71787E)** untuk batas isian dan kotak centang (kontras 4,3:1 sampai 4,5:1, melampaui 3:1 yang disyaratkan WCAG untuk komponen antarmuka) serta segmen grafik "dibatalkan"; **Outline-variant (#C1C7CE)** untuk garis pemisah, garis dasar grafik, dan batang bernilai nol. Kartu tidak lagi memakai batas.
-- **Inverse-surface (#2D3135)**, **Inverse-on-surface**, **Inverse-primary (#92CEF5):** snackbar.
-- **Chart-sky (#7FB9DA):** batang grafik hari biasa dan segmen donat "dalam perjalanan". Kontrasnya terhadap putih di bawah 3:1, karena itu nilai grafik selalu tertulis sebagai teks.
-- **Scrim:** hitam 32% di belakang dialog dan laci menu.
+- **Surface (#F3F5FB):** latar halaman. **Surface-container-lowest (#FFFFFF):** kartu, bilah samping, dialog, isian. **Surface-container-low (#F7F8FD):** hover baris, petak, kartu cincin. **Surface-container (#F3F5FB):** trek tab, blok pengguna, pil legenda, tombol sekunder. **Surface-container-high (#EEF1F7)** dan **-highest (#E7EAF3):** garis dalam kartu, garis kisi grafik, trek cincin.
+- **On-surface (#1B2437):** teks utama. **On-surface-variant (#5F6B80):** satu-satunya warna teks sekunder (keterangan, label sumbu, kepala tabel, label grup menu). Tidak ada abu-abu lain untuk teks.
+- **Primary (#1368CE)**, **On-primary**, **Primary-container (#E4EEFF)**, **On-primary-container (#0F55A8):** aksi, tautan, fokus, item menu aktif (latar `primary-container`, teks `primary`), dan seri grafik "Masuk".
+- **Secondary (#102A56)** dan **On-secondary:** navy untuk kartu utama, paling banyak satu per halaman, hanya untuk hal yang menunggu tindakan; `secondary` juga warna teks tombol putih di atas kartu itu. **Secondary-container (#EEF1F7)** dan **On-secondary-container (#475066):** lencana dan chip netral.
+- **Tertiary (#7A5AF8)**, **Tertiary-container (#EDE8FF)**, **On-tertiary-container (#5B3FD0):** status aktif di jalan.
+- **Success (#0B7A53)**, **Warning (#A86300)**, dan **Error (#CC3A24)**, masing-masing dengan `on-`, container, dan on-container: makna status. Error juga untuk lencana hitungan dan titik lonceng (teks `on-error`), galat isian, dan aksi merusak (tonal `error-container`).
+- **Outline (#7F8AA0):** batas isian dan kartu pilihan (kontras 3:1 ke atas). **Outline-variant (#D0D6E4):** hanya pemisah dekoratif, garis linimasa, dan batas putus-putus keadaan kosong.
+- **Selected (#EEF4FF):** latar kartu pilihan terpilih.
+- **Inverse-surface (#1B2437)**, **Inverse-on-surface (#FFFFFF)**, **Inverse-primary (#8DB8FF):** tooltip grafik, snackbar, dan aksi di snackbar.
+- **Scrim (#1B2437):** dipakai dengan opasitas 45% (`bg-scrim/45`) di bawah dialog dan laci; token tidak membawa alfa.
+- **Chart-mint (#0FA582)**, **Chart-coral (#FF6B57)**, **Chart-amber (#F5A524)**, **Chart-slate (#A3ADC2):** seri grafik. Seri grafik hanya memakai `primary`, `tertiary`, dan `chart-*`. Garis grafik utama berkontras minimal 3:1 terhadap putih (`primary`, `chart-mint`); segmen donat, sparkline, dan cincin boleh lebih terang karena nilainya selalu tertulis.
+- Token lama yang masih dipakai komponen dasbor Material dan dihapus di R9: **Canvas** (sama dengan Surface) dan **Chart-sky (#7FB9DA)**.
 
-Warna di markup hanya lewat token ini (`bg-surface`, `text-on-surface-variant`, `border-outline-variant`, `bg-primary`, …). Palet bawaan Tailwind dimatikan; nilai heksadesimal dan nilai sembarang (`bg-[#…]`) dilarang.
+Aturan pemakaian:
+
+- Chip, lencana, dan avatar memakai pasangan container (`*-container` dengan `on-*-container`). Pasangan solid (`primary`, `error`, `secondary` dengan `on-*`) hanya untuk tombol utama, lencana hitungan, dan kartu navy.
+- Di kartu navy: dua lingkaran dekorasi `primary` 25% dan 15% (`bg-primary/25`, `bg-primary/15`), teks kecil `primary-container`, chip ikon `on-secondary` 15%. Tidak ada token baru untuk itu.
+- Warna avatar tidak membawa makna: `crc32(nama) % 5` memilih salah satu pasangan container `primary`, `error`, `success`, `tertiary`, atau `warning`. Avatar `aria-hidden`; nama selalu terlihat di sebelahnya.
+- **Warna tidak pernah satu-satunya pembawa informasi:** status selalu bertulis, setiap grafik punya nilai tertulis dan legenda, cincin yang menipis bertulis "menipis".
+
+Satu tabel status, sumber tunggal untuk lencana, chip, dan grafik (`PesananStatus::tone()`):
+
+| Status | Tone | Chip dan lencana | Grafik |
+|---|---|---|---|
+| Menunggu verifikasi | `warning` | `warning-container` / `on-warning-container` | `chart-amber` |
+| Terverifikasi | `primary` | `primary-container` / `on-primary-container` | `primary` |
+| Ditugaskan, Diterima sopir, Dalam perjalanan | `tertiary` | `tertiary-container` / `on-tertiary-container` | `tertiary` |
+| Selesai | `success` | `success-container` / `on-success-container` | `chart-mint` |
+| Ditolak | `error` | `error-container` / `on-error-container` | `chart-coral` |
+| Dibatalkan | `neutral` | `secondary-container` / `on-secondary-container` | `chart-slate` |
+
+Lencana "Gawat" memakai tone `error`. Status aktif yang berbeda memakai tone dan warna grafik yang sama, tetapi legendanya tetap menulis tiap status. Status baru di Enum diberi tone dengan prinsip yang sama dan dicatat di `docs/KIT_UI.md`.
+
+Warna di markup hanya lewat token ini (`bg-surface`, `text-on-surface-variant`, `border-outline`, `bg-primary`, ...). Palet bawaan Tailwind dimatikan; nilai heksadesimal dan nilai sembarang (`bg-[#…]`) dilarang.
 
 ## Typography
 
-Satu keluarga huruf: **Roboto**, variabel, di-host sendiri lewat paket `@fontsource-variable/roboto` sehingga tidak ada unduhan font dari internet. Tidak ada huruf kedua, tidak ada font monospace.
+Satu keluarga huruf: **Plus Jakarta Sans**, variabel (bobot 200 sampai 800), di-host sendiri lewat paket `@fontsource-variable/plus-jakarta-sans` sehingga tidak ada unduhan font dari internet. Bobot yang dipakai: 400, 600, 700, dan 800. Tidak ada huruf kedua dan tidak ada font monospace.
 
-Skala tipe M3 lengkap (15 gaya) ditambah lima gaya dasbor (`page-title`, `card-title`, `stat-hero`, `stat-l`, `stat-m`; bobot 500) tersedia sebagai kelas `text-<gaya>`; tiap kelas mengatur ukuran, tinggi baris, bobot, dan jarak huruf sekaligus. Pemakaian di aplikasi:
+Setiap gaya adalah satu kelas `text-<gaya>` yang mengatur ukuran, tinggi baris, bobot, dan jarak huruf sekaligus (`agent/tokens.mjs` mengeluarkan `--text-<gaya>` beserta `--line-height`, `--font-weight`, dan `--letter-spacing`). Jarak huruf berasal dari token, bukan dari kelas `tracking-*`; bobot berasal dari token, bukan dari kelas `font-*`.
 
-- **Page-title** (28px, 500) untuk judul halaman, satu per halaman; subjudulnya **Body-l** berwarna `on-surface-variant`. **Card-title** (20px, 500) untuk judul kartu. **Stat-hero** (56px), **Stat-l** (32px), dan **Stat-m** (28px), semuanya bobot 500, untuk angka di kartu statistik utama, kartu statistik putih, dan petak ketersediaan; selalu `tabular-nums`.
-- **Title-l** (22px) untuk judul bagian pada halaman tanpa kartu, **Title-m** (16px, 500) untuk judul blok kecil dan teks utama kartu statistik utama. Gaya display, headline, dan title-s tersedia, tidak dipakai kecuali dibutuhkan.
-- **Body-l** (16px) untuk isi dan subjudul halaman, **Body-m** (14px) untuk sel tabel, keterangan kartu, dan keterangan lain, **Body-s** (12px) untuk waktu, bantuan isian, dan keterangan kecil.
-- **Label-l** (14px, 500) untuk tombol, item menu, label isian, label kartu statistik, tab, dan kepala tabel. **Label-m** (12px, 500) untuk lencana status dan label grup menu. **Label-s** (11px) tidak untuk teks bacaan.
-- Semua angka yang berderet (waktu, jumlah, kode pesanan, nomor telepon) memakai `tabular-nums`.
-- Hanya dua bobot: 400 dan 500. Tidak ada huruf kapital semua (`uppercase`), tidak ada `tracking-*` terpisah (jarak huruf sudah ada pada tiap gaya), tidak ada teks miring untuk penekanan, tidak ada satu kata berwarna di tengah judul. Penekanan memakai `font-medium`.
+| Gaya | Ukuran / tinggi baris / bobot / jarak huruf | Dipakai untuk |
+|---|---|---|
+| `stat-hero` | 56 / 62 / 800 / -0.03em | angka di kartu navy |
+| `stat-l` | 38 / 44 / 800 / -0.03em | angka di kartu statistik putih |
+| `page-title` | 30 / 38 / 800 / -0.025em | judul halaman, sapaan |
+| `page-title-s` | 26 / 34 / 800 / -0.025em | judul halaman di bawah `lg` |
+| `title-xl` | 22 / 28 / 800 / -0.02em | kode pesanan di halaman detail |
+| `title-l` | 18 / 26 / 800 / -0.01em | judul kartu, judul dialog |
+| `title-m` | 16 / 24 / 700 / 0 | label di kartu navy, judul bilah publik |
+| `brand` | 19 / 24 / 800 / -0.02em | nama aplikasi di menu |
+| `ring-value` | 16 / 20 / 800 / 0 | angka di dalam cincin ketersediaan |
+| `body-l` | 16 / 24 / 400 / 0 | |
+| `body-m` | 14 / 20 / 400 / 0 | teks isi |
+| `body-s` | 13 / 18 / 400 / 0 | keterangan, subjudul kartu |
+| `label-l` | 14 / 20 / 600 / 0 | label tombol, label kolom isian, teks menu, label kartu statistik |
+| `label-m` | 12 / 16 / 600 / 0 | label grup menu, kepala tabel, bantuan isian |
+| `chip` | 12 / 16 / 700 / 0 | lencana, chip delta, lencana hitungan |
+
+- Tidak ada teks di bawah 12px. Papan memakai bobot 700 di beberapa label yang di sini 600; token yang menang.
+- Semua angka (waktu, jumlah, kode pesanan, nomor telepon) memakai `tabular-nums`.
+- Tidak ada huruf kapital semua (`uppercase`), tidak ada teks miring, tidak ada satu kata berwarna di tengah judul.
 - Panjang baris isi paling banyak 70 karakter (`max-w-prose`).
+- Gaya lama yang masih dipakai komponen dasbor Material dan dihapus di R9 bila tak terpakai: `display-l|m|s`, `headline-l|m|s`, `title-s`, `label-s` (11px, hanya hitungan lonceng lama), `card-title`, dan `stat-m`. Komponen lama yang masih memakai `font-normal` atau `font-medium` dialihkan ke gaya token di R2 sampai R8.
 
 ## Layout
 
-Mobile-first. Titik henti Tailwind: ponsel (bawaan), `md` 768px, `lg` 1024px. Kelas ukuran jendela M3 dipetakan begini: di bawah `lg` (compact dan medium) memakai bilah atas dan laci modal; `lg` ke atas (expanded) memakai laci tetap. Skala jarak berbasis 4px; pakai skala numerik bawaan Tailwind (`p-4` = 16px, `gap-6` = 24px).
+Mobile-first. Titik henti Tailwind: `sm` 640px, `md` 768px, `lg` 1024px (bilah samping tetap), `xl` 1280px (kisi dasbor 8/4 dan empat kolom statistik). Skala jarak berbasis 4px; pakai skala numerik bawaan Tailwind (`p-4` = 16px, `gap-5` = 20px).
 
-- **Kerangka aplikasi (`lg` ke atas):** laci navigasi tetap selebar 280px berlatar putih (Surface-container-lowest) dengan tepi kanan 1px; isi di kanan berlatar Canvas, lebar isi maksimum 1152px, rata kiri. Bilah atas berupa kartu melayang di atas isi pada semua ukuran layar. **Di bawah `lg`:** bilah atas 64px (tombol menu, pencarian, lonceng, avatar) dan menu menjadi laci modal berlatar scrim. Jarak antar kartu 20px (`gap-5`); padding halaman 28px (`px-7`) di desktop dan 16px di ponsel.
-- **Halaman:** judul di kiri, aksi utama di kanan (ponsel: di bawah judul). Di bawahnya kartu dipisahkan jarak 20px.
-- **Ringkasan angka:** kartu statistik terpisah dalam satu baris yang boleh turun baris: satu kartu utama berwarna Primary dan kartu putih, masing-masing dengan chip ikon (2 kolom atau lebih di desktop, satu kolom di ponsel).
-- **Tabel dan daftar** adalah bentuk utama menyajikan data: berada di dalam kartu tanpa padding (`flush`), baris dipisah garis, tinggi baris minimal 52px, kolom sekunder disembunyikan di ponsel; di bawah 640px tabel bergulir di dalam kartunya.
-- **Formulir** satu kolom, lebar maksimum 36rem, label di atas isian (tidak mengapung), galat tepat di bawah isian.
-- **Target sentuh** minimal 48px untuk semua kontrol. Tombol setinggi 40px (ukuran M3) mendapat area sentuh 48px lewat perluasan tak terlihat; isian 56px, item menu 48px. Jarak antar kontrol sejajar minimal 8px.
-- Layar Buat Pesanan muat dalam satu alur dengan tombol kirim yang selalu terlihat di dasar layar ponsel.
-- Rata kiri untuk semua teks. Rata tengah hanya untuk kartu masuk/daftar dan keadaan kosong.
+- **Desktop (`lg` ke atas):** akar halaman `bg-surface p-4`, bilah samping putih melayang selebar 248px di kiri (sudut `2xl`, `shadow-card`, lekat di atas setinggi layar dikurangi 32px, satu bilah gulir vertikal), tanpa bilah atas. Kepala halaman (`<header>`) berisi judul atau sapaan di kiri dan, di kanan, filter periode (bila halaman memakainya), tombol cari, dan lonceng. Kolom isi `min-w-0`, dibatasi `max-w-screen-2xl`.
+- **Di bawah `lg`:** bilah atas melayang (putih, sudut `xl`, `shadow-card`, lekat di atas) berisi tombol menu, tanda merek, lonceng, dan avatar; menu menjadi laci modal selebar 316px yang melayang 12px dari tepi, di atas scrim. Judul memakai `page-title-s`; filter periode selebar penuh.
+- **Jarak:** antar kartu 20px (12px di kisi statistik ponsel), padding halaman 16px, padding kartu 24px (20px di ponsel), jarak antar bagian di ponsel 16px.
+- **Halaman publik** (buat dan lacak pesanan): tanpa bilah samping, kolom `max-w-md` di tengah layar lebar, bilah atas 60px, aksi utama formulir di bilah bawah lekat berisi satu tombol penuh lebar. **Masuk:** kartu `max-w-sm` di tengah.
+- **Tabel dan daftar:** di dalam panel `flush`; di bawah `md` tabel menjadi daftar baris tanpa markup ganda. Tidak ada scroll horizontal pada halaman di lebar 390px; hanya tabel dan grafik yang boleh bergulir di dalam kartunya.
+- **Formulir:** satu kolom, lebar maksimum 36rem, label di atas isian (tidak mengapung), galat tepat di bawah isian.
+- **Target sentuh:** tombol 48px di bawah `lg` dan 44px di atasnya; kolom isian, item menu, dan tombol ikon 48px.
+- Satu `<h1>` per halaman; judul kartu `<h2>`. Teks rata kiri; rata tengah hanya untuk kartu masuk, keadaan kosong, dan petak cincin.
+- Token `spacing.drawer` (280px) dan `spacing.content-max` (1152px) masih milik kerangka lama sampai R3.
 
 ## Elevation & Depth
 
-Hierarki dibentuk oleh **latar Canvas lawan kartu putih berbayang**, lalu jarak; bayangan hanya berasal dari token elevation. Bayangan kartu memakai dua lapis berwarna `on-surface` (24 28 32), bukan hitam; bayangan melayang M3 (Level 1 sampai 3) memakai hitam. Tingkat yang dipakai:
+Hierarki dibentuk oleh **latar `surface` lawan kartu putih berbayang**, lalu jarak 20px. Bayangan hanya dari token di bawah; warnanya tinta biru tua `rgb(30 41 100)` (`elevation.shadow-color`), bukan hitam.
 
-- **Level 0** (`shadow-none`): elemen datar di dalam kartu (petak, baris tabel), laci tetap (dipisah tepi 1px), dan semua yang tidak butuh pemisahan dari latar.
-- **Card** (`shadow-card`): panel, kartu statistik putih, dan bilah atas.
-- **Card-raised** (`shadow-card-raised`): kartu statistik utama (Primary).
-- **Nav-active** (`shadow-nav-active`): item menu aktif.
-- **Level 1** (`shadow-level-1`): laci modal di bawah `lg` dan bilah tombol bawah di ponsel (mis. Tinjau pesanan). Bilah atas memakai `shadow-card`. Latar: Surface-container-low.
-- **Level 2** (`shadow-level-2`): menu tarik dan daftar saran alamat. Latar: Surface-container.
-- **Level 3** (`shadow-level-3`): dialog konfirmasi dan snackbar. Latar dialog: Surface-container-high, ditambah scrim di belakangnya.
+| Token (kelas) | Nilai | Dipakai untuk |
+|---|---|---|
+| `card` (`shadow-card`) | `0 10px 30px -12px rgb(30 41 100 / .14), 0 1px 2px rgb(30 41 100 / .04)` | kartu, panel, bilah samping, kartu navy |
+| `control` (`shadow-control`) | `0 4px 14px -8px rgb(30 41 100 / .20)` | kontrol melayang: filter periode, tombol ikon, bilah atas ponsel |
+| `chip` (`shadow-chip`) | `0 2px 8px -2px rgb(30 41 100 / .20)` | segmen aktif di trek tab dan segmented |
+| `overlay` (`shadow-overlay`) | `0 24px 60px -20px rgb(30 41 100 / .35)` | dialog, menu tarik, laci ponsel, snackbar |
 
-Level 4 dan 5 tidak dipakai. Level 1 sampai 3 tetap untuk lapisan yang melayang dan tidak berubah. Fokus papan ketik selalu terlihat: cincin 2px `primary` dengan jarak 2px.
+- Elemen di dalam kartu (petak, baris tabel, trek tab) datar (`shadow-none`); kartu berbayang tidak berada di dalam kartu berbayang. Item menu aktif tidak berbayang.
+- Token lama dipertahankan sampai pemakaiannya dialihkan (R2 sampai R8) dan dihapus di R9: `level-1` sampai `level-3` (kini ikut bertinta biru tua), `card-raised`, dan `nav-active` (warna `on-surface`).
+- Fokus papan ketik selalu terlihat: cincin 2px `primary` dengan jarak 2px.
 
 ## Shapes
 
-Skala bentuk M3: **4px** (extra-small: isian, snackbar), **8px** (small: daftar saran, batang grafik), **12px** (medium: chip ikon, petak), **16px** (large: panel dan kartu, bilah atas, blok pengguna di laci), **28px** (extra-large: dialog), **penuh** (tombol, item menu, lencana status, hitungan menu, avatar, kolom cari, titik status). Tidak ada sudut di luar skala ini, dan tidak ada kombinasi sudut tajam dan membulat dalam satu tampilan. Tombol berbentuk pil adalah bentuk baku M3.
+| Token | Nilai | Dipakai untuk |
+|---|---|---|
+| `sm` | 10px | segmen di dalam trek tab, ikon kartu pilihan |
+| `md` | 14px | tombol, isian, item menu, chip ikon, kartu pilihan, snackbar, catatan, keadaan kosong |
+| `lg` | 18px | kontrol melayang (filter periode, tombol ikon), baris tabel, petak dan kartu cincin, blok pengguna |
+| `xl` | 24px | kartu dan panel |
+| `2xl` | 28px | bilah samping, dialog, laci ponsel |
+| `full` | 9999px | lencana, chip delta, pil legenda, avatar, tombol hitungan |
+
+Papan memakai 9, 11, 12, 13, 16, dan 22px di beberapa tempat; semuanya dilebur ke skala ini. Tidak ada sudut di luar skala dan tidak ada nilai sembarang (`rounded-[…]`). Token lama `xs` (4px) masih dipakai isian, snackbar, dan tooltip grafik lama sampai komponennya diganti, lalu dihapus di R9.
 
 ## Components
 
-Bentuk dan perilaku komponen didefinisikan di token `components` di atas; padanan Blade dan API-nya ada di `docs/KIT_UI.md`.
+Token komponen ada di bagian `components` di atas. API Blade dan status pembangunannya ada di `docs/KIT_UI.md` (bagian Retema B); komponen dibangun di R2 sampai R4.
 
-- **Tombol:** lima nada. *Filled* (Primary) untuk aksi utama, *tonal* (Secondary-container) untuk aksi penting yang bukan utama, *outlined* (batas Outline, teks Primary) untuk aksi sekunder, *text* (tanpa latar) untuk aksi tersier dan Batal, *error* (Error) untuk aksi merusak. Tinggi 40px, area sentuh 48px, label kata kerja (`Verifikasi`, `Tugaskan`, `Simpan`). Ikon 18px di kiri label hanya bila memperjelas arti.
-- **Isian:** *outlined*, tinggi 56px, batas 1px Outline, sudut 4px. Label 14px di atas kolom (tidak mengapung), bantuan 12px di bawah. Fokus: batas 2px Primary. Galat: batas dan teks Error, dengan teks galat selalu ada (tidak mengandalkan warna saja).
-- **Lencana status:** teks pendek di atas container tonal, berbentuk pil (tinggi 24px, padding 10px), diawali titik 6px dari warna teks. Lima nada: `netral` (Surface-container-highest), `info` (Primary-container), `peringatan` (Warning-container), `sukses` (Success-container), `bahaya` (Error-container).
-- **Waktu tunggu:** lencana pil (bentuk dan titik seperti Lencana status) berisi lama pesanan menunggu penugasan ("Menunggu 12 mnt"), hanya untuk status Menunggu dan Terverifikasi. Nada naik menurut ambang waktu: netral (Surface-container-highest), peringatan (Warning-container), bahaya (Error-container); ambang ada di konfigurasi dan ditetapkan Dinkes. Warna semantik di sini tetap berarti status (terlalu lama menunggu), bukan hiasan. Teks diperbarui di klien tanpa animasi.
-- **Linimasa pesanan:** garis tegak 1px; tiap langkah satu baris: waktu (tabular, 12px, kolom tetap), titik status, label status, pelaku dan peran, catatan. Langkah terakhir (keadaan sekarang) berbobot 500; langkah yang belum terjadi tidak ditampilkan.
-- **Menu (laci navigasi):** latar putih; kepala berisi tanda merek 40px (Primary, sudut 12px) dan nama aplikasi; label grup `label-m` `on-surface-variant`; item 48px berbentuk pil dengan ikon 22px di kiri; item aktif berlatar Primary, teks On-primary, `shadow-nav-active`. Hitungan pesanan menunggu berupa lencana hitungan (Error, 20px, `label-m`). Di dasar: blok pengguna (`surface-container-low`, sudut 16px) berisi avatar, nama, peran, dan tombol keluar berupa form POST.
-- **Panel (kartu):** Surface-container-lowest, sudut 16px, `shadow-card`, tanpa batas, padding 24px; varian `flush` tanpa padding untuk tabel. Kartu berbayang tidak berada di dalam kartu berbayang; petak tonal tanpa bayangan di dalam kartu diizinkan.
-- **Kartu statistik:** *putih* (padding 20px): chip ikon 52px, angka `stat-l`, label `label-l`, keterangan `body-s`. *Utama*: latar Primary, teks On-primary, `shadow-card-raised`, chip ikon 44px berlatar On-primary 18%, judul `title-m`, angka `stat-hero`, keterangan `body-m` berwarna Primary-container, dan satu tombol `on-primary`.
-- **Chip ikon:** 40px (ikon 22px) atau 52px (ikon 26px), sudut 12px, pasangan container dan on-container sesuai nada (primary, warning, success, error). Hanya pembawa makna (status, kategori data) dan selalu disertai teks.
-- **Petak:** Surface-container-low, sudut 12px, padding 16px, tanpa bayangan; berisi chip ikon, angka `stat-m`, dan label `body-m`. Dipakai di dalam kartu ketersediaan.
-- **Tab:** tab primer M3, tinggi 44px, padding 16px, label `label-l`; aktif berwarna Primary dengan garis bawah 3px Primary, lainnya `on-surface-variant` dengan garis bawah transparan; garis pemisah bawah `surface-container-high`. Tab adalah tautan ke URL yang sama dengan `?tab=`.
-- **Avatar:** lingkaran 40px, Primary-container dengan On-primary-container, inisial maksimum dua huruf (`label-l`); nama selalu ada di sebelahnya.
-- **Bilah atas:** kartu melayang 64px berlatar putih, sudut 16px, `shadow-card`; berisi tombol menu (di bawah `lg`), kolom cari (pil 48px `surface-container`), lonceng pesanan menunggu verifikasi dengan lencana Error, dan avatar dengan nama dan peran.
-- **Grafik:** Chart.js pada kanvas (dimuat hanya di halaman yang punya grafik), warna dan huruf dibaca dari variabel CSS token. Batang 7 hari (hari biasa Chart-sky, hari ini Primary, nilai nol berupa batang rintisan Outline-variant) dan donat status (selesai Success, dibatalkan Outline, ditolak Error, menunggu verifikasi Warning, terverifikasi Primary, ditugaskan sampai dalam perjalanan Chart-sky). Setiap grafik punya label nilai yang terlihat, legenda teks, dan keterangan `aria-label`.
-- **Pilihan terpilih** (jenis layanan, tingkat darurat): baris besar berbatas dengan item terpilih berlatar Secondary-container.
-- **Dialog konfirmasi:** latar Surface-container-high, sudut 28px, Level 3. Judul kalimat biasa, satu kalimat penjelas, dua tombol sejajar kanan: batal berupa *text*, aksi berupa *text* atau, bila merusak, *error*.
-- **Snackbar:** pesan singkat hasil tindakan (mis. "Pesanan berhasil diverifikasi.") di dasar layar, Inverse-surface, satu aksi *text* "Tutup" berwarna Inverse-primary. Galat validasi dan pesan yang harus dibaca tetap tampil sebagai pesan sebaris di atas isi.
+- **Panel (kartu):** `surface-container-lowest`, sudut `xl`, `shadow-card`, tanpa batas, padding 24px (20px di ponsel); varian `flush` tanpa padding untuk tabel. Kepala opsional: judul `title-l`, subjudul `body-s` `on-surface-variant`, aksi di kanan, jarak bawah 12px.
+- **Tombol:** sudut `md`, label `label-l`, ikon 16 sampai 18px di kiri, tinggi 44px di desktop dan 48px di bawah `lg` (ukuran kecil 36 dan 40px), padding 20px (12px untuk ghost). Varian: `primary` (`primary`/`on-primary`), `secondary` (`surface-container`, batas `outline-variant`, teks `on-surface`), `ghost` (tanpa latar, teks `primary`), `danger` (tonal `error-container`/`on-error-container`), dan `on-secondary` (putih dengan teks `secondary`, hanya di atas kartu navy). Nonaktif: opasitas 40%, tanpa bayangan. Tombol yang memicu permintaan lama memakai `aria-busy` dan mencegah klik ganda.
+- **Isian, pilihan, area teks:** label `label-l` di atas isian, tinggi 48px, sudut `md`, batas `outline`, latar putih, padding 14px, teks `body-m`. Fokus: batas `primary` dan cincin 3px `primary` 20%. Galat: batas `error`, pesan `label-m` `error` di bawah, `aria-invalid` dan `aria-describedby`. Bantuan `label-m` `on-surface-variant`. Wajib ditulis "(wajib)" di label, bukan bintang berwarna. Area teks minimal 84px; pilihan memakai ikon `chevron-down` 18px di kanan.
+- **Kartu pilihan:** kisi tiga kolom (jarak 10px); tiap pilihan `<label>` berisi radio `sr-only`, petak ikon 30px (`surface-container`, sudut `sm`), dan teks `label-l`; batas `outline`, sudut `md`, padding 12px 10px. Terpilih: batas dan cincin dalam 1px `primary`, latar `selected`, petak ikon `primary` dengan ikon `on-primary`. Dipakai untuk jenis layanan.
+- **Tab dan segmented:** tiga tampilan dari satu pola. Tab `track`: trek `surface-container` (sudut `md`, padding 4px), item 36px sudut `sm` `label-m` `on-surface-variant`, aktif putih `on-surface` dengan `shadow-chip`; item adalah tautan `?tab=` dengan `aria-current="page"`, tanpa JavaScript. Tab `floating` (filter periode): trek putih sudut `lg` dengan `shadow-control`, item 38px (40px di ponsel) sudut `md` `label-l`, aktif `primary`. Segmented: radio dalam formulir (Biasa, Gawat) dengan tampilan `track`.
+- **Lencana dan chip:** lencana status berbentuk pil 26px (24px kecil), padding 11px, gaya `chip`, titik 6px `currentColor`; nada `primary`, `warning`, `success`, `error`, `tertiary`, `neutral` dengan pasangan container. Chip keterangan adalah lencana kecil tanpa titik, boleh dua baris di ponsel.
+- **Chip ikon:** 40px (ikon 21px) atau 44px (ikon 22px), sudut `md`. Latar dan ikon menurut nada: `primary` (`primary-container`, ikon `primary`), `warning` (`warning-container`, ikon `warning`), `success`, `error`, dan `tertiary` (container dengan ikon on-container), `neutral` (`secondary-container`, ikon `on-secondary-container`). `aria-hidden`; teks pendamping selalu ada.
+- **Avatar:** lingkaran 40px atau 36px, inisial dua kata pertama (maksimum dua huruf) bergaya `chip`, warna dari hash nama.
+- **Kartu statistik:** putih, padding 24px (16px di ponsel); chip ikon 44px di kiri atas dan sparkline 92×38 di kanan atas (disembunyikan di bawah `sm`), angka `stat-l`, label `label-l`, chip keterangan; tautan hanya pada label. **Kartu navy:** `secondary` dengan `shadow-card`, dua lingkaran dekorasi di belakang isi, chip ikon `on-secondary` 15%, judul `title-m`, angka `stat-hero`, keterangan `body-m` `primary-container`, satu tombol `on-secondary`; tanpa sparkline.
+- **Tabel:** `<table>` semantik di dalam panel `flush`. Kepala `label-m` `on-surface-variant`, `scope="col"`; baris bersudut `lg` (spasi antarbaris 4px), hover `surface-container-low`, tanpa garis pemisah; seluruh baris dapat diklik lewat tautan pada nama pasien, chevron akhir hanya hiasan. Di bawah `md` tabel menjadi daftar baris tiga kolom (avatar, nama dan keterangan, status dan jam) dengan garis 1px `surface-container-highest`.
+- **Cincin ketersediaan:** petak `surface-container-low` sudut `lg` berisi cincin SVG 64px (tebal 7, trek `surface-container-highest`, isi `primary`, atau `chart-coral` bila tersedia kurang dari 12% total), angka `ring-value`, label `label-l`, dan "dari {total}" (ditambah ", menipis" berwarna `on-error-container`). Cincin ber-`role="img"` dengan `aria-label` lengkap.
+- **Grafik:** garis dan donat Chart.js (warna dibaca dari variabel CSS token, tanpa hex di JavaScript), sparkline dan cincin SVG sisi-server. Setiap grafik punya `role="img"`, `aria-label` yang menyebut semua nilai, tabel `sr-only`, dan nilai terlihat di legenda atau tooltip. Legenda grafik garis berupa pil HTML (`surface`, `rounded-full`, tinggi 32px); tooltip `inverse-surface`.
+- **Keadaan kosong:** batas putus-putus 1px `outline-variant`, sudut `md`, padding 22px, di tengah; petak ikon 44px (`surface-container`), judul `label-l`, teks `body-s` `on-surface-variant` yang mengarahkan tindakan, aksi opsional tombol `secondary` kecil.
+- **Catatan:** nada `warning`, `info`, `error`, `success`; sudut `md`, padding 12px 14px, ikon 18px, pasangan container, teks bobot 600.
+- **Snackbar:** `inverse-surface` dengan teks `inverse-on-surface`, sudut `md`, padding 14px 16px, aksi `inverse-primary` `label-l`, `role="status"`, `shadow-overlay`.
+- **Dialog:** `<dialog>` bawaan, putih, sudut `2xl`, `shadow-overlay`, padding 24px, lebar `min(92vw, 28rem)`, judul `title-l`, isi `body-m` `on-surface-variant`, tombol rata kanan (ghost "Batal", lalu aksi; aksi merusak memakai `danger`). Backdrop `scrim` 45%. Fokus awal pada elemen aman; Esc menutup.
+- **Linimasa dan daftar info:** garis tegak 2px `outline-variant`, titik 12px (langkah lampau putih berbatas 2px `outline-variant`, langkah sekarang terisi `primary`), kolom waktu 56px `on-surface-variant` `tabular-nums`, judul `label-l`, keterangan `body-s`; langkah sekarang berbobot 700. Daftar info (`<dl>`): label `label-m` `on-surface-variant`, nilai `body-m`, jarak 16px.
+- **Menu:** tanda merek 42px (`primary`, sudut `md`, ikon `plus` bergaris 2,25) dan nama aplikasi gaya `brand`; label grup `label-m`; item 48px sudut `md`, ikon 21px, teks `label-l` `on-surface-variant`, hover `surface-container-low`, aktif `primary-container` dengan teks `primary` dan `aria-current="page"`. Lencana hitungan pesanan menunggu: `error`/`on-error`, `rounded-full`, minimal 22px, gaya `chip`. Di dasar: blok pengguna `surface` sudut `lg` berisi avatar, nama, peran, dan tombol keluar berupa form POST ber-CSRF.
+- **Pencarian dan lonceng:** tombol ikon 48px (putih, sudut `lg`, `shadow-control`) yang membuka dialog "Cari pesanan"; lonceng adalah tautan ke daftar pesanan tab "Perlu tindakan" dengan titik `error` 10px bertepi putih hanya bila ada pesanan menunggu.
 
 ## Do's and Don'ts
 
-- Do pakai satu tombol filled per layar dan beri tahu apa yang terjadi bila ditekan.
-- Do tampilkan keadaan nyata: kosong ("Belum ada pesanan."), memuat, galat, dan data lama ("Data lama", "Belum diperbarui").
-- Do bangun hierarki dengan latar `canvas`, kartu putih berbayang `card`, dan jarak; bayangan hanya dari token elevation, tidak ada bayangan di luar token.
-- Do beri setiap grafik label nilai yang terlihat dan keterangan teks (`aria-label`) sehingga tidak bergantung pada warna.
-- Do jaga kontras teks minimal 4,5:1 dan target sentuh minimal 48px.
-- Do beri setiap kontrol interaktif lapisan keadaan (hover, fokus, tekan) dan tampilan nonaktif sesuai bagian Interaction states.
-- Don't pakai gradien, kaca buram (`backdrop-blur`), cahaya berwarna, atau bayangan berwarna.
-- Don't pakai emoji atau ikon dekoratif. Chip ikon hanya boleh membawa makna (status, kategori data) dengan pasangan container yang sesuai, dan selalu disertai teks.
-- Don't susun halaman sebagai kisi kartu fitur yang bentuknya sama dan isinya promosi. Kartu statistik dan kartu data pada dasbor diizinkan. Kartu berbayang tidak berada di dalam kartu berbayang; petak tonal tanpa bayangan di dalam kartu diizinkan.
-- Don't pakai hero besar, judul raksasa, ilustrasi, foto stok, testimoni, angka pemasaran, atau kalimat bernada iklan.
-- Don't beri animasi masuk, efek angkat/skala saat disorot, penghitung angka bergerak, atau animasi berulang. Hanya transisi lapisan keadaan dan animasi yang menjawab tindakan pengguna.
-- Don't tambahkan warna aksen kedua, sudut di luar skala, atau gaya tipe di luar skala tanpa mengubah dokumen ini. Warna semantik (success, warning, error) hanya untuk makna status. Mode gelap menunggu keputusan terpisah.
-- Don't ketik ulang label status, peran, atau jenis; ambil dari Enum (`->label()`).
+- Do beri warna hanya bila membawa makna (status, kategori data, satu aksi utama). Dekorasi tanpa makna dilarang. Dua pengecualian: warna avatar (dipilih dari hash nama, selalu disertai nama) dan dua lingkaran di kartu navy.
+- Do bangun hierarki dengan latar `surface`, kartu putih berbayang `card`, dan jarak 20px. Bayangan hanya dari token `elevation`.
+- Do beri setiap angka dan grafik teks yang terlihat (nilai, legenda) serta keterangan `aria-label` dan tabel `sr-only`, sehingga informasi tidak bergantung pada warna.
+- Do pakai satu tombol utama (`primary`) per layar dan per dialog.
+- Do pakai kartu navy (`secondary`) paling banyak satu per halaman, untuk hal yang menunggu tindakan.
+- Don't pakai emoji, ilustrasi, atau ikon dekoratif. Ikon di chip hanya membawa makna dan selalu disertai teks.
+- Don't pakai gradien dekoratif. Satu-satunya gradien: isi area grafik garis di Chart.js.
+- Don't pakai warna di luar token, hex, `bg-[...]`, bayangan di luar token, `backdrop-blur`, `uppercase`, `italic`, atau `tracking-*` di markup.
+- Don't susun halaman sebagai kisi kartu identik berisi promosi. Kartu berbayang tidak berada di dalam kartu berbayang; petak tonal tanpa bayangan di dalam kartu boleh.
+- Don't pakai animasi masuk pada bagian halaman. Gerak hanya jawaban atas aksi pengguna dan gambar-masuk grafik.
+- Don't pakai teks di bawah 12px, atau abu-abu lain untuk teks sekunder selain `on-surface-variant`.
+- Don't pakai batas isian dengan kontras di bawah 3:1.
+- Tetap berlaku: tanpa mode gelap, tanpa hero pemasaran.
 
 ## Interaction states
 
-Umpan balik memakai **lapisan keadaan**: lapisan berwarna sama dengan teks atau ikon kontrol, dengan opasitas tetap, di atas latar kontrol. Opasitasnya: hover 8%, fokus 10%, tekan 10%, seret 16%. Kontrol nonaktif memakai konten 38% dan wadah 12%; tidak ada kontrol nonaktif yang hanya berubah warna aksen. Fokus papan ketik menambah cincin 2px Primary. Tidak ada riak (ripple) dan tidak ada efek angkat. **Memuat:** saat formulir dikirim, tombol kirim dinonaktifkan dan labelnya berganti kata kerja proses ("Mengirim pesanan...", bawaan "Memproses..."), dan formulir diberi `aria-busy`; tidak ada spinner berputar karena tidak ada animasi berulang.
+Umpan balik memakai **lapisan keadaan**: lapisan berwarna sama dengan teks atau ikon kontrol, dengan opasitas tetap, di atas latar kontrol. Opasitasnya dari token `state`: hover 8%, fokus 10%, tekan 10%, seret 16%. Warnanya mengikuti token baru; mekanismenya tetap. Baris yang dapat diklik berubah ke latar `surface-container-low` saat hover. Kontrol nonaktif memakai opasitas 40% tanpa bayangan; tidak ada kontrol nonaktif yang hanya berubah warna aksen (token `state.disabled-*` milik komponen lama sampai R9). Fokus papan ketik menambah cincin 2px `primary` dengan jarak 2px; isian memakai batas `primary` dan cincin 3px `primary` 20%. Tidak ada riak (ripple) dan tidak ada efek angkat. **Memuat:** saat formulir dikirim, tombol kirim dinonaktifkan dan labelnya berganti kata kerja proses ("Mengirim pesanan...", bawaan "Memproses..."), dan formulir diberi `aria-busy`; tidak ada spinner berputar karena tidak ada animasi berulang.
 
 ## Iconography
 
-Ikon Lucide (garis 1,75px) dari paket `lucide-static`, disalin ke `resources/icons/` dan ditampilkan lewat komponen `x-ui.ikon`. Ukuran menurut komponen: 18px di dalam tombol, 20px pada tombol keluar di blok pengguna, 22px pada item menu dan chip ikon 40px, 24px pada tombol ikon dan banner, 26px pada chip ikon 52px. Warna mengikuti teks sekitarnya (`currentColor`). Daftar ikon yang tersedia ada di `docs/KIT_UI.md`; ikon di luar daftar tidak boleh dipakai.
+Ikon Lucide (garis 1,75px; 2,25px untuk tanda merek) dari paket `lucide-static`, disalin ke `resources/icons/` dan ditampilkan lewat komponen `x-ui.ikon`. Ukuran: 21px pada item menu dan tombol ikon, 21 atau 22px pada chip ikon, 16 sampai 18px di dalam tombol, 18px pada catatan dan pilihan. Warna mengikuti teks sekitarnya (`currentColor`). Ikon hanya membawa makna dan selalu disertai teks. Daftar ikon yang tersedia ada di `agent/icons.txt` dan `docs/KIT_UI.md`; ikon di luar daftar tidak boleh dipakai.
 
 ## Motion
 
-Tidak ada gerak yang berjalan sendiri. Transisi `color`, `background-color`, `border-color`, `opacity`, dan `box-shadow` 150ms dengan easing standar M3 `cubic-bezier(0.2, 0, 0, 1)`. Dialog dan snackbar muncul dengan fade 250ms atau tanpa animasi. Hormati `prefers-reduced-motion`.
+- Interaksi: transisi 150ms (`motion.duration-short-ms`) pada `background-color`, `color`, `border-color`, dan `box-shadow`, dengan easing standar `cubic-bezier(0.2, 0, 0, 1)`. Lapisan keadaan (hover, tekan, fokus) tetap seperti sekarang; hanya warnanya mengikuti token baru. Baris yang dapat diklik berubah ke `surface-container-low` saat hover.
+- Buka dan tutup: dialog memudar dan membesar dari 0,96 ke 1 dalam 200ms (`motion.duration-medium-ms`); laci ponsel bergeser dari kiri 200ms; scrim memudar 200ms.
+- Grafik menggambar masuk sekali, 700ms, `easeOutQuart`, tidak diulang saat data tidak berubah.
+- Tidak ada animasi masuk untuk bagian halaman, tidak ada hitung-naik angka, dan tidak ada gerak yang bukan jawaban atas aksi pengguna (kecuali gambar-masuk grafik).
+- `prefers-reduced-motion: reduce`: semua transisi dan animasi dimatikan.
 
 ## Writing
 
-Bahasa Indonesia baku yang sederhana, aktif, huruf awal kapital hanya pada awal kalimat. Nama aksi sama di seluruh alur ("Verifikasi" di tombol menghasilkan pesan "Pesanan berhasil diverifikasi."). Galat menyebut apa yang salah dan apa yang bisa dilakukan, tanpa meminta maaf dan tanpa tanda seru. Keadaan kosong menyebut langkah berikutnya. Tidak ada tanda panah di akhir tautan, tidak ada pemisah titik tengah untuk menggabung keterangan, tidak ada label berhuruf kapital semua di atas judul.
+Bahasa Indonesia baku yang sederhana, aktif, huruf awal kapital hanya pada awal kalimat dan nama diri ("Dalam perjalanan", bukan "Dalam Perjalanan"). Tombol berupa kata kerja ("Verifikasi sekarang", "Kirim pesanan"). Nama aksi sama di seluruh alur ("Verifikasi" di tombol menghasilkan pesan "Pesanan berhasil diverifikasi."). Galat menyebut apa yang salah dan apa yang bisa dilakukan, tanpa meminta maaf dan tanpa tanda seru. Keadaan kosong menyebut langkah berikutnya ("Pesanan baru muncul di sini setelah dibuat."). Jam memakai format Indonesia dengan titik ("21.12"); sufiks "WIT" hanya di halaman detail. Jangan menulis "Diperbarui otomatis" kecuali halaman benar-benar menyegarkan sendiri; tampilkan "Diperbarui 21.14" dari waktu server. Tidak ada tanda panah di akhir tautan, tidak ada pemisah titik tengah untuk menggabung keterangan, tidak ada label berhuruf kapital semua di atas judul.

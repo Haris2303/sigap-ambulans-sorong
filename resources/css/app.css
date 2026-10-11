@@ -1,5 +1,7 @@
 /* Dikunci: dibuat oleh runner dari agent/templates/app.css. CSS tambahan ditulis di tambahan.css. */
 @import 'tailwindcss';
+@import '@fontsource-variable/plus-jakarta-sans/wght.css';
+/* Roboto tidak dipakai lagi (font dasar: Plus Jakarta Sans); impornya dihapus di R9 (docs/RETEMA_B.md 4.4). */
 @import '@fontsource-variable/roboto/wght.css';
 @import './design-tokens.css';
 @import './tambahan.css';
