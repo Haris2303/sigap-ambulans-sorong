@@ -16,7 +16,7 @@ Catatan kemajuan untuk pergantian gaya dari "buku catatan dispatch" ke Material 
 
 - [x] M1 Fondasi: `CLAUDE.md` mode interaktif; `DESIGN.md` M3; `agent/tokens.mjs`; `app.css` dan templatnya; `docs/KIT_UI.md`; `agent/konsistensi.json` beserta kasus uji; `tambahan.css` (`lapisan-keadaan`, `target-sentuh`); `TokenDesainTest`.
 - [x] M2 Komponen primitif: `tombol` (nada baru `tonal` dan `terbalik`), `isian`, `pilihan`, `area-teks`, `centang`, `lencana`, `peringatan`, `flash`, `snackbar` (baru), `dialog`, `panel`, `tabel`, `opsi-baris`, `ikon` (hanya ukuran 18 dan 24). `KomponenUiTest` diubah lebih dulu, lalu komponennya; ditambah penjaga `test_komponen_m3_tidak_memuat_nama_token_lama` yang daftarnya bertambah tiap langkah. Sisa M2 yang sengaja ditunda ke M5: `ukuran="sm"` pada pemanggil tombol (kini diperlakukan sebagai `md`).
-- [ ] M3 Layout: `dasar`, `app` (laci navigasi dan bilah atas), `publik`, `auth`. Ubah `LayoutTest` lebih dulu.
+- [x] M3 Layout: `dasar`, `app` (laci navigasi tetap di lg+, laci modal dengan scrim dan bilah atas 64px di bawah lg), `publik`, `auth`. `LayoutTest` diubah lebih dulu; ditambah penjaga nama lama untuk keempat layout (trait `MemindaiNamaLama`, dipakai bersama `KomponenUiTest`). `sigap.js`: laci (tombol, scrim, Escape, fokus), bayangan bilah atas saat gulir, hitungan menu lewat atribut `hidden`.
 - [ ] M4 Komponen turunan: `judul-halaman`, `bagian`, `ringkasan`, `ringkasan-sel`, `rincian`, `linimasa`, `paginasi`, `ketersediaan`, `kosong`, `waktu`, `grafik-batang`, `peta.*`, dan katalog `/_ui`.
 - [ ] M5 Penyapuan halaman per peran (publik, auth, warga, admin, petugas, sopir, errors): hapus `ukuran="sm"` dan semua nama kelas lama (pemetaan di `docs/KIT_UI.md` §10).
 - [ ] M6 Aturan pemindai nama lama di `agent/konsistensi.json` (token lama dan `font-semibold`) beserta kasus uji; hapus §10 dari `docs/KIT_UI.md`.
@@ -28,5 +28,4 @@ Selama M2 sampai M5 belum selesai, komponen dan halaman lama masih memakai nama 
 
 `KomponenUiTest` dan `LayoutTest` diubah bersama komponen yang diganti, bukan lebih awal. Yang masih menyatakan kelas lama dan harus diganti pada langkahnya:
 
-- M3 (`LayoutTest`): `bg-primary-soft text-primary` (item menu aktif).
 - M4 (`KomponenUiTest`): `text-h1` (judul-halaman), `text-h2` dan `mt-8` (bagian), `text-display` (ringkasan), `<dt class="text-on-surface-muted">` (rincian), `font-semibold` (linimasa).
