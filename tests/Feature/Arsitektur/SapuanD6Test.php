@@ -60,7 +60,7 @@ class SapuanD6Test extends TestCase
 
         $html = $this->actingAs($this->buatPetugas($faskes))->get(route('petugas.dashboard'))->assertOk()->getContent();
 
-        $this->assertStringContainsString('bg-surface-container-lowest rounded-lg shadow-card', $html);
+        $this->assertStringContainsString('bg-surface-container-lowest rounded-xl shadow-card', $html);
         $this->assertStringNotContainsString('rounded-md border border-outline-variant', $html);
     }
 
@@ -116,7 +116,7 @@ class SapuanD6Test extends TestCase
         }
         $this->assertSame(4, substr_count($html, 'text-stat-l tabular-nums'));
         $this->assertStringNotContainsString('gap-px', $html);
-        $this->assertStringContainsString('bg-surface-container-lowest rounded-lg shadow-card', $html);
+        $this->assertStringContainsString('bg-surface-container-lowest rounded-xl shadow-card', $html);
     }
 
     public function test_buat_pesanan_tiap_bagian_formulir_adalah_kartu(): void
@@ -124,7 +124,7 @@ class SapuanD6Test extends TestCase
         $html = $this->actingAs($this->buatWarga())->get(route('warga.pesanan.buat'))->assertOk()->getContent();
 
         $this->assertSame(5, substr_count($html, '<fieldset'));
-        $this->assertGreaterThanOrEqual(5, substr_count($html, 'bg-surface-container-lowest rounded-lg shadow-card p-'));
+        $this->assertGreaterThanOrEqual(5, substr_count($html, 'bg-surface-container-lowest rounded-xl shadow-card p-'));
         $this->assertStringContainsString('Tinjau pesanan', $html);
         $this->assertStringContainsString('max-w-xl', $html, 'Formulir tetap satu kolom.');
     }

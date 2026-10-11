@@ -80,6 +80,11 @@ class KonsistensiTest extends TestCase
         foreach ($diterima as $kelas) {
             $this->assertSame(0, preg_match($this->regex($aturan), '<div class="flex '.$kelas.' gap-2">'), $kelas.' harus diterima');
         }
+
+        // Regresi: token aman yang diikuti titik akhir kalimat dalam komentar prosa (bukan daftar kelas) tidak boleh tertangkap.
+        foreach (['aktif putih dengan shadow-chip.', '48px rounded-md.', 'latar shadow-card.'] as $prosa) {
+            $this->assertSame(0, preg_match($this->regex($aturan), $prosa), $prosa.' (prosa) harus diterima');
+        }
     }
 
     public function test_teks_mentah_menolak_ukuran_di_luar_gaya_token(): void
@@ -115,7 +120,7 @@ class KonsistensiTest extends TestCase
         $dilarang = ['divide-line', 'border-line', 'border-control-border', 'text-on-surface-muted', 'hover:bg-primary-soft',
             'hover:text-primary-hover', 'bg-danger', 'text-danger', 'border-danger', 'bg-danger-soft', 'bg-warning-soft',
             'bg-success-soft', 'bg-neutral-soft', 'text-h1', 'text-h2', 'text-h3', 'text-body', 'text-body-sm', 'text-label', 'text-caption',
-            'text-display', 'w-rail', 'ukuran="sm"'];
+            'text-display', 'w-rail'];
         foreach ($dilarang as $kelas) {
             $this->assertSame(1, preg_match($this->regex($aturan), '<div class="flex '.$kelas.' gap-2">'), $kelas.' harus ditolak');
         }
@@ -125,7 +130,7 @@ class KonsistensiTest extends TestCase
             'border-outline', 'border-outline-variant', 'border-error', 'bg-error', 'bg-error-container', 'text-on-error-container',
             'bg-warning-container', 'bg-success-container', 'text-success', 'text-warning', 'text-on-surface-variant',
             'hover:text-on-primary-container', 'bg-primary-container', 'bg-secondary-container', 'w-drawer', 'min-h-touch',
-            'shadow-level-3', 'bg-linear-to-r', 'text-primary', 'ukuran="lg"', 'ukuran="md"',
+            'shadow-level-3', 'bg-linear-to-r', 'text-primary', 'ukuran="lg"', 'ukuran="md"', 'ukuran="sm"',
             'bg-canvas', 'bg-chart-sky', 'shadow-card', 'text-page-title', 'text-stat-hero', 'text-stat-l', 'text-stat-m',
             'shadow-overlay', 'text-chip', 'text-title-xl', 'bg-tertiary-container', 'bg-selected'];
         foreach ($diterima as $kelas) {

@@ -78,19 +78,25 @@ class KomponenUiTest extends TestCase
         $this->assertStringContainsString('<button type="submit"', $utama);
         $this->assertStringContainsString('bg-primary text-on-primary', $utama);
         $this->assertStringContainsString('disabled:bg-on-surface/12 disabled:text-on-surface/38', $utama);
-        foreach (['lapisan-keadaan', 'target-sentuh', 'rounded-full', 'min-h-10', 'px-6', 'text-label-l'] as $kelas) {
+        // Sudut md, tinggi 44px di lg ke atas dan 48px di bawahnya (DESIGN.md bagian 3), padding horizontal 20px.
+        foreach (['lapisan-keadaan', 'target-sentuh', 'rounded-md', 'min-h-12', 'lg:min-h-11', 'px-5', 'text-label-l'] as $kelas) {
             $this->assertStringContainsString($kelas, $utama);
         }
+        $this->assertStringNotContainsString('rounded-full', $utama);
 
-        $this->assertStringContainsString('border border-outline text-primary', $this->render('<x-ui.tombol nada="sekunder">A</x-ui.tombol>'));
-        $this->assertStringContainsString('bg-secondary-container text-on-secondary-container', $this->render('<x-ui.tombol nada="tonal">A</x-ui.tombol>'));
-        $this->assertStringContainsString('bg-error text-on-error', $this->render('<x-ui.tombol nada="bahaya">A</x-ui.tombol>'));
+        // tonal dan sekunder sama-sama menjadi varian secondary (DESIGN.md 6.2): tonal kontainer dengan batas outline-variant.
+        foreach (['sekunder', 'tonal'] as $nada) {
+            $this->assertStringContainsString('bg-surface-container text-on-surface border border-outline-variant', $this->render('<x-ui.tombol nada="'.$nada.'">A</x-ui.tombol>'));
+        }
+        $this->assertStringContainsString('bg-error-container text-on-error-container', $this->render('<x-ui.tombol nada="bahaya">A</x-ui.tombol>'));
         $this->assertStringContainsString('text-inverse-primary', $this->render('<x-ui.tombol nada="terbalik">A</x-ui.tombol>'));
+        $this->assertStringContainsString('bg-surface-container-lowest text-secondary', $this->render('<x-ui.tombol nada="on-secondary">A</x-ui.tombol>'));
 
+        // on-primary dipertahankan persis (dipakai kartu statistik utama primary sampai R4).
         $diAtasUtama = $this->render('<x-ui.tombol nada="on-primary">Verifikasi pesanan</x-ui.tombol>');
         $this->assertStringContainsString('bg-on-primary text-primary', $diAtasUtama);
         $this->assertStringContainsString('disabled:bg-on-surface/12 disabled:text-on-surface/38', $diAtasUtama);
-        foreach (['lapisan-keadaan', 'target-sentuh', 'rounded-full', 'min-h-10', 'px-6'] as $kelas) {
+        foreach (['lapisan-keadaan', 'target-sentuh', 'rounded-md', 'min-h-12'] as $kelas) {
             $this->assertStringContainsString($kelas, $diAtasUtama);
         }
 
@@ -99,17 +105,19 @@ class KomponenUiTest extends TestCase
         $this->assertStringContainsString('px-3', $hantu);
         $this->assertStringNotContainsString('bg-primary', $hantu);
 
-        $this->assertStringContainsString('min-h-12', $this->render('<x-ui.tombol ukuran="lg">A</x-ui.tombol>'));
+        // ukuran="sm" baru (36/40px); "lg" lama kini setara bawaan (DESIGN.md bagian 3).
+        $this->assertStringContainsString('min-h-10 lg:min-h-9', $this->render('<x-ui.tombol ukuran="sm">A</x-ui.tombol>'));
+        $this->assertStringContainsString('min-h-12 lg:min-h-11', $this->render('<x-ui.tombol ukuran="lg">A</x-ui.tombol>'));
         $this->assertStringContainsString('w-full', $this->render('<x-ui.tombol :blok="true">A</x-ui.tombol>'));
 
         $tautan = $this->render('<x-ui.tombol href="https://contoh.test/x" ikon="plus">Tambah</x-ui.tombol>');
         $this->assertStringContainsString('<a href="https://contoh.test/x"', $tautan);
         $this->assertStringContainsString('<svg', $tautan);
         $this->assertStringContainsString('width="18"', $tautan);
-        $this->assertStringContainsString('pl-4 pr-6', $tautan);
+        $this->assertStringContainsString('pl-4 pr-5', $tautan);
 
         $hanyaIkon = $this->render('<x-ui.tombol nada="hantu" ikon="menu" aria-label="Buka menu" />');
-        $this->assertStringContainsString('size-10 px-0', $hanyaIkon);
+        $this->assertStringContainsString('aspect-square px-0', $hanyaIkon);
         $this->assertStringContainsString('width="24"', $hanyaIkon);
         $this->assertStringContainsString('aria-label="Buka menu"', $hanyaIkon);
 
@@ -187,27 +195,39 @@ class KomponenUiTest extends TestCase
         $this->assertMatchesRegularExpression('/@media \(max-width: 1023px\) \{\s*body:has\(\[data-bilah-aksi\]\) \[data-snackbar\] \{\s*bottom: 6\.5rem;/', $css);
     }
 
-    public function test_lencana_lima_nada_dan_lencana_status_dari_enum(): void
+    public function test_lencana_nada_lama_dan_tone_arah_b_dengan_dot_dan_ukuran(): void
     {
-        $peta = ['netral' => 'bg-surface-container-highest text-on-surface-variant',
-            'info' => 'bg-primary-container text-on-primary-container',
-            'peringatan' => 'bg-warning-container text-on-warning-container',
-            'sukses' => 'bg-success-container text-on-success-container',
-            'bahaya' => 'bg-error-container text-on-error-container'];
+        // Nada Indonesia lama dan tone arah B adalah sinonim persis (DESIGN.md 4.3, Tampilan::kelasLembut).
+        $peta = [
+            'netral' => 'bg-secondary-container text-on-secondary-container', 'neutral' => 'bg-secondary-container text-on-secondary-container',
+            'info' => 'bg-primary-container text-on-primary-container', 'primary' => 'bg-primary-container text-on-primary-container',
+            'peringatan' => 'bg-warning-container text-on-warning-container', 'warning' => 'bg-warning-container text-on-warning-container',
+            'sukses' => 'bg-success-container text-on-success-container', 'success' => 'bg-success-container text-on-success-container',
+            'bahaya' => 'bg-error-container text-on-error-container', 'error' => 'bg-error-container text-on-error-container',
+            'tertiary' => 'bg-tertiary-container text-on-tertiary-container',
+        ];
         foreach ($peta as $nada => $kelas) {
             $html = $this->render('<x-ui.lencana :nada="$n">Teks</x-ui.lencana>', ['n' => $nada]);
-            $this->assertStringContainsString($kelas, $html);
+            $this->assertStringContainsString($kelas, $html, $nada);
             $this->assertStringContainsString('rounded-full bg-current', $html);
-            $this->assertStringContainsString('rounded-full px-2.5', $html);
-            $this->assertStringContainsString('min-h-6', $html);
-            $this->assertStringNotContainsString('rounded-sm', $html);
-            $this->assertStringContainsString('text-label-m', $html);
+            $this->assertStringContainsString('rounded-full px-2.75', $html);
+            $this->assertStringContainsString('min-h-6.5', $html, 'size bawaan md: 26px.');
+            $this->assertStringContainsString('text-chip', $html);
         }
 
+        // size="sm": 24px. dot=false: tanpa titik (chip keterangan/delta).
+        $this->assertStringContainsString('min-h-6', $this->render('<x-ui.lencana size="sm">A</x-ui.lencana>'));
+        $this->assertStringNotContainsString('min-h-6.5', $this->render('<x-ui.lencana size="sm">A</x-ui.lencana>'));
+        $dengan = $this->render('<x-ui.lencana>A</x-ui.lencana>');
+        $tanpa = $this->render('<x-ui.lencana :dot="false">A</x-ui.lencana>');
+        $this->assertStringContainsString('size-1.5', $dengan);
+        $this->assertStringNotContainsString('size-1.5', $tanpa);
+
+        // Lencana status: PesananStatus::tone() sebagai sumber tunggal warna (bukan lagi nada()).
         foreach (PesananStatus::cases() as $status) {
             $html = $this->render('<x-ui.lencana-status :status="$s" />', ['s' => $status]);
             $this->assertStringContainsString($status->label(), $html);
-            $this->assertStringContainsString($peta[$status->nada()], $html);
+            $this->assertStringContainsString($peta[$status->tone()], $html, $status->value);
         }
     }
 
@@ -218,7 +238,8 @@ class KomponenUiTest extends TestCase
         $banner = $this->render('<x-ui.peringatan nada="bahaya">Galat</x-ui.peringatan>');
         $this->assertStringContainsString('bg-error-container text-on-error-container', $banner);
         $this->assertStringContainsString('rounded-md', $banner);
-        $this->assertStringContainsString('width="24"', $banner);
+        $this->assertStringContainsString('width="18"', $banner);
+        $this->assertStringContainsString('text-label-l', $banner);
 
         $this->assertSame('', trim($this->render('<x-ui.flash />')));
 
@@ -231,7 +252,8 @@ class KomponenUiTest extends TestCase
         // Pesan sukses menjadi snackbar; galat tetap pesan sebaris.
         $this->assertStringContainsString('data-snackbar', $html);
         $this->assertStringContainsString('bg-inverse-surface', $html);
-        $this->assertStringContainsString('shadow-level-3', $html);
+        $this->assertStringContainsString('rounded-md', $html);
+        $this->assertStringContainsString('shadow-overlay', $html);
         $this->assertStringContainsString('data-snackbar-tutup', $html);
         $this->assertStringContainsString('text-inverse-primary', $html);
         $this->assertStringContainsString('role="alert"', $html);
@@ -257,10 +279,10 @@ class KomponenUiTest extends TestCase
         $this->assertStringContainsString('Tolak pesanan', $html);
         $this->assertStringContainsString('data-dialog-batal', $html);
         $this->assertStringContainsString('data-dialog-aksi', $html);
-        foreach (['shadow-level-3', 'rounded-xl', 'bg-surface-container-high', 'text-headline-s', 'backdrop:bg-scrim', 'max-w-140'] as $kelas) {
+        foreach (['shadow-overlay', 'rounded-2xl', 'bg-surface-container-lowest', 'text-title-l', 'backdrop:bg-scrim/45', 'max-w-md'] as $kelas) {
             $this->assertStringContainsString($kelas, $html);
         }
-        $this->assertStringContainsString('bg-error text-on-error', $html);
+        $this->assertStringContainsString('bg-error-container text-on-error-container', $html);
 
         $netral = $this->render('<x-ui.dialog nada="utama" judul="Selesai" pesan="Pesanan selesai." aksi="Selesai" />');
         $this->assertStringNotContainsString('bg-error', $netral);
@@ -282,24 +304,43 @@ class KomponenUiTest extends TestCase
         $this->assertStringContainsString('text-body-m text-on-surface-variant', $bagian);
         $this->assertStringContainsString('mt-8', $bagian);
 
+        // Panel arah B (DESIGN.md 6.1): sudut 24px, padding 20px (24px di lg), judul title-l. Prop as: tag dapat diganti.
         $panel = $this->render('<x-ui.panel judul="Aksi">ISI<x-slot:kaki>KAKI</x-slot:kaki></x-ui.panel>');
-        $this->assertStringContainsString('bg-surface-container-lowest rounded-lg shadow-card', $panel);
-        $this->assertStringContainsString('p-6', $panel);
+        $this->assertStringContainsString('bg-surface-container-lowest rounded-xl shadow-card', $panel);
+        $this->assertStringContainsString('p-5', $panel);
+        $this->assertStringContainsString('lg:p-6', $panel);
         $this->assertStringNotContainsString('border border-outline-variant bg-surface-container-lowest', $panel);
-        $this->assertStringContainsString('text-title-m', $panel);
+        $this->assertStringContainsString('text-title-l', $panel);
         $this->assertStringContainsString('KAKI', $panel);
 
+        $header = $this->render('<x-ui.panel>ISI<x-slot:header>JUDUL<span>AKSI</span></x-slot:header></x-ui.panel>');
+        $this->assertStringContainsString('JUDUL', $header);
+        $this->assertStringContainsString('<span>AKSI</span>', $header);
+
+        $section = $this->render('<x-ui.panel as="section">ISI</x-ui.panel>');
+        $this->assertStringStartsWith('<section ', trim($section));
+        $this->assertStringEndsWith('</section>', trim($section));
+
         $flush = $this->render('<x-ui.panel :flush="true">TABEL</x-ui.panel>');
-        $this->assertStringContainsString('bg-surface-container-lowest rounded-lg shadow-card', $flush);
+        $this->assertStringContainsString('bg-surface-container-lowest rounded-xl shadow-card', $flush);
         $this->assertStringContainsString('overflow-hidden', $flush);
+        $this->assertStringNotContainsString('p-5', $flush);
         $this->assertStringNotContainsString('p-6', $flush);
 
+        // Keadaan kosong arah B (DESIGN.md 6.11, x-ui.empty): batas putus-putus, pusat, ikon dan judul opsional.
         $kosong = $this->render('<x-ui.kosong pesan="Belum ada pesanan."><x-slot:aksi>BUAT</x-slot:aksi></x-ui.kosong>');
         $this->assertStringContainsString('Belum ada pesanan.', $kosong);
         $this->assertStringContainsString('BUAT', $kosong);
-        $this->assertStringContainsString('bg-surface-container-lowest rounded-lg shadow-card', $kosong);
-        $this->assertStringNotContainsString('border-outline-variant', $kosong);
-        $this->assertStringContainsString('text-body-l text-on-surface-variant', $kosong);
+        foreach (['border-dashed', 'border-outline-variant', 'text-center', 'text-body-s text-on-surface-variant'] as $kelas) {
+            $this->assertStringContainsString($kelas, $kosong);
+        }
+        $this->assertStringNotContainsString('shadow-card', $kosong);
+
+        $lengkap = $this->render('<x-ui.kosong judul="Tidak ada pesanan" pesan="Pesanan baru muncul di sini." ikon="clipboard-list" />');
+        $this->assertStringContainsString('Tidak ada pesanan', $lengkap);
+        $this->assertStringContainsString('<svg', $lengkap);
+        $this->assertStringContainsString('width="22"', $lengkap);
+        $this->assertStringContainsString('text-label-l', $lengkap);
     }
 
     public function test_tabel(): void
@@ -309,10 +350,15 @@ class KomponenUiTest extends TestCase
         $this->assertStringContainsString('overflow-x-auto', $html);
         $this->assertStringContainsString('<th>Kode</th>', $html);
         $this->assertStringContainsString('SGP-000001', $html);
-        $this->assertStringContainsString('divide-outline-variant', $html);
-        $this->assertStringContainsString('bg-surface-container-lowest rounded-lg shadow-card', $html);
+        // Baris bulat (border-spacing), tanpa garis pemisah (DESIGN.md 6.9); padding pada pembungkus (p-3).
+        $this->assertStringNotContainsString('divide-outline-variant', $html);
+        $this->assertStringContainsString('border-separate border-spacing-y-1', $html);
+        $this->assertStringContainsString('bg-surface-container-lowest rounded-xl shadow-card', $html);
+        $this->assertStringContainsString(' p-3', $html);
         $this->assertStringNotContainsString('rounded-md border', $html);
         $this->assertStringContainsString('bg-surface-container-low', $html);
+        $this->assertStringContainsString('rounded-l-lg', $html);
+        $this->assertStringContainsString('rounded-r-lg', $html);
         $this->assertStringNotContainsString('min-w-', $html);
     }
 
@@ -320,15 +366,15 @@ class KomponenUiTest extends TestCase
     {
         $html = $this->render('<x-ui.tabel :bingkai="false" lebar-min="min-w-136"><x-slot:kepala><th>Kode</th></x-slot:kepala><tr><td>SGP-000001</td></tr></x-ui.tabel>');
 
-        // Hanya pembungkus gulir: tanpa batas, sudut, dan latar sendiri; kolom pertama dan terakhir sejajar padding kartu 24px.
+        // Hanya pembungkus gulir: tanpa batas, sudut, dan latar sendiri; baris tetap bulat tanpa garis pemisah.
         $this->assertStringContainsString('overflow-x-auto', $html);
-        $this->assertStringNotContainsString('rounded-', $html);
         $this->assertStringNotContainsString('shadow-card', $html);
+        $this->assertStringNotContainsString(' p-3', $html);
         $this->assertStringNotContainsString('bg-surface-container-lowest', $html);
         $this->assertStringContainsString('min-w-136', $html);
-        $this->assertStringContainsString('[&>th:first-child]:pl-6', $html);
-        $this->assertStringContainsString('[&_td:first-child]:pl-6', $html);
-        $this->assertStringContainsString('divide-outline-variant', $html);
+        $this->assertStringContainsString('rounded-l-lg', $html);
+        $this->assertStringContainsString('rounded-r-lg', $html);
+        $this->assertStringNotContainsString('divide-outline-variant', $html);
         $this->assertStringContainsString('bg-surface-container-low', $html);
     }
 
@@ -339,10 +385,17 @@ class KomponenUiTest extends TestCase
         $this->assertStringContainsString('value="Budi"', $biasa);
         $this->assertStringContainsString('Sesuai KTP', $biasa);
         $this->assertStringContainsString('required', $biasa);
+        $this->assertStringContainsString('(wajib)', $biasa);
         $this->assertStringContainsString(Tampilan::kelasIsian(false), $biasa);
-        foreach (['border-outline', 'min-h-14', 'rounded-xs', 'bg-surface-container-lowest', 'focus-visible:border-primary', 'text-label-l text-on-surface-variant'] as $kelas) {
+        // Tinggi 48px, sudut md, fokus batas primary + cincin (DESIGN.md 6.3).
+        foreach (['border-outline', 'min-h-12', 'rounded-md', 'bg-surface-container-lowest', 'focus-visible:border-primary', 'focus-visible:ring-primary/20', 'text-label-l text-on-surface-variant'] as $kelas) {
             $this->assertStringContainsString($kelas, $biasa);
         }
+        $this->assertStringNotContainsString('min-h-14', $biasa);
+        $this->assertStringNotContainsString('rounded-xs', $biasa);
+
+        $tanpaWajib = $this->render('<x-ui.isian nama="catatan" label="Catatan" />');
+        $this->assertStringNotContainsString('(wajib)', $tanpaWajib);
 
         $galat = new ViewErrorBag;
         $galat->put('default', new \Illuminate\Support\MessageBag(['nama_pasien' => ['Nama pasien wajib diisi.']]));
@@ -351,7 +404,7 @@ class KomponenUiTest extends TestCase
         $this->assertStringContainsString('Nama pasien wajib diisi.', $salah);
         $this->assertStringContainsString(Tampilan::kelasIsian(true), $salah);
         $this->assertStringContainsString('border-error', $salah);
-        $this->assertStringContainsString('text-body-s text-error', $salah);
+        $this->assertStringContainsString('text-label-m text-error', $salah);
         $this->assertStringContainsString('aria-invalid="true"', $salah);
         $this->assertStringNotContainsString('border-outline', $salah);
 
@@ -380,6 +433,10 @@ class KomponenUiTest extends TestCase
         $this->assertStringContainsString('Rumah sakit', $html);
         $this->assertMatchesRegularExpression('/<option value="puskesmas"\s+selected/', $html);
         $this->assertStringContainsString(Tampilan::kelasIsian(false), $html);
+        // Select appearance-none dengan ikon chevron-down 18px (DESIGN.md 6.3).
+        $this->assertStringContainsString('appearance-none', $html);
+        $this->assertStringContainsString('<svg', $html);
+        $this->assertStringContainsString('width="18"', $html);
     }
 
     public function test_area_teks_centang_dan_opsi_baris(): void
@@ -388,6 +445,7 @@ class KomponenUiTest extends TestCase
         $this->assertStringContainsString('rows="4"', $area);
         $this->assertStringContainsString('>Isi catatan</textarea>', $area);
         $this->assertStringContainsString(Tampilan::kelasIsian(false), $area);
+        $this->assertStringContainsString('min-h-21', $area, 'Minimal 84px (DESIGN.md 6.3).');
 
         $centang = $this->render('<x-ui.centang nama="aktif" label="Aktif" :nilai="true" />');
         $this->assertStringContainsString('type="hidden" name="aktif" value="0"', $centang);
@@ -396,24 +454,31 @@ class KomponenUiTest extends TestCase
             $this->assertStringContainsString($kelas, $centang);
         }
 
-        $opsi = $this->render('<x-ui.opsi-baris nama="jenis_layanan" nilai="darurat" judul="Darurat" deskripsi="Kecelakaan" :terpilih="true" />');
+        // Kartu pilihan arah B (DESIGN.md 6.4): terpilih batas dan cincin dalam primary, latar selected.
+        $opsi = $this->render('<x-ui.opsi-baris nama="jenis_layanan" nilai="darurat" judul="Darurat" deskripsi="Kecelakaan" ikon="ambulance" :terpilih="true" />');
         $this->assertStringContainsString('type="radio"', $opsi);
-        $this->assertStringContainsString('border-secondary-container bg-secondary-container text-on-secondary-container', $opsi);
-        foreach (['lapisan-keadaan', 'rounded-md', 'min-h-14', 'text-title-m', 'has-[:checked]:bg-secondary-container'] as $kelas) {
+        $this->assertStringContainsString('border-primary bg-selected ring-1 ring-inset ring-primary', $opsi);
+        $this->assertStringContainsString('bg-primary text-on-primary', $opsi, 'Petak ikon terpilih berlatar primary.');
+        foreach (['lapisan-keadaan', 'rounded-md', 'min-h-14', 'text-label-l', 'size-7.5'] as $kelas) {
             $this->assertStringContainsString($kelas, $opsi);
         }
         $this->assertStringContainsString('Kecelakaan', $opsi);
+        $this->assertStringNotContainsString('bg-secondary-container', $opsi);
 
-        $tidak = $this->render('<x-ui.opsi-baris nama="jenis_layanan" nilai="rujukan" judul="Rujukan" />');
-        $this->assertStringNotContainsString('checked', str_replace('has-[:checked]', '', $tidak));
+        $tanpaIkon = $this->render('<x-ui.opsi-baris nama="jenis_layanan" nilai="rujukan" judul="Rujukan" />');
+        $this->assertStringNotContainsString('size-7.5', $tanpaIkon, 'Ikon opsional: tanpa petak bila tidak diberi.');
+        $this->assertStringNotContainsString('checked', $tanpaIkon);
+        $this->assertStringNotContainsString('border-primary bg-selected', $tanpaIkon);
     }
 
     public function test_rincian_dan_waktu(): void
     {
         $rincian = $this->render('<x-ui.rincian><x-ui.rincian-baris label="Pasien">Budi</x-ui.rincian-baris></x-ui.rincian>');
         $this->assertStringContainsString('<dl', $rincian);
-        $this->assertStringContainsString('<dt class="text-on-surface-variant">Pasien</dt>', $rincian);
-        foreach (['divide-outline-variant', 'bg-surface-container-lowest rounded-lg shadow-card', 'overflow-hidden', 'px-6', 'text-body-m'] as $kelas) {
+        // Label label-m, nilai body-m (DESIGN.md 6.12).
+        $this->assertStringContainsString('<dt class="text-label-m text-on-surface-variant">Pasien</dt>', $rincian);
+        $this->assertStringContainsString('text-body-m', $rincian);
+        foreach (['divide-outline-variant', 'bg-surface-container-lowest rounded-xl shadow-card', 'overflow-hidden', 'px-6'] as $kelas) {
             $this->assertStringContainsString($kelas, $rincian);
         }
         $this->assertStringNotContainsString('border-outline-variant bg', $rincian);
@@ -422,9 +487,9 @@ class KomponenUiTest extends TestCase
         $polos = $this->render('<x-ui.rincian :bingkai="false"><x-ui.rincian-baris label="Pasien">Budi</x-ui.rincian-baris></x-ui.rincian>');
         $this->assertStringContainsString('divide-outline-variant', $polos);
         $this->assertStringNotContainsString('shadow-card', $polos);
-        $this->assertStringNotContainsString('rounded-lg', $polos);
+        $this->assertStringNotContainsString('rounded-xl', $polos);
         $this->assertStringNotContainsString('bg-surface-container-lowest', $polos);
-        $this->assertStringContainsString('<dt class="text-on-surface-variant">Pasien</dt>', $polos);
+        $this->assertStringContainsString('<dt class="text-label-m text-on-surface-variant">Pasien</dt>', $polos);
 
         $waktu = $this->render('<x-ui.waktu nilai="2026-10-11 09:30:00" />');
         $this->assertStringContainsString('11 Okt 2026 09:30', $waktu);
@@ -472,10 +537,14 @@ class KomponenUiTest extends TestCase
         $this->assertStringContainsString('Siti', $html);
         $this->assertStringContainsString('(Dinkes)', $html);
         $this->assertStringContainsString('Data tidak lengkap', $html);
-        $this->assertSame(1, substr_count($html, 'font-medium'));
-        $this->assertStringContainsString('bg-outline-variant', $html);
+        // Langkah sekarang lebih tebal (label-l; token tidak punya body berbobot 700) dan titik terisi primary;
+        // langkah lampau titik putih berbatas outline-variant. Titik tidak lagi mengikuti warna status (DESIGN.md 6.12).
+        $this->assertSame(1, substr_count($html, 'text-label-l'));
+        $this->assertStringContainsString('w-0.5 bg-outline-variant', $html);
+        $this->assertStringContainsString('size-3 rounded-full bg-primary', $html);
+        $this->assertStringContainsString('border-2 border-outline-variant bg-surface-container-lowest', $html);
+        $this->assertStringNotContainsString('bg-error', $html);
         $this->assertStringContainsString('text-body-s text-on-surface-variant', $html);
-        $this->assertStringContainsString('size-2.5 rounded-full bg-error', $html);
     }
 
     public function test_ketersediaan_belum_diperbarui_data_lama_dan_segar(): void

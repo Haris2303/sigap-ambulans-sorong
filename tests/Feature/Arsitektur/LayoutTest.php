@@ -43,11 +43,12 @@ class LayoutTest extends TestCase
         $this->assertStringContainsString('Dinas Kesehatan Kota Sorong', $tamu);
         $this->assertStringNotContainsString('Ke dasbor', $tamu);
         // Bilah atas publik: kartu melayang (token top-app-bar) di atas latar canvas.
-        foreach (['h-16', 'bg-surface-container-lowest rounded-lg shadow-card', 'text-title-l', 'border-outline-variant', 'text-body-s text-on-surface-variant'] as $kelas) {
+        foreach (['h-16', 'bg-surface-container-lowest rounded-xl shadow-card', 'text-title-l', 'border-outline-variant', 'text-body-s text-on-surface-variant'] as $kelas) {
             $this->assertStringContainsString($kelas, $tamu);
         }
         $this->assertStringContainsString('px-4 lg:px-7', $tamu);
-        $this->assertStringContainsString('border border-outline text-primary', $tamu);
+        // Tombol "Masuk" (nada sekunder): bg-surface-container dengan batas outline-variant (DESIGN.md 6.2).
+        $this->assertStringContainsString('bg-surface-container text-on-surface border border-outline-variant', $tamu);
 
         $this->actingAs($this->buatAdmin());
         $masuk = Blade::render('<x-layouts.publik judul="Beranda">isi</x-layouts.publik>');
@@ -104,9 +105,9 @@ class LayoutTest extends TestCase
         $this->actingAs($this->buatAdmin(['name' => 'Admin Dinkes']));
         $html = Blade::render('<x-layouts.app judul="Uji">isi</x-layouts.app>');
 
-        // Kartu putih 64px berbayang card, sudut 16px, di atas latar canvas; melayang (lekat di atas saat bergulir).
+        // Kartu putih 64px berbayang card, sudut 24px (Tampilan::KARTU arah B), di atas latar canvas; melayang.
         $bilah = $this->tag($html, 'data-bilah-atas');
-        foreach (['h-16', 'rounded-lg', 'bg-surface-container-lowest', 'shadow-card'] as $kelas) {
+        foreach (['h-16', 'rounded-xl', 'bg-surface-container-lowest', 'shadow-card'] as $kelas) {
             $this->assertStringContainsString($kelas, $bilah);
         }
         $this->assertStringContainsString('sticky top-0', $html);
@@ -162,7 +163,9 @@ class LayoutTest extends TestCase
             $this->assertStringNotContainsString('role="search"', $html, $pengguna->role->value);
             $this->assertStringNotContainsString('Pesanan menunggu verifikasi', $html, $pengguna->role->value);
             $this->assertStringContainsString('aria-label="Buka menu"', $html);
-            $this->assertStringContainsString('rounded-full bg-primary-container', $html, 'Avatar ada untuk '.$pengguna->role->value);
+            // Warna avatar dari hash nama (DESIGN.md 6.7), bukan selalu primary-container.
+            $this->assertStringContainsString('rounded-full text-chip', $html, 'Avatar ada untuk '.$pengguna->role->value);
+            $this->assertStringContainsString(\App\Support\Tampilan::warnaAvatar($pengguna->name), $html, 'Avatar ada untuk '.$pengguna->role->value);
         }
     }
 

@@ -70,8 +70,8 @@ class KomponenDasborTest extends TestCase
     {
         $html = $this->html('<x-ui.stat tone="success" icon="circle-check" :value="12" label="Selesai hari ini" hint="pesanan tuntas" />');
 
-        // Kartu putih berbayang dengan padding 20px.
-        foreach (['bg-surface-container-lowest', 'rounded-lg', 'shadow-card', 'p-5'] as $kelas) {
+        // Kartu putih berbayang dengan padding 20px (sudut 24px sejak Tampilan::KARTU arah B, R1/R2).
+        foreach (['bg-surface-container-lowest', 'rounded-xl', 'shadow-card', 'p-5'] as $kelas) {
             $this->assertStringContainsString($kelas, $html);
         }
         $this->assertDoesNotMatchRegularExpression('/shadow-card-raised/', $html);
@@ -163,7 +163,7 @@ class KomponenDasborTest extends TestCase
 
     // ---------- tabs ----------
 
-    public function test_tab_adalah_tautan_dengan_penanda_halaman_pada_yang_aktif(): void
+    public function test_tab_variant_track_trek_abu_aktif_putih_dengan_shadow_chip(): void
     {
         $html = $this->html(<<<'BLADE'
             <x-ui.tabs label="Filter pesanan">
@@ -172,41 +172,81 @@ class KomponenDasborTest extends TestCase
             </x-ui.tabs>
             BLADE);
 
-        // Wadah: navigasi berlabel, bergulir horizontal, garis pemisah bawah.
+        // Wadah: navigasi berlabel, bergulir horizontal, trek surface-container (DESIGN.md 6.5).
         $this->assertStringContainsString('<nav', $html);
         $this->assertStringContainsString('aria-label="Filter pesanan"', $html);
-        foreach (['overflow-x-auto', 'border-b', 'border-surface-container-high'] as $kelas) {
+        foreach (['overflow-x-auto', 'rounded-md', 'bg-surface-container', 'p-1'] as $kelas) {
             $this->assertStringContainsString($kelas, $html);
         }
 
-        // Aktif: primary dengan garis bawah 3px; tanda halaman hanya pada satu tab.
+        // Aktif: putih dengan shadow-chip; tanda halaman hanya pada satu tab.
         $this->assertSame(1, substr_count($html, 'aria-current="page"'));
         $this->assertMatchesRegularExpression('~<a href="https://contoh.test/p\?tab=semua"[^>]*aria-current="page"[^>]*>~', $html);
-        $this->assertMatchesRegularExpression('~<a href="https://contoh.test/p\?tab=semua"[^>]*class="[^"]*text-primary[^"]*border-primary~', $html);
+        $this->assertMatchesRegularExpression('~<a href="https://contoh.test/p\?tab=semua"[^>]*class="[^"]*bg-surface-container-lowest text-on-surface shadow-chip~', $html);
 
-        // Tidak aktif: on-surface-variant dengan garis bawah transparan.
-        $this->assertMatchesRegularExpression('~<a href="https://contoh.test/p\?tab=perlu-tindakan"[^>]*class="[^"]*text-on-surface-variant[^"]*border-transparent~', $html);
+        // Tidak aktif: on-surface-variant, tanpa latar.
+        $this->assertMatchesRegularExpression('~<a href="https://contoh.test/p\?tab=perlu-tindakan"[^>]*class="[^"]*text-on-surface-variant~', $html);
         $this->assertStringContainsString('Perlu tindakan', $html);
+    }
+
+    public function test_tab_variant_floating_trek_melayang_aktif_primary(): void
+    {
+        $html = $this->html(<<<'BLADE'
+            <x-ui.tabs label="Filter periode" variant="floating">
+                <x-ui.tab href="https://contoh.test/p?periode=7" variant="floating" :aktif="true">7 hari</x-ui.tab>
+                <x-ui.tab href="https://contoh.test/p?periode=30" variant="floating">30 hari</x-ui.tab>
+            </x-ui.tabs>
+            BLADE);
+
+        foreach (['rounded-lg', 'bg-surface-container-lowest', 'shadow-control'] as $kelas) {
+            $this->assertStringContainsString($kelas, $html);
+        }
+        $this->assertMatchesRegularExpression('~<a href="https://contoh.test/p\?periode=7"[^>]*class="[^"]*bg-primary text-on-primary~', $html);
+        $this->assertStringContainsString('min-h-10', $html);
+        $this->assertStringContainsString('lg:min-h-9.5', $html);
     }
 
     public function test_tab_memakai_ukuran_dan_lapisan_keadaan_kontrol_lain(): void
     {
         $html = $this->html('<x-ui.tab href="https://contoh.test/x">Berjalan</x-ui.tab>');
 
-        foreach (['min-h-11', 'px-4', 'text-label-l', 'border-b-3', 'shrink-0', 'whitespace-nowrap', 'lapisan-keadaan', 'target-sentuh'] as $kelas) {
+        foreach (['min-h-9', 'rounded-sm', 'px-4', 'text-label-m', 'shrink-0', 'whitespace-nowrap', 'lapisan-keadaan', 'target-sentuh'] as $kelas) {
             $this->assertStringContainsString($kelas, $html);
         }
         $this->assertStringNotContainsString('aria-current', $html);
+        $this->assertStringNotContainsString('border-b-3', $html, 'Tab arah B tidak lagi bergaris bawah.');
         $this->assertStringNotContainsString('<button', $html, 'Tab adalah tautan, bukan tombol.');
+    }
+
+    // ---------- segmented ----------
+
+    public function test_segmented_adalah_radiogroup_dan_segmen_tampilan_sama_dengan_tab_track(): void
+    {
+        $html = $this->html(<<<'BLADE'
+            <x-ui.segmented label="Tingkat darurat">
+                <x-ui.segmen nama="tingkat_darurat" nilai="biasa" :terpilih="true">Biasa</x-ui.segmen>
+                <x-ui.segmen nama="tingkat_darurat" nilai="gawat">Gawat</x-ui.segmen>
+            </x-ui.segmented>
+            BLADE);
+
+        $this->assertStringContainsString('role="radiogroup"', $html);
+        $this->assertStringContainsString('aria-label="Tingkat darurat"', $html);
+        foreach (['rounded-md', 'bg-surface-container', 'p-1'] as $kelas) {
+            $this->assertStringContainsString($kelas, $html);
+        }
+        $this->assertStringContainsString('type="radio"', $html);
+        $this->assertMatchesRegularExpression('/value="biasa" checked[^>]*class="sr-only"/', $html);
+        $this->assertStringContainsString('bg-surface-container-lowest text-on-surface shadow-chip', $html);
+        $this->assertStringContainsString('min-h-9', $html);
     }
 
     // ---------- avatar ----------
 
-    public function test_avatar_berinisial_dua_kata_pertama(): void
+    public function test_avatar_berinisial_dua_kata_pertama_dan_ukuran(): void
     {
+        // "Admin Dinkes" -> crc32 % 5 == 0 == primary (DESIGN.md 6.7).
         $html = $this->html('<x-ui.avatar nama="Admin Dinkes" />');
-
-        foreach (['size-10', 'rounded-full', 'bg-primary-container', 'text-on-primary-container', 'text-label-l', 'shrink-0'] as $kelas) {
+        foreach (['size-10', 'rounded-full', 'bg-primary-container', 'text-on-primary-container', 'text-chip', 'shrink-0'] as $kelas) {
             $this->assertStringContainsString($kelas, $html);
         }
         $this->assertStringContainsString('>AD<', $html);
@@ -215,6 +255,29 @@ class KomponenDasborTest extends TestCase
         $this->assertStringContainsString('>SN<', $this->html('<x-ui.avatar nama="Siti Nur Aini" />'));
         $this->assertStringContainsString('>B<', $this->html('<x-ui.avatar nama="budi" />'));
         $this->assertStringContainsString('>?<', $this->html('<x-ui.avatar nama="" />'));
+
+        $kecil = $this->html('<x-ui.avatar nama="Admin Dinkes" size="sm" />');
+        $this->assertStringContainsString('size-9', $kecil);
+        $this->assertStringNotContainsString('size-10', $kecil);
+    }
+
+    public function test_avatar_warna_dari_hash_nama_lima_pasangan(): void
+    {
+        $pasangan = [
+            'bg-primary-container text-on-primary-container', 'bg-error-container text-on-error-container',
+            'bg-success-container text-on-success-container', 'bg-tertiary-container text-on-tertiary-container',
+            'bg-warning-container text-on-warning-container',
+        ];
+        foreach (['Admin Dinkes', 'Siti Aminah', 'budi', 'Maria Kambu', 'Yosep Mayor', ''] as $nama) {
+            $html = $this->html('<x-ui.avatar :nama="$n" />', ['n' => $nama]);
+            $cocok = false;
+            foreach ($pasangan as $kelas) {
+                if (str_contains($html, $kelas)) {
+                    $cocok = true;
+                }
+            }
+            $this->assertTrue($cocok, 'Avatar "'.$nama.'" harus memakai salah satu dari lima pasangan.');
+        }
     }
 
     // ---------- kolom cari ----------
@@ -253,7 +316,7 @@ class KomponenDasborTest extends TestCase
     {
         $html = $this->html('<x-ui.tombol nada="hantu" tipe="submit" ikon="log-out" ikon-ukuran="20" aria-label="Keluar" />');
 
-        $this->assertStringContainsString('size-10 px-0', $html);
+        $this->assertStringContainsString('aspect-square px-0', $html);
         $this->assertStringContainsString('width="20"', $html);
         $this->assertStringContainsString('aria-label="Keluar"', $html);
 

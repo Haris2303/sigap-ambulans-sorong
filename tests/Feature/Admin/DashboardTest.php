@@ -63,7 +63,8 @@ class DashboardTest extends TestCase
         $this->assertStringContainsString('<h1 class="text-page-title">Dasbor</h1>', $html);
         $this->assertStringContainsString('Ringkasan pesanan dan ketersediaan Faskes. Angka diperbarui otomatis.', $html);
         $this->assertStringContainsString('text-body-l text-on-surface-variant', $html);
-        $this->assertMatchesRegularExpression('/<a href="'.preg_quote(route('admin.ketersediaan.index'), '/').'"[^>]*bg-secondary-container text-on-secondary-container[^>]*>\s*Kelola ketersediaan\s*<\/a>/', $html);
+        // Tombol tonal (nada="tonal") kini varian secondary arah B (DESIGN.md 6.2).
+        $this->assertMatchesRegularExpression('/<a href="'.preg_quote(route('admin.ketersediaan.index'), '/').'"[^>]*bg-surface-container text-on-surface border border-outline-variant[^>]*>\s*Kelola ketersediaan\s*<\/a>/', $html);
     }
 
     public function test_empat_kartu_statistik_dengan_angka_label_keterangan_dan_ikon(): void

@@ -76,9 +76,10 @@ class KontakDaruratTest extends TestCase
 
         $this->assertStringContainsString('<div class="mt-6">', $html);
         $this->assertStringContainsString('<p class="mb-2 text-body-m text-on-surface-variant">Keadaan darurat?</p>', $html);
-        $this->assertMatchesRegularExpression('/<a href="tel:0951123456"[^>]*border border-outline text-primary[^>]*>\s*<svg[^>]*>.*?<\/svg>\s*Hubungi Dinkes di 0951 123456\s*<\/a>/s', $html);
+        $this->assertMatchesRegularExpression('/<a href="tel:0951123456"[^>]*bg-surface-container text-on-surface border border-outline-variant[^>]*>\s*<svg[^>]*>.*?<\/svg>\s*Hubungi Dinkes di 0951 123456\s*<\/a>/s', $html);
         $this->assertStringContainsString('target-sentuh', $html);
-        $this->assertStringContainsString('min-h-10', $html);
+        $this->assertStringContainsString('min-h-12', $html);
+        $this->assertStringContainsString('lg:min-h-11', $html);
     }
 
     public function test_varian_tombol_tanpa_kalimat_pengantar_tidak_membuat_paragraf_kosong(): void

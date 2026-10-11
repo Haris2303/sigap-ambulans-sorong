@@ -43,6 +43,8 @@ class TampilanTest extends TestCase
             'warning' => ['warning', 'bg-warning-container text-on-warning-container'],
             'success' => ['success', 'bg-success-container text-on-success-container'],
             'error' => ['error', 'bg-error-container text-on-error-container'],
+            'tertiary' => ['tertiary', 'bg-tertiary-container text-on-tertiary-container'],
+            'neutral' => ['neutral', 'bg-secondary-container text-on-secondary-container'],
         ];
     }
 
@@ -52,9 +54,10 @@ class TampilanTest extends TestCase
         $this->assertSame($kelas, Tampilan::kelasChip($tone));
     }
 
-    public function test_kelas_chip_menolak_nada_di_luar_empat_pasangan(): void
+    public function test_kelas_chip_menolak_nada_di_luar_enam_pasangan(): void
     {
         $this->expectException(InvalidArgumentException::class);
+        $this->expectExceptionMessage('primary, warning, success, error, tertiary, neutral');
 
         Tampilan::kelasChip('ungu');
     }
@@ -70,5 +73,26 @@ class TampilanTest extends TestCase
         }
         // Hanya tiga nada itu: tidak ada kelas lain yang menyelinap.
         $this->assertSame(6, count(explode(' ', $dari)));
+    }
+
+    public static function namaUntukWarnaAvatar(): array
+    {
+        return [
+            'primary (crc32 % 5 == 0)' => ['Admin Dinkes', 'bg-primary-container text-on-primary-container'],
+            'error' => ['Maria Kambu', 'bg-error-container text-on-error-container'],
+            'success' => ['budi', 'bg-success-container text-on-success-container'],
+            'tertiary' => ['Siti Aminah', 'bg-tertiary-container text-on-tertiary-container'],
+        ];
+    }
+
+    #[DataProvider('namaUntukWarnaAvatar')]
+    public function test_warna_avatar_dari_hash_nama(string $nama, string $kelas): void
+    {
+        $this->assertSame($kelas, Tampilan::warnaAvatar($nama));
+    }
+
+    public function test_warna_avatar_sama_untuk_nama_yang_sama(): void
+    {
+        $this->assertSame(Tampilan::warnaAvatar('Budi Santoso'), Tampilan::warnaAvatar('Budi Santoso'));
     }
 }
