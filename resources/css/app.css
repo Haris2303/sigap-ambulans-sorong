@@ -1,0 +1,37 @@
+/* Dikunci: dibuat oleh runner dari agent/templates/app.css. CSS tambahan ditulis di tambahan.css. */
+@import 'tailwindcss';
+@import '@fontsource-variable/public-sans/wght.css';
+@import './design-tokens.css';
+@import './tambahan.css';
+
+@source '../views';
+@source '../../storage/framework/views/*.php';
+
+@layer base {
+    html {
+        -webkit-text-size-adjust: 100%;
+    }
+
+    body {
+        @apply bg-canvas font-sans text-body text-on-surface antialiased;
+    }
+
+    :where(a, button, input, select, textarea, summary, [tabindex]):focus-visible {
+        @apply outline-2 outline-offset-2 outline-primary;
+    }
+
+    ::selection {
+        @apply bg-primary-soft text-on-surface;
+    }
+
+    @media (prefers-reduced-motion: reduce) {
+        *,
+        ::before,
+        ::after {
+            animation-duration: 0.01ms !important;
+            animation-iteration-count: 1 !important;
+            transition-duration: 0.01ms !important;
+            scroll-behavior: auto !important;
+        }
+    }
+}

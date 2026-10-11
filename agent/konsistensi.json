@@ -1,0 +1,279 @@
+{
+  "versi": 2,
+  "keterangan": "Dijalankan runner setelah tiap sesi dan oleh KonsistensiTest. Tipe larang: pola tidak boleh cocok pada baris mana pun. Tipe awal: baris non-kosong pertama (komentar Blade satu baris diabaikan) harus cocok. Kecuali = regex terhadap path relatif berformat /. pola = sintaks .NET (runner); pola_php (opsional) = padanan sintaks PCRE untuk KonsistensiTest, bila tidak ada dipakai pola.",
+  "aturan": [
+    {
+      "id": "istilah-baku",
+      "tipe": "larang",
+      "pesan": "Istilah terlarang. Pakai istilah baku (RANCANGAN_ALUR bagian 2): sopir, ambulans, faskes.",
+      "folder": [
+        "app",
+        "config",
+        "database",
+        "lang",
+        "public/js",
+        "resources/views",
+        "resources/js",
+        "routes",
+        "tests"
+      ],
+      "ekstensi": [
+        ".php",
+        ".js"
+      ],
+      "kecuali": [
+        "^tests/Feature/Arsitektur/"
+      ],
+      "pola": "(?i)pengemudi|supir|ambulan(?!s)|rumah_sakit_id|rs_tujuan|(?<![a-z])rs_id|rumahsakit"
+    },
+    {
+      "id": "warna-mentah",
+      "tipe": "larang",
+      "pesan": "Warna di luar token DESIGN.md (palet bawaan, white/black, atau nilai sembarang). Pakai token: bg-surface, text-on-surface-muted, border-line, bg-primary, dst.",
+      "folder": [
+        "resources/views"
+      ],
+      "ekstensi": [
+        ".php"
+      ],
+      "kecuali": [
+        "^resources/views/pdf/"
+      ],
+      "pola": "\\b(?:bg|text|border|ring|from|to|via|fill|stroke|divide|outline|decoration|accent|caret|shadow|placeholder)-(?:red|orange|amber|yellow|lime|green|emerald|teal|cyan|sky|blue|indigo|violet|purple|fuchsia|pink|rose|slate|gray|zinc|neutral|stone)-\\d{2,3}\\b|\\b(?:bg|text|border|ring|fill|stroke|divide|outline)-(?:white|black)\\b|-\\[#[0-9a-fA-F]{3,8}\\]|-\\[(?:rgb|hsl|oklch)"
+    },
+    {
+      "id": "gaya-dilarang",
+      "tipe": "larang",
+      "pesan": "Gaya yang dilarang DESIGN.md (gradien, blur, bayangan/sudut/teks di luar token, tracking, uppercase, italic, bold, animasi/efek angkat). Lihat DESIGN.md bagian Do's and Don'ts.",
+      "folder": [
+        "resources/views"
+      ],
+      "ekstensi": [
+        ".php"
+      ],
+      "kecuali": [
+        "^resources/views/pdf/"
+      ],
+      "pola": "(?<![\\w-])(?:bg-(?:linear|radial|conic|gradient)[\\w./-]*|(?:from|via|to)-(?:primary|surface|canvas|danger|warning|success|neutral|on|line|control|scrim)[\\w./-]*|(?:backdrop-)?blur(?:-(?:xs|sm|md|lg|xl|2xl|3xl|none))?|drop-shadow[\\w-]*|shadow-(?:xs|sm|md|lg|xl|2xl|inner|none)|rounded(?:-[a-z]{1,2})?-(?:xl|2xl|3xl|4xl)|tracking-[a-z]+|uppercase|italic|font-(?:bold|extrabold|black|thin|extralight|light)|text-(?:xs|sm|base|lg|xl|[2-9]xl)|animate-(?:bounce|ping|pulse)|hover:-?(?:translate|scale)-[\\w./-]+)(?![\\w-])"
+    },
+    {
+      "id": "gaya-mentah",
+      "tipe": "larang",
+      "pesan": "Gaya/struktur dokumen mentah di halaman (<style>, style=, <html>, <head>, <body>). Gunakan layout & komponen.",
+      "folder": [
+        "resources/views"
+      ],
+      "ekstensi": [
+        ".php"
+      ],
+      "kecuali": [
+        "^resources/views/components/",
+        "^resources/views/pdf/"
+      ],
+      "pola": "<style\\b|\\sstyle\\s*=|<html\\b|<head\\b|<body\\b"
+    },
+    {
+      "id": "sumber-luar",
+      "tipe": "larang",
+      "pesan": "Tidak boleh ada <script src>, <link href=http>, atau CDN/font eksternal. Semua aset lewat Vite (@vite) dan paket npm yang dipasang runner.",
+      "folder": [
+        "resources/views",
+        "resources/js",
+        "resources/css"
+      ],
+      "ekstensi": [
+        ".php",
+        ".js",
+        ".css"
+      ],
+      "kecuali": [
+        "^resources/views/pdf/"
+      ],
+      "pola": "<script\\b[^>]*\\bsrc\\s*=|<link\\b[^>]*\\bhref\\s*=\\s*[\\\"']https?:|https?://(?:cdn\\.|unpkg\\.|cdnjs\\.|code\\.jquery|fonts\\.(?:googleapis|bunny|gstatic))"
+    },
+    {
+      "id": "elemen-mentah",
+      "tipe": "larang",
+      "pesan": "Elemen form/tabel/tombol mentah di halaman. Pakai <x-ui.tombol>, <x-ui.tabel>, <x-ui.isian>, <x-ui.pilihan>, <x-ui.area-teks> (input hidden boleh).",
+      "folder": [
+        "resources/views"
+      ],
+      "ekstensi": [
+        ".php"
+      ],
+      "kecuali": [
+        "^resources/views/components/",
+        "^resources/views/pdf/"
+      ],
+      "pola": "<(?:button|table|select|textarea)\\b|<input\\b(?![^>]*\\btype\\s*=\\s*[\\\"']hidden[\\\"'])"
+    },
+    {
+      "id": "url-ketikan",
+      "tipe": "larang",
+      "pesan": "URL ditulis tangan di view. Pakai route() atau asset() (juga untuk fetch via atribut data-*).",
+      "folder": [
+        "resources/views"
+      ],
+      "ekstensi": [
+        ".php"
+      ],
+      "kecuali": [
+        "^resources/views/pdf/"
+      ],
+      "pola": "\\b(?:href|action|src)\\s*=\\s*[\\\"']/(?!/)|\\bfetch\\s*\\(\\s*[\\\"']/"
+    },
+    {
+      "id": "awal-halaman",
+      "tipe": "awal",
+      "pesan": "Halaman harus diawali <x-layouts.app|publik|auth> (fragmen @include diawali garis bawah _ dikecualikan).",
+      "folder": [
+        "resources/views/publik",
+        "resources/views/auth",
+        "resources/views/warga",
+        "resources/views/admin",
+        "resources/views/petugas",
+        "resources/views/sopir",
+        "resources/views/errors"
+      ],
+      "ekstensi": [
+        ".blade.php"
+      ],
+      "kecuali": [
+        "/_[^/]*$",
+        "^resources/views/pdf/"
+      ],
+      "pola": "^\\s*<x-layouts\\.(?:app|publik|auth)\\b"
+    },
+    {
+      "id": "emoji",
+      "tipe": "larang",
+      "pesan": "Emoji/simbol dingbat dilarang di antarmuka. Pakai <x-ui.ikon> (Lucide) bila ikon memang menambah arti.",
+      "folder": [
+        "app",
+        "resources/views",
+        "resources/js",
+        "lang",
+        "routes",
+        "database/seeders"
+      ],
+      "ekstensi": [
+        ".php",
+        ".js"
+      ],
+      "kecuali": [],
+      "pola": "[☀-➿⭐⭕]|[\\uD83C-\\uD83E][\\uDC00-\\uDFFF]",
+      "pola_php": "[\\x{2600}-\\x{27BF}\\x{2B50}\\x{2B55}\\x{1F000}-\\x{1FAFF}]"
+    },
+    {
+      "id": "tanda-templat",
+      "tipe": "larang",
+      "pesan": "Tanda gaya templat: panah, titik tengah, atau em dash berspasi. Tulis kalimat biasa (DESIGN.md bagian Writing).",
+      "folder": [
+        "app",
+        "resources/views",
+        "resources/js",
+        "lang"
+      ],
+      "ekstensi": [
+        ".php",
+        ".js"
+      ],
+      "kecuali": [],
+      "pola": "→|·| — ",
+      "pola_php": "\\x{2192}|\\x{00B7}| \\x{2014} "
+    },
+    {
+      "id": "sisa-debug",
+      "tipe": "larang",
+      "pesan": "Sisa debug / penanda belum selesai (dd, dump, var_dump, print_r, ray, console.log, TODO, FIXME).",
+      "folder": [
+        "app",
+        "resources/views",
+        "resources/js",
+        "routes",
+        "public/js"
+      ],
+      "ekstensi": [
+        ".php",
+        ".js"
+      ],
+      "kecuali": [],
+      "pola": "\\b(?:dd|dump|var_dump|print_r|ray)\\s*\\(|\\bconsole\\.(?:log|debug)\\s*\\(|\\b(?:TODO|FIXME|XXX)\\b"
+    },
+    {
+      "id": "literal-status",
+      "tipe": "larang",
+      "pesan": "Literal status pesanan di luar Enum. Pakai PesananStatus::<Kasus> dan ->label().",
+      "folder": [
+        "app",
+        "resources/views",
+        "routes"
+      ],
+      "ekstensi": [
+        ".php"
+      ],
+      "kecuali": [
+        "^app/Enums/"
+      ],
+      "pola": "[\\\"'](?:menunggu|terverifikasi|ditugaskan|diterima|dalam_perjalanan|selesai|ditolak|dibatalkan)[\\\"']"
+    },
+    {
+      "id": "mutasi-status",
+      "tipe": "larang",
+      "pesan": "Controller/Http tidak boleh mengubah status/sopir_id/ambulans_id langsung. Gunakan PesananWorkflow.",
+      "folder": [
+        "app/Http"
+      ],
+      "ekstensi": [
+        ".php"
+      ],
+      "kecuali": [],
+      "pola": "->(?:status|sopir_id|ambulans_id)\\s*=(?![=>])"
+    },
+    {
+      "id": "gaya-model",
+      "tipe": "larang",
+      "pesan": "Model memakai atribut Eloquent Laravel 13 (#[Table(name: '...')], #[Fillable([...])], #[Hidden([...])]) dan method casts(), persis seperti app/Models/User.php. Bukan properti $table/$fillable/$hidden/$casts.",
+      "folder": [
+        "app/Models"
+      ],
+      "ekstensi": [
+        ".php"
+      ],
+      "kecuali": [],
+      "pola": "\\bprotected\\s+\\$(?:table|fillable|guarded|hidden|casts|visible|appends)\\b"
+    },
+    {
+      "id": "warna-css",
+      "tipe": "larang",
+      "pesan": "tambahan.css: warna hanya lewat var(--color-...). Dilarang heksadesimal, rgb()/hsl()/oklch(), gradien, box-shadow, @keyframes, animation.",
+      "folder": [
+        "resources/css"
+      ],
+      "ekstensi": [
+        ".css"
+      ],
+      "kecuali": [
+        "/(?:app|design-tokens)\\.css$"
+      ],
+      "pola": "#[0-9a-fA-F]{3,8}\\b|\\b(?:rgb|rgba|hsl|hsla|oklch|oklab|lab|lch|color-mix)\\(|-gradient\\(|\\bbox-shadow\\b|@keyframes|\\banimation\\s*:"
+    },
+    {
+      "id": "tailwind-lama",
+      "tipe": "larang",
+      "pesan": "Sintaks Tailwind v3 yang sudah tidak berlaku di v4 (@tailwind, *-opacity-*, flex-shrink/grow, overflow-ellipsis, outline-none -> outline-hidden, tailwind.config).",
+      "folder": [
+        "resources/views",
+        "resources/css"
+      ],
+      "ekstensi": [
+        ".php",
+        ".css"
+      ],
+      "kecuali": [
+        "/(?:app|design-tokens)\\.css$"
+      ],
+      "pola": "@tailwind\\s|(?<![\\w-])(?:bg|text|border|divide|ring|placeholder)-opacity-\\d|(?<![\\w-])flex-(?:shrink|grow)(?:-\\d)?(?![\\w-])|(?<![\\w-])overflow-ellipsis(?![\\w-])|(?<![\\w-])outline-none(?![\\w-])|tailwind\\.config"
+    }
+  ]
+}
