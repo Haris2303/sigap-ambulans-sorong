@@ -2,6 +2,8 @@
 
 namespace Database\Factories;
 
+use App\Enums\Role;
+use App\Models\Faskes;
 use App\Models\User;
 use Illuminate\Database\Eloquent\Factories\Factory;
 use Illuminate\Support\Facades\Hash;
@@ -29,17 +31,54 @@ class UserFactory extends Factory
             'email' => fake()->unique()->safeEmail(),
             'email_verified_at' => now(),
             'password' => static::$password ??= Hash::make('password'),
+            'role' => Role::Warga,
+            'aktif' => true,
+            'no_telepon' => '08'.fake()->numerify('##########'),
             'remember_token' => Str::random(10),
         ];
     }
 
-    /**
-     * Indicate that the model's email address should be unverified.
-     */
     public function unverified(): static
     {
         return $this->state(fn (array $attributes) => [
             'email_verified_at' => null,
         ]);
+    }
+
+    public function warga(): static
+    {
+        return $this->state(['role' => Role::Warga]);
+    }
+
+    public function admin(): static
+    {
+        return $this->state(['role' => Role::Admin]);
+    }
+
+    public function petugas(?Faskes $faskes = null): static
+    {
+        return $this->state(fn () => [
+            'role' => Role::PetugasFaskes,
+            'faskes_id' => $faskes?->id ?? Faskes::factory(),
+        ]);
+    }
+
+    public function sopir(?Faskes $faskes = null): static
+    {
+        return $this->state(fn () => [
+            'role' => Role::Sopir,
+            'faskes_id' => $faskes?->id ?? Faskes::factory(),
+            'sedang_online' => false,
+        ]);
+    }
+
+    public function online(): static
+    {
+        return $this->state(['sedang_online' => true]);
+    }
+
+    public function nonaktif(): static
+    {
+        return $this->state(['aktif' => false]);
     }
 }
