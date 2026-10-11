@@ -13,6 +13,7 @@ use App\Http\Controllers\Auth\RegisterController;
 use App\Http\Controllers\Publik\BerandaController;
 use App\Http\Controllers\Publik\FaskesController;
 use App\Http\Controllers\Publik\KatalogUiController;
+use App\Http\Controllers\Sopir\DashboardController as SopirDashboardController;
 use App\Http\Controllers\Warga\BerandaController as WargaBerandaController;
 use App\Http\Controllers\Warga\PesananController as WargaPesananController;
 use Illuminate\Support\Facades\Route;
@@ -41,6 +42,18 @@ Route::middleware(['auth', 'role:warga'])->prefix('warga')->name('warga.')->grou
     Route::get('/pesanan/{pesanan}/status', [WargaPesananController::class, 'status'])->name('pesanan.status');
     Route::get('/pesanan/{pesanan}', [WargaPesananController::class, 'show'])->name('pesanan.show');
     Route::put('/pesanan/{pesanan}/batal', [WargaPesananController::class, 'batalkan'])->name('pesanan.batalkan');
+});
+
+// Sopir
+Route::middleware(['auth', 'role:sopir'])->prefix('sopir')->name('sopir.')->group(function () {
+    Route::get('/', [SopirDashboardController::class, 'dashboard'])->name('dashboard');
+    Route::post('/online', [SopirDashboardController::class, 'online'])->name('online');
+    Route::post('/lokasi', [SopirDashboardController::class, 'lokasi'])->middleware('throttle:120,1')->name('lokasi');
+    Route::get('/penugasan', [SopirDashboardController::class, 'penugasan'])->name('penugasan');
+    Route::post('/pesanan/{pesanan}/terima', [SopirDashboardController::class, 'terima'])->name('pesanan.terima');
+    Route::post('/pesanan/{pesanan}/tolak', [SopirDashboardController::class, 'tolak'])->name('pesanan.tolak');
+    Route::post('/pesanan/{pesanan}/berangkat', [SopirDashboardController::class, 'berangkat'])->name('pesanan.berangkat');
+    Route::post('/pesanan/{pesanan}/selesai', [SopirDashboardController::class, 'selesaikan'])->name('pesanan.selesai');
 });
 
 // Dinkes

@@ -7,6 +7,8 @@ return [
         'admin_detik' => 10,
         'sopir_detik' => 8,
         'warga_detik' => 10,
+        // Sopir mengirim posisi GPS tiap sekian detik selama online.
+        'sopir_lokasi_detik' => 15,
     ],
 
     // Data ketersediaan Faskes lebih tua dari ini ditandai "Data lama".

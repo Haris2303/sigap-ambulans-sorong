@@ -96,6 +96,38 @@ document.addEventListener('DOMContentLoaded', () => {
     });
 });
 
+// Dasbor Sopir: polling penugasan (notifikasi saat penugasan baru) dan kirim GPS selama online.
+document.addEventListener('DOMContentLoaded', () => {
+    const akar = document.querySelector('[data-sopir]');
+    if (!akar) {
+        return;
+    }
+    Sigap.polling(akar.dataset.urlPenugasan, Number(akar.dataset.detik || 8), (hasil) => {
+        const p = hasil.data?.penugasan;
+        const sekarang = p ? `${p.id}:${p.status}` : '';
+        if (sekarang === akar.dataset.penugasan) {
+            return;
+        }
+        if (p && akar.dataset.penugasan === '') {
+            Sigap.notifikasi('Penugasan baru', `${p.kode}: ${p.lokasi_jemput}`);
+        }
+        akar.dataset.penugasan = sekarang;
+        setTimeout(() => window.location.reload(), 1500);
+    });
+    if (akar.dataset.online === '1') {
+        const kirimPosisi = () => Sigap.lokasiSaya(({ lat, lng }) => Sigap.kirim(akar.dataset.urlLokasi, { lat, lng }));
+        kirimPosisi();
+        setInterval(kirimPosisi, Number(akar.dataset.detikLokasi || 15) * 1000);
+    }
+});
+
+// Minta izin notifikasi peramban dari tindakan pengguna (mis. tombol Online).
+document.addEventListener('click', (e) => {
+    if (e.target.closest('[data-izin-notifikasi]') && 'Notification' in window && Notification.permission === 'default') {
+        Notification.requestPermission();
+    }
+});
+
 // Dialog konfirmasi bersama untuk semua elemen [data-konfirmasi].
 document.addEventListener('click', (e) => {
     const pemicu = e.target.closest('[data-konfirmasi]');
@@ -113,7 +145,14 @@ document.addEventListener('click', (e) => {
     e.preventDefault();
     dialog.querySelector('[data-dialog-judul]').textContent = pemicu.dataset.judul || 'Konfirmasi';
     dialog.querySelector('[data-dialog-pesan]').textContent = pemicu.dataset.konfirmasi;
-    dialog.querySelector('[data-dialog-aksi]').textContent = pemicu.dataset.aksi || pemicu.textContent.trim();
+    const aksi = dialog.querySelector('[data-dialog-aksi]');
+    aksi.textContent = pemicu.dataset.aksi || pemicu.textContent.trim();
+    // Nada tombol aksi: bahaya (bawaan) atau utama.
+    const utama = pemicu.dataset.nada === 'utama';
+    aksi.classList.toggle('bg-primary', utama);
+    aksi.classList.toggle('hover:bg-primary-hover', utama);
+    aksi.classList.toggle('bg-danger', !utama);
+    aksi.classList.toggle('hover:bg-danger-hover', !utama);
     dialog.pemicu = pemicu;
     dialog.showModal();
 });
