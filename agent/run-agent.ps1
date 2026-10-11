@@ -699,7 +699,7 @@ function Test-NodeOk {
 }
 
 function Test-NpmReady {
-    foreach ($d in @('vite', 'tailwindcss', 'laravel-vite-plugin', '@tailwindcss/vite', '@google/design.md', '@fontsource-variable/public-sans', 'lucide-static', 'yaml', 'leaflet', 'leaflet-routing-machine')) {
+    foreach ($d in @('vite', 'tailwindcss', 'laravel-vite-plugin', '@tailwindcss/vite', '@google/design.md', '@fontsource-variable/roboto', 'lucide-static', 'yaml', 'leaflet', 'leaflet-routing-machine')) {
         if (-not (Test-Path -LiteralPath (Join-P $script:Root @('node_modules', $d)) -PathType Container)) { return $false }
     }
     return $true
@@ -871,7 +871,7 @@ function Initialize-Project {
     if ($CheckOnly) {
         if ($needSkeleton) { Write-Log 'Akan membuat kerangka Laravel 13 (composer create-project) di folder ini.' 'WARN' }
         if ($needDompdf) { Write-Log 'Akan memasang barryvdh/laravel-dompdf.' 'WARN' }
-        if ($needNpm) { Write-Log 'Akan memasang paket npm (Tailwind 4, Vite, font Public Sans, ikon Lucide, Leaflet, linter DESIGN.md).' 'WARN' }
+        if ($needNpm) { Write-Log 'Akan memasang paket npm (Tailwind 4, Vite, font Roboto, ikon Lucide, Leaflet, linter DESIGN.md).' 'WARN' }
         if ($needFront) { Write-Log 'Akan menulis app.css/vite.config.js, menyalin ikon, membangun token dari DESIGN.md, dan menjalankan npm run build.' 'WARN' }
         if ($needEnv) { Write-Log ('Akan mengatur .env, membuat database baru "' + $DbName + '", dan menjalankan migrate (database baru).') 'WARN' }
         $m = Find-Executable -Names @('mysql') -PreferDirs @($MysqlBinDir) -FallbackDirs (Get-MysqlDirs)
@@ -936,7 +936,7 @@ function Initialize-Project {
             Write-Log ('npm install gagal (kode ' + $r.ExitCode + '): ' + (Get-TailText ($r.Stdout + [Environment]::NewLine + $r.Stderr + $r.Error) 15)) 'ERROR'
             return $false
         }
-        $r = Invoke-Proc -File $script:Npm -ArgList @('install', '--no-fund', '--no-audit', '--save-dev', '@google/design.md', '@fontsource-variable/public-sans', 'lucide-static', 'yaml') -EnvVars $nenv -TimeoutSeconds 1800 -HeartbeatSeconds 60 -HeartbeatLabel 'npm'
+        $r = Invoke-Proc -File $script:Npm -ArgList @('install', '--no-fund', '--no-audit', '--save-dev', '@google/design.md', '@fontsource-variable/roboto', 'lucide-static', 'yaml') -EnvVars $nenv -TimeoutSeconds 1800 -HeartbeatSeconds 60 -HeartbeatLabel 'npm'
         if ($r.ExitCode -ne 0) {
             Write-Log ('npm install (dev) gagal (kode ' + $r.ExitCode + '): ' + (Get-TailText ($r.Stdout + [Environment]::NewLine + $r.Stderr + $r.Error) 15)) 'ERROR'
             return $false

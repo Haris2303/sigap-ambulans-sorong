@@ -1,6 +1,58 @@
 /*
  * CSS tambahan (boleh diubah agen). Aturan:
- * - Hanya bila Tailwind + komponen Blade tidak cukup (mis. penyesuaian Leaflet).
+ * - Hanya bila Tailwind + komponen Blade tidak cukup (mis. penyesuaian Leaflet, lapisan keadaan).
  * - Warna hanya lewat variabel token: var(--color-primary), dst.
- * - Tanpa warna mentah, tanpa bayangan baru, tanpa animasi.
+ * - Bayangan hanya none atau var(--shadow-level-1..3). Tanpa warna mentah, gradien, dan animasi.
  */
+
+/* Lapisan keadaan Material 3 (DESIGN.md bagian Interaction states): warna teks kontrol, opasitas dari token state. */
+.lapisan-keadaan {
+    position: relative;
+    isolation: isolate;
+}
+
+.lapisan-keadaan::before {
+    content: '';
+    position: absolute;
+    inset: 0;
+    z-index: -1;
+    border-radius: inherit;
+    background-color: currentColor;
+    opacity: 0;
+    pointer-events: none;
+    transition: opacity var(--motion-duration-short) var(--ease-standard);
+}
+
+@media (hover: hover) {
+    .lapisan-keadaan:hover::before {
+        opacity: var(--state-hover);
+    }
+}
+
+.lapisan-keadaan:focus-visible::before {
+    opacity: var(--state-focus);
+}
+
+.lapisan-keadaan:active::before {
+    opacity: var(--state-pressed);
+}
+
+.lapisan-keadaan:disabled::before,
+.lapisan-keadaan[aria-disabled='true']::before {
+    opacity: 0;
+}
+
+/* Area sentuh minimal 48px tanpa mengubah ukuran tampil kontrol. */
+.target-sentuh {
+    position: relative;
+}
+
+.target-sentuh::after {
+    content: '';
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    width: max(100%, var(--spacing-touch));
+    height: max(100%, var(--spacing-touch));
+    transform: translate(-50%, -50%);
+}
