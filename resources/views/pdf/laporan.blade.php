@@ -4,15 +4,16 @@
     <meta charset="utf-8">
     <title>Laporan SIGAP Ambulans</title>
     <style>
-        body { font-family: DejaVu Sans, sans-serif; font-size: 11px; color: #16212B; }
+        /* dompdf tidak memuat Tailwind atau variabel CSS: nilai di bawah adalah salinan statis token DESIGN.md (dijaga TokenDesainTest). Font Roboto tidak tersedia di dompdf, jadi DejaVu Sans. */
+        body { font-family: DejaVu Sans, sans-serif; font-size: 11px; color: #181C20; }
         h1 { font-size: 16px; margin: 0 0 4px 0; }
         h2 { font-size: 13px; margin: 18px 0 6px 0; }
         p { margin: 0 0 4px 0; }
         table { width: 100%; border-collapse: collapse; }
-        th, td { border: 1px solid #DCE1E6; padding: 4px 6px; text-align: left; }
-        th { background: #F3F5F7; }
+        th, td { border: 1px solid #C1C7CE; padding: 4px 6px; text-align: left; }
+        th { background: #F0F4F9; }
         .angka { text-align: right; }
-        .muted { color: #566472; }
+        .muted { color: #41484D; }
     </style>
 </head>
 <body>

@@ -1,6 +1,6 @@
 # Pengujian Black-Box
 
-Hasil dari eksekusi `php artisan test` pada 2026-10-11: **279 lulus, 0 gagal** (2079 assertion), database SQLite `:memory:`. Hasil "LULUS" di bawah berasal dari eksekusi itu. Tes tampilan, JavaScript, peta, GPS, polling, dan notifikasi peramban tidak dapat diuji agen (lihat `docs/HASIL_AKHIR.md`).
+Hasil dari eksekusi `php artisan test` pada 2026-10-11: **441 lulus, 0 gagal** (3465 assertion), database SQLite `:memory:`. Hasil "LULUS" di bawah berasal dari eksekusi itu. Tes tampilan, JavaScript, peta, GPS, polling, dan notifikasi peramban tidak dapat diuji agen (lihat `docs/HASIL_AKHIR.md`).
 
 Kelas: `Auth\AutentikasiTest`, `Warga\PesananWargaTest` (PW), `Admin\PesananAdminTest` (PA), `Services\PesananWorkflowTest` (WF), `Sopir\SopirTest` (SP), `Petugas\PetugasTest` (PT), `AlurPenuhTest` (AP).
 
@@ -51,3 +51,13 @@ Kelas: `Auth\AutentikasiTest`, `Warga\PesananWargaTest` (PW), `Admin\PesananAdmi
 | BB-43 | Tes asap | Semua route GET per peran | Dapat dibuka | `SmokeRouteTest::test_dinkes_membuka_semua_halaman_admin` dan tiga tes peran lain | LULUS |
 | BB-44 | Seeder idempoten | Seed dua kali | Jumlah baris sama | `SeederTest::test_seeder_idempoten_dua_kali_jumlah_baris_sama` | LULUS |
 | BB-45 | Konsistensi kode | Pindai aturan `konsistensi.json` | 0 pelanggaran | `KonsistensiTest::test_semua_aturan_konsistensi_terpenuhi` | LULUS |
+| BB-46 | Selesai hari ini menurut zona waktu | Pesanan selesai sebelum dan sesudah tengah malam WIT | Hanya yang selesai hari ini (Asia/Jayapura) dihitung | `RingkasanDasborTest::test_selesai_hari_ini_memakai_zona_waktu_aplikasi_asia_jayapura` | LULUS |
+| BB-47 | Grafik batang 7 hari | Pesanan di dalam dan di luar rentang | Tujuh hari termasuk hari ini, hari kosong bernilai 0 | `RingkasanDasborTest::test_batang_tujuh_hari_termasuk_hari_ini_dengan_hari_kosong_bernilai_nol` | LULUS |
+| BB-48 | Batas query dasbor | Dasbor dengan sedikit dan banyak data | Paling banyak 10 query dan jumlahnya sama | `RingkasanDasborTest::test_seluruh_dasbor_memakai_paling_banyak_sepuluh_query_tanpa_n_plus_satu` | LULUS |
+| BB-49 | Kartu statistik dasbor | Data demo kecil | Empat kartu dengan angka, label, keterangan, dan chip | `DashboardTest::test_empat_kartu_statistik_dengan_angka_label_keterangan_dan_ikon` | LULUS |
+| BB-50 | Geometri grafik | Data pratinjau (batang 1,0,0,0,0,0,1; donat 5,2,1,1,1) | Koordinat, `stroke-dasharray`, dan `stroke-dashoffset` sama dengan pratinjau | `BarGeometryTest::test_data_pratinjau_menghasilkan_geometri_yang_sama_dengan_pratinjau`, `DonutGeometryTest::test_data_pratinjau_menghasilkan_dasharray_dan_dashoffset_yang_sama_dengan_pratinjau` | LULUS |
+| BB-51 | Pencarian pesanan | `?q=` kode atau nama; `%`, `_`, tanda kutip | Hanya kode dan nama pasien; karakter khusus sebagai teks | `PesananAdminTest::test_pencarian_q_mencari_kode_dan_nama_pasien_tetapi_tidak_lokasi`, `test_pencarian_tidak_menganggap_wildcard_dan_tanda_kutip_sebagai_perintah` | LULUS |
+| BB-52 | Tab daftar pesanan | `?tab=perlu-tindakan`, `berjalan`, tidak dikenal | Menyaring status; tidak dikenal kembali ke Semua | `PesananAdminTest::test_tab_perlu_tindakan_dan_berjalan_menyaring_status` | LULUS |
+| BB-53 | Lonceng pesanan menunggu | Tiga pesanan menunggu | Label dan lencana menyebut 3 | `LayoutTest::test_lonceng_menghitung_pesanan_menunggu_verifikasi` | LULUS |
+| BB-54 | Kartu penugasan sopir | Penugasan aktif | Satu kartu besar dengan lokasi, kontak, dan tindakan | `SapuanD6Test::test_dasbor_sopir_menampilkan_penugasan_dalam_satu_kartu_besar` | LULUS |
+| BB-55 | Token dan CSS sinkron | `DESIGN.md` dan `design-tokens.css` | Warna, tipe, bayangan, dan PDF sesuai token | `TokenDesainTest::test_setiap_warna_di_design_md_ada_di_css_dan_sebaliknya`, `test_pdf_laporan_hanya_memakai_warna_token_design_md` | LULUS |

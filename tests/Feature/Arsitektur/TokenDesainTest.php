@@ -62,6 +62,18 @@ class TokenDesainTest extends TestCase
         }
     }
 
+    public function test_pdf_laporan_hanya_memakai_warna_token_design_md(): void
+    {
+        $pdf = (string) file_get_contents(base_path('resources/views/pdf/laporan.blade.php'));
+        preg_match_all('/#[0-9a-fA-F]{6}\b/', $pdf, $cocok);
+
+        $this->assertNotEmpty($cocok[0], 'PDF berdiri sendiri (dompdf) dan memakai nilai heksadesimal statis.');
+        $token = array_map('strtolower', array_values($this->warna));
+        foreach (array_unique($cocok[0]) as $warna) {
+            $this->assertContains(strtolower($warna), $token, 'Warna PDF di luar token DESIGN.md: '.$warna);
+        }
+    }
+
     public function test_warna_dasbor_canvas_dan_chart_sky(): void
     {
         $this->assertSame('#EBF1F6', $this->warna['canvas'] ?? null);
