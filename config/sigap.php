@@ -17,6 +17,10 @@ return [
         'pusat_lat' => -0.8762,
         'pusat_lng' => 131.2558,
         'zoom' => 13,
+        // Satu-satunya layanan jaringan eksternal: ubin OpenStreetMap, pencarian Nominatim, rute OSRM demo.
+        'ubin_url' => 'https://tile.openstreetmap.org/{z}/{x}/{y}.png',
+        'nominatim_url' => 'https://nominatim.openstreetmap.org',
+        'osrm_url' => 'https://router.project-osrm.org/route/v1',
     ],
 
     'per_halaman' => 20,
