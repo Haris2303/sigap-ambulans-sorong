@@ -9,5 +9,5 @@
             <x-ui.tombol tipe="submit" :blok="true">Masuk</x-ui.tombol>
         </form>
     </x-ui.panel>
-    <p class="mt-4 text-body-sm text-on-surface-muted">Belum punya akun? <a href="{{ route('register') }}" class="text-primary underline underline-offset-2 hover:text-primary-hover">Daftar sebagai Masyarakat</a></p>
+    <p class="mt-4 text-body-m text-on-surface-variant">Belum punya akun? <a href="{{ route('register') }}" class="text-primary underline underline-offset-2 hover:text-on-primary-container">Daftar sebagai Masyarakat</a></p>
 </x-layouts.auth>

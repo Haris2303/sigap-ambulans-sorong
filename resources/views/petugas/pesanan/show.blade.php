@@ -2,7 +2,7 @@
     <x-ui.judul-halaman :judul="'Pesanan '.$pesanan->kode">
         <x-slot:aksi>
             <x-ui.lencana-status :status="$pesanan->status" />
-            <x-ui.tombol nada="sekunder" ukuran="sm" ikon="arrow-left" :href="route('petugas.dashboard')">Dasbor</x-ui.tombol>
+            <x-ui.tombol nada="sekunder" ikon="arrow-left" :href="route('petugas.dashboard')">Dasbor</x-ui.tombol>
         </x-slot:aksi>
     </x-ui.judul-halaman>
 

@@ -8,9 +8,9 @@
         <x-ui.panel class="max-w-xl">
             <div class="flex items-center justify-between gap-4">
                 <div>
-                    <p class="text-label">Status Anda</p>
+                    <p class="text-label-l">Status Anda</p>
                     <x-ui.lencana :nada="$sopir->sedang_online ? 'sukses' : 'netral'">{{ $sopir->sedang_online ? 'Online' : 'Offline' }}</x-ui.lencana>
-                    <p class="mt-1 text-caption text-on-surface-muted">{{ $sopir->faskes?->nama ?? 'Belum terhubung ke Faskes' }}</p>
+                    <p class="mt-1 text-body-s text-on-surface-variant">{{ $sopir->faskes?->nama ?? 'Belum terhubung ke Faskes' }}</p>
                 </div>
                 <form method="POST" action="{{ route('sopir.online') }}">
                     @csrf
@@ -37,7 +37,7 @@
                                 @if ($penugasan->tingkat_darurat === \App\Enums\TingkatDarurat::Gawat)<x-ui.lencana nada="bahaya">{{ $penugasan->tingkat_darurat->label() }}</x-ui.lencana>@endif
                             </x-ui.rincian-baris>
                             <x-ui.rincian-baris label="Pasien">{{ $penugasan->nama_pasien }}</x-ui.rincian-baris>
-                            <x-ui.rincian-baris label="Kontak"><a href="tel:{{ $penugasan->no_telepon_kontak }}" class="tabular-nums text-primary underline underline-offset-2 hover:text-primary-hover">{{ $penugasan->no_telepon_kontak }}</a></x-ui.rincian-baris>
+                            <x-ui.rincian-baris label="Kontak"><a href="tel:{{ $penugasan->no_telepon_kontak }}" class="tabular-nums text-primary underline underline-offset-2 hover:text-on-primary-container">{{ $penugasan->no_telepon_kontak }}</a></x-ui.rincian-baris>
                             <x-ui.rincian-baris label="Lokasi jemput">{{ $penugasan->lokasi_jemput }}</x-ui.rincian-baris>
                             <x-ui.rincian-baris label="Faskes tujuan">{{ $penugasan->faskesTujuan?->nama ?? 'Belum ditentukan' }}</x-ui.rincian-baris>
                             <x-ui.rincian-baris label="Ambulans">{{ $penugasan->ambulans->plat_nomor }}</x-ui.rincian-baris>
@@ -58,7 +58,7 @@
                                     @csrf
                                     <x-ui.tombol tipe="submit" ukuran="lg" :blok="true">Terima</x-ui.tombol>
                                 </form>
-                                <form method="POST" action="{{ route('sopir.pesanan.tolak', $penugasan) }}" class="mt-6 space-y-3 border-t border-line pt-4">
+                                <form method="POST" action="{{ route('sopir.pesanan.tolak', $penugasan) }}" class="mt-6 space-y-3 border-t border-outline-variant pt-4">
                                     @csrf
                                     <x-ui.area-teks nama="alasan" label="Alasan menolak" :wajib="true" />
                                     <x-ui.tombol nada="bahaya" tipe="submit" :blok="true" konfirmasi="Penugasan dikembalikan ke Dinkes." data-judul="Tolak penugasan?" data-aksi="Tolak">Tolak</x-ui.tombol>

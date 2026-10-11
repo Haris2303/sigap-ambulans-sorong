@@ -30,7 +30,7 @@
             </x-slot:kepala>
             @foreach ($daftar as $f)
                 <tr>
-                    <td><a href="{{ route('admin.faskes.edit', $f) }}" class="text-primary underline underline-offset-2 hover:text-primary-hover">{{ $f->nama }}</a></td>
+                    <td><a href="{{ route('admin.faskes.edit', $f) }}" class="text-primary underline underline-offset-2 hover:text-on-primary-container">{{ $f->nama }}</a></td>
                     <td class="hidden md:table-cell">{{ $f->jenis->label() }}</td>
                     <td class="hidden tabular-nums md:table-cell">{{ $f->ambulans_count }}</td>
                     <td class="hidden lg:table-cell">
@@ -46,9 +46,9 @@
                             @csrf
                             @method('PUT')
                             @if ($f->aktif)
-                                <x-ui.tombol nada="hantu" ukuran="sm" tipe="submit" konfirmasi="Faskes tidak lagi muncul untuk penugasan dan Info Faskes." data-judul="Nonaktifkan {{ $f->nama }}?" data-aksi="Nonaktifkan">Nonaktifkan</x-ui.tombol>
+                                <x-ui.tombol nada="hantu" tipe="submit" konfirmasi="Faskes tidak lagi muncul untuk penugasan dan Info Faskes." data-judul="Nonaktifkan {{ $f->nama }}?" data-aksi="Nonaktifkan">Nonaktifkan</x-ui.tombol>
                             @else
-                                <x-ui.tombol nada="hantu" ukuran="sm" tipe="submit">Aktifkan</x-ui.tombol>
+                                <x-ui.tombol nada="hantu" tipe="submit">Aktifkan</x-ui.tombol>
                             @endif
                         </form>
                     </td>

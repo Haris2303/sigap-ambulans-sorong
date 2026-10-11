@@ -2,7 +2,7 @@
     <x-ui.judul-halaman :judul="'Pesanan '.$pesanan->kode">
         <x-slot:aksi>
             <x-ui.lencana-status :status="$pesanan->status" />
-            <x-ui.tombol nada="sekunder" ukuran="sm" ikon="arrow-left" :href="route('admin.pesanan.index')">Daftar pesanan</x-ui.tombol>
+            <x-ui.tombol nada="sekunder" ikon="arrow-left" :href="route('admin.pesanan.index')">Daftar pesanan</x-ui.tombol>
         </x-slot:aksi>
     </x-ui.judul-halaman>
 
@@ -13,7 +13,7 @@
                     <x-ui.rincian-baris label="Pemohon">{{ $pesanan->pemohon->name }}</x-ui.rincian-baris>
                     <x-ui.rincian-baris label="Email pemohon">{{ $pesanan->pemohon->email }}</x-ui.rincian-baris>
                     <x-ui.rincian-baris label="Nama pasien">{{ $pesanan->nama_pasien }}</x-ui.rincian-baris>
-                    <x-ui.rincian-baris label="Nomor kontak"><a href="tel:{{ $pesanan->no_telepon_kontak }}" class="tabular-nums text-primary underline underline-offset-2 hover:text-primary-hover">{{ $pesanan->no_telepon_kontak }}</a></x-ui.rincian-baris>
+                    <x-ui.rincian-baris label="Nomor kontak"><a href="tel:{{ $pesanan->no_telepon_kontak }}" class="tabular-nums text-primary underline underline-offset-2 hover:text-on-primary-container">{{ $pesanan->no_telepon_kontak }}</a></x-ui.rincian-baris>
                     <x-ui.rincian-baris label="Jenis layanan">{{ $pesanan->jenis_layanan->label() }}</x-ui.rincian-baris>
                     <x-ui.rincian-baris label="Tingkat darurat"><x-ui.lencana :nada="$pesanan->tingkat_darurat->nada()">{{ $pesanan->tingkat_darurat->label() }}</x-ui.lencana></x-ui.rincian-baris>
                     @if ($pesanan->catatan)
@@ -33,20 +33,20 @@
             </x-ui.bagian>
 
             <x-ui.bagian judul="Lokasi jemput" :jarak="false">
-                <p class="mb-3 text-body">{{ $pesanan->lokasi_jemput }}</p>
+                <p class="mb-3 text-body-l">{{ $pesanan->lokasi_jemput }}</p>
                 @if ($pesanan->lat_jemput !== null && $pesanan->lng_jemput !== null)
                     <x-peta.pelacak :lat="$pesanan->lat_jemput" :lng="$pesanan->lng_jemput" />
                 @else
-                    <p class="text-body-sm text-on-surface-muted">Pemohon tidak menandai titik di peta.</p>
+                    <p class="text-body-m text-on-surface-variant">Pemohon tidak menandai titik di peta.</p>
                 @endif
             </x-ui.bagian>
 
             <x-ui.bagian judul="Faskes tujuan" :jarak="false">
                 @if ($pesanan->faskesTujuan)
-                    <p class="mb-2 text-label">{{ $pesanan->faskesTujuan->nama }} ({{ $pesanan->faskesTujuan->jenis->label() }})</p>
+                    <p class="mb-2 text-label-l">{{ $pesanan->faskesTujuan->nama }} ({{ $pesanan->faskesTujuan->jenis->label() }})</p>
                     <x-ui.ketersediaan :faskes="$pesanan->faskesTujuan" />
                 @else
-                    <p class="text-body-sm text-on-surface-muted">Belum ditentukan oleh pemohon.</p>
+                    <p class="text-body-m text-on-surface-variant">Belum ditentukan oleh pemohon.</p>
                 @endif
             </x-ui.bagian>
 
@@ -69,7 +69,7 @@
         <div class="space-y-6">
             @if ($pesanan->status->final())
                 <x-ui.panel judul="Aksi">
-                    <p class="text-body-sm text-on-surface-muted">Pesanan sudah berstatus {{ $pesanan->status->label() }}. Tidak ada aksi yang tersedia.</p>
+                    <p class="text-body-m text-on-surface-variant">Pesanan sudah berstatus {{ $pesanan->status->label() }}. Tidak ada aksi yang tersedia.</p>
                 </x-ui.panel>
             @endif
 
@@ -78,7 +78,7 @@
                     <form method="POST" action="{{ route('admin.pesanan.verifikasi', $pesanan) }}" class="space-y-3">
                         @csrf
                         @method('PUT')
-                        <p class="text-body-sm text-on-surface-muted">Pastikan data pasien dan lokasi jemput sudah jelas.</p>
+                        <p class="text-body-m text-on-surface-variant">Pastikan data pasien dan lokasi jemput sudah jelas.</p>
                         <x-ui.tombol tipe="submit" :blok="true">Verifikasi</x-ui.tombol>
                     </form>
                 </x-ui.panel>
@@ -119,7 +119,7 @@
                     <form method="POST" action="{{ route('admin.pesanan.lepas', $pesanan) }}" class="space-y-3">
                         @csrf
                         @method('PUT')
-                        <p class="text-body-sm text-on-surface-muted">Pesanan kembali ke status Terverifikasi dan ambulans tersedia lagi.</p>
+                        <p class="text-body-m text-on-surface-variant">Pesanan kembali ke status Terverifikasi dan ambulans tersedia lagi.</p>
                         <x-ui.area-teks nama="alasan" label="Alasan (opsional)" />
                         <x-ui.tombol nada="bahaya" tipe="submit" :blok="true" konfirmasi="Penugasan ambulans dan sopir akan dilepas." data-judul="Lepas penugasan?" data-aksi="Lepas penugasan">Lepas penugasan</x-ui.tombol>
                     </form>

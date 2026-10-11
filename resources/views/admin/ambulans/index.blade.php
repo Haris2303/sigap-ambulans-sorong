@@ -30,7 +30,7 @@
             </x-slot:kepala>
             @foreach ($daftar as $a)
                 <tr>
-                    <td class="tabular-nums"><a href="{{ route('admin.ambulans.edit', $a) }}" class="text-primary underline underline-offset-2 hover:text-primary-hover">{{ $a->plat_nomor }}</a></td>
+                    <td class="tabular-nums"><a href="{{ route('admin.ambulans.edit', $a) }}" class="text-primary underline underline-offset-2 hover:text-on-primary-container">{{ $a->plat_nomor }}</a></td>
                     <td class="hidden md:table-cell">{{ $a->faskes->nama }}</td>
                     <td class="hidden md:table-cell">{{ $a->jenis->label() }}</td>
                     <td class="hidden lg:table-cell">{{ $a->sopirTetap?->name ?? '-' }}</td>

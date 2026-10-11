@@ -17,7 +17,7 @@
             @foreach ($daftar as $f)
                 @php $form = 'form-ketersediaan-'.$f->id; @endphp
                 <tr>
-                    <td class="align-top"><p class="text-label">{{ $f->nama }}</p><p class="text-caption text-on-surface-muted">{{ $f->jenis->label() }}</p></td>
+                    <td class="align-top"><p class="text-label-l">{{ $f->nama }}</p><p class="text-body-s text-on-surface-variant">{{ $f->jenis->label() }}</p></td>
                     <td>
                         <div class="flex gap-2">
                             <div class="w-20"><x-ui.isian nama="bed_igd_tersedia" :id-unik="$form.'-igd-tersedia'" label="Bed IGD tersedia {{ $f->nama }}" :label-tersembunyi="true" :tanpa-old="true" tipe="number" min="0" :nilai="$f->bed_igd_tersedia" :form="$form" /></div>
@@ -36,7 +36,7 @@
                         @if ($f->belumDiperbarui())
                             <x-ui.lencana nada="peringatan">Belum diperbarui</x-ui.lencana>
                         @else
-                            <x-ui.waktu :nilai="$f->ketersediaan_diperbarui_pada" class="text-caption" />
+                            <x-ui.waktu :nilai="$f->ketersediaan_diperbarui_pada" class="text-body-s" />
                             @if ($f->dataLama())
                                 <x-ui.lencana nada="peringatan">Data lama</x-ui.lencana>
                             @endif
@@ -46,7 +46,7 @@
                         <form id="{{ $form }}" method="POST" action="{{ route('admin.ketersediaan.update', $f) }}">
                             @csrf
                             @method('PUT')
-                            <x-ui.tombol nada="sekunder" ukuran="sm" tipe="submit" :form="$form">Simpan</x-ui.tombol>
+                            <x-ui.tombol nada="sekunder" tipe="submit" :form="$form">Simpan</x-ui.tombol>
                         </form>
                     </td>
                 </tr>

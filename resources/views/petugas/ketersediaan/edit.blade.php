@@ -15,7 +15,7 @@
                     <x-ui.isian nama="dokter_spesialis_tersedia" label="Dokter spesialis tersedia" tipe="number" min="0" :nilai="$faskes->dokter_spesialis_tersedia" :wajib="true" />
                 </div>
                 <x-ui.area-teks nama="dokter_spesialis_keterangan" label="Keterangan dokter spesialis" :nilai="$faskes->dokter_spesialis_keterangan" bantuan="Contoh: spesialis yang sedang bertugas." />
-                <p class="text-caption text-on-surface-muted">
+                <p class="text-body-s text-on-surface-variant">
                     @if ($faskes->belumDiperbarui())
                         Belum pernah diperbarui.
                     @else

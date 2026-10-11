@@ -35,7 +35,7 @@
                         <x-ui.rincian-baris label="Faskes asal">{{ $pesanan->ambulans->faskes->nama }}</x-ui.rincian-baris>
                         <x-ui.rincian-baris label="Sopir">{{ $pesanan->sopir->name }}</x-ui.rincian-baris>
                         @if ($pesanan->sopir->no_telepon)
-                            <x-ui.rincian-baris label="Telepon sopir"><a href="tel:{{ $pesanan->sopir->no_telepon }}" class="tabular-nums text-primary underline underline-offset-2 hover:text-primary-hover">{{ $pesanan->sopir->no_telepon }}</a></x-ui.rincian-baris>
+                            <x-ui.rincian-baris label="Telepon sopir"><a href="tel:{{ $pesanan->sopir->no_telepon }}" class="tabular-nums text-primary underline underline-offset-2 hover:text-on-primary-container">{{ $pesanan->sopir->no_telepon }}</a></x-ui.rincian-baris>
                         @endif
                     </x-ui.rincian>
                 </x-ui.bagian>
@@ -58,7 +58,7 @@
                     <form method="POST" action="{{ route('warga.pesanan.batalkan', $pesanan) }}" class="space-y-4">
                         @csrf
                         @method('PUT')
-                        <p class="text-body-sm text-on-surface-muted">Pesanan hanya dapat dibatalkan sebelum ambulans ditugaskan.</p>
+                        <p class="text-body-m text-on-surface-variant">Pesanan hanya dapat dibatalkan sebelum ambulans ditugaskan.</p>
                         <x-ui.area-teks nama="alasan" label="Alasan (opsional)" />
                         <x-ui.tombol nada="bahaya" tipe="submit" :blok="true" konfirmasi="Pesanan ini akan dibatalkan dan tidak dapat dipulihkan." data-judul="Batalkan pesanan?" data-aksi="Batalkan pesanan">Batalkan pesanan</x-ui.tombol>
                     </form>

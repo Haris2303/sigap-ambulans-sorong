@@ -11,5 +11,5 @@
             <x-ui.tombol tipe="submit" :blok="true">Daftar</x-ui.tombol>
         </form>
     </x-ui.panel>
-    <p class="mt-4 text-body-sm text-on-surface-muted">Sudah punya akun? <a href="{{ route('login') }}" class="text-primary underline underline-offset-2 hover:text-primary-hover">Masuk</a></p>
+    <p class="mt-4 text-body-m text-on-surface-variant">Sudah punya akun? <a href="{{ route('login') }}" class="text-primary underline underline-offset-2 hover:text-on-primary-container">Masuk</a></p>
 </x-layouts.auth>

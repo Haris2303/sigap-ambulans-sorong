@@ -14,7 +14,7 @@
                 <x-ui.isian nama="telepon" label="Telepon" tipe="tel" :nilai="$faskes->telepon" />
                 <x-ui.isian nama="alamat" label="Alamat" :nilai="$faskes->alamat" bantuan="Terisi otomatis bila Anda memilih titik di peta." />
                 <div>
-                    <p class="mb-1 text-label">Titik koordinat</p>
+                    <p class="mb-1 text-label-l">Titik koordinat</p>
                     <x-peta.pemilih lat="lat" lng="lng" alamat="alamat" :nilai-lat="$faskes->lat" :nilai-lng="$faskes->lng" />
                 </div>
                 <x-ui.centang nama="aktif" label="Faskes aktif" :nilai="$faskes->aktif" />

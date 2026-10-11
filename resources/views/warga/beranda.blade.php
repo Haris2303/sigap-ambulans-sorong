@@ -12,7 +12,7 @@
 
     <x-ui.bagian judul="Pesanan aktif">
         <x-slot:aksi>
-            <x-ui.tombol nada="sekunder" ukuran="sm" :href="route('warga.pesanan.index')">Riwayat pesanan</x-ui.tombol>
+            <x-ui.tombol nada="sekunder" :href="route('warga.pesanan.index')">Riwayat pesanan</x-ui.tombol>
         </x-slot:aksi>
         @if ($aktif->isEmpty())
             <x-ui.kosong pesan="Belum ada pesanan aktif.">

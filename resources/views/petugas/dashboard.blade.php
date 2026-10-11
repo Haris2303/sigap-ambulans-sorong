@@ -24,7 +24,7 @@
                 </x-slot:kepala>
                 @foreach ($pesananAktif as $p)
                     <tr>
-                        <td class="tabular-nums"><a href="{{ route('petugas.pesanan.show', $p) }}" class="text-primary underline underline-offset-2 hover:text-primary-hover">{{ $p->kode }}</a></td>
+                        <td class="tabular-nums"><a href="{{ route('petugas.pesanan.show', $p) }}" class="text-primary underline underline-offset-2 hover:text-on-primary-container">{{ $p->kode }}</a></td>
                         <td>{{ $p->nama_pasien }}</td>
                         <td class="hidden md:table-cell">{{ $p->ambulans?->faskes_id === $faskes->id ? 'Asal ambulans' : 'Tujuan' }}</td>
                         <td><x-ui.lencana-status :status="$p->status" /></td>
@@ -56,7 +56,7 @@
                                     @csrf
                                     @method('PUT')
                                     <input type="hidden" name="status" value="{{ $a->status === \App\Enums\StatusAmbulans::Tersedia ? \App\Enums\StatusAmbulans::Servis->value : \App\Enums\StatusAmbulans::Tersedia->value }}">
-                                    <x-ui.tombol nada="sekunder" ukuran="sm" tipe="submit">{{ $a->status === \App\Enums\StatusAmbulans::Tersedia ? 'Tandai servis' : 'Tandai tersedia' }}</x-ui.tombol>
+                                    <x-ui.tombol nada="sekunder" tipe="submit">{{ $a->status === \App\Enums\StatusAmbulans::Tersedia ? 'Tandai servis' : 'Tandai tersedia' }}</x-ui.tombol>
                                 </form>
                             @endif
                         </td>

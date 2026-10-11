@@ -32,7 +32,7 @@
             </x-slot:kepala>
             @foreach ($daftar as $akun)
                 <tr>
-                    <td><a href="{{ route($rute.'.edit', $akun) }}" class="text-primary underline underline-offset-2 hover:text-primary-hover">{{ $akun->name }}</a></td>
+                    <td><a href="{{ route($rute.'.edit', $akun) }}" class="text-primary underline underline-offset-2 hover:text-on-primary-container">{{ $akun->name }}</a></td>
                     <td class="hidden md:table-cell">{{ $akun->email }}</td>
                     <td class="hidden md:table-cell">{{ $akun->faskes?->nama ?? '-' }}</td>
                     @if ($peran === \App\Enums\Role::Sopir)
@@ -44,9 +44,9 @@
                             @csrf
                             @method('PUT')
                             @if ($akun->aktif)
-                                <x-ui.tombol nada="hantu" ukuran="sm" tipe="submit" konfirmasi="Akun tidak dapat masuk lagi sampai diaktifkan kembali." data-judul="Nonaktifkan {{ $akun->name }}?" data-aksi="Nonaktifkan">Nonaktifkan</x-ui.tombol>
+                                <x-ui.tombol nada="hantu" tipe="submit" konfirmasi="Akun tidak dapat masuk lagi sampai diaktifkan kembali." data-judul="Nonaktifkan {{ $akun->name }}?" data-aksi="Nonaktifkan">Nonaktifkan</x-ui.tombol>
                             @else
-                                <x-ui.tombol nada="hantu" ukuran="sm" tipe="submit">Aktifkan</x-ui.tombol>
+                                <x-ui.tombol nada="hantu" tipe="submit">Aktifkan</x-ui.tombol>
                             @endif
                         </form>
                     </td>

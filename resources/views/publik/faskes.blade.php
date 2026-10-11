@@ -24,13 +24,13 @@
             @foreach ($faskes as $f)
                 <tr>
                     <td class="align-top">
-                        <p class="text-label">{{ $f->nama }}</p>
-                        <p class="text-caption text-on-surface-muted">{{ $f->jenis->label() }}</p>
+                        <p class="text-label-l">{{ $f->nama }}</p>
+                        <p class="text-body-s text-on-surface-variant">{{ $f->jenis->label() }}</p>
                         @if ($f->alamat)
-                            <p class="text-caption text-on-surface-muted">{{ $f->alamat }}</p>
+                            <p class="text-body-s text-on-surface-variant">{{ $f->alamat }}</p>
                         @endif
                         @if ($f->telepon)
-                            <p class="text-caption tabular-nums text-on-surface-muted">{{ $f->telepon }}</p>
+                            <p class="text-body-s tabular-nums text-on-surface-variant">{{ $f->telepon }}</p>
                         @endif
                     </td>
                     <td><x-ui.ketersediaan :faskes="$f" /></td>

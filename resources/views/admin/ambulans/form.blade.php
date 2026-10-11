@@ -15,9 +15,9 @@
                 <x-ui.pilihan nama="sopir_id" label="Sopir tetap" :opsi="$opsiSopir" :nilai="$ambulans->sopir_id" kosong="Tanpa sopir tetap" bantuan="Sopir harus berasal dari Faskes yang sama dengan ambulans." />
                 @if ($ambulans->status === \App\Enums\StatusAmbulans::Bertugas)
                     <div>
-                        <p class="mb-1 text-label">Status</p>
+                        <p class="mb-1 text-label-l">Status</p>
                         <x-ui.lencana :nada="$ambulans->status->nada()">{{ $ambulans->status->label() }}</x-ui.lencana>
-                        <p class="mt-1 text-caption text-on-surface-muted">Status berubah otomatis setelah pesanan selesai atau dibatalkan.</p>
+                        <p class="mt-1 text-body-s text-on-surface-variant">Status berubah otomatis setelah pesanan selesai atau dibatalkan.</p>
                     </div>
                 @else
                     <x-ui.pilihan nama="status" label="Status" :opsi="\App\Enums\StatusAmbulans::opsiManual()" :nilai="$ambulans->status" />
