@@ -21,6 +21,9 @@ return [
 
     'per_halaman' => 20,
 
+    // Sandi akun demo. Kosong: "password" di local/testing, selain itu acak dan dicetak sekali.
+    'seed_password' => env('SEED_PASSWORD'),
+
     // Menu rel per peran: nama route, label, ikon (daftar ikon di docs/KIT_UI.md bagian 6).
     'menu' => [
         'warga' => [
