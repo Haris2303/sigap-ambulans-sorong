@@ -35,9 +35,38 @@ Domain `@sigap.test`. Sandi: nilai `SEED_PASSWORD` bila diisi; bila tidak, `pass
 | Petugas Faskes | `petugas.selebesolu@sigap.test`, `petugas.klasaman@sigap.test` |
 | Sopir | `sopir.selebesolu@`, `sopir.al@`, `sopir.aryoko@`, `sopir.posmor@`, `sopir.klasaman@`, `sopir.remu@` `sigap.test` |
 
+## Tampilan Material 3
+
+Antarmuka memakai Material Design 3 baseline (bukan Expressive), terang saja. Sumber kebenarannya `DESIGN.md`: skema tonal dari benih `#0B5C80`, 30 warna, skala tipe M3 (Roboto, lokal lewat npm), bentuk 4/8/12/16/28/penuh, elevasi level 0 sampai 3, dan lapisan keadaan. Kontrak kode ada di `docs/KIT_UI.md`; keputusan dan langkah migrasi di `docs/MIGRASI_M3.md`.
+
+- Mengubah tema: ubah front matter `DESIGN.md`, jalankan `node agent/tokens.mjs` (menghasilkan `resources/css/design-tokens.css`), lalu `npm run build`.
+- Pemeriksaan dokumen desain: `node node_modules/@google/design.md/dist/index.js lint DESIGN.md` (0 galat, 0 peringatan).
+- Penjaga otomatis: `agent/konsistensi.json` (termasuk aturan `token-lama`), `KonsistensiTest`, `TokenDesainTest` (css sinkron dengan DESIGN.md), `KomponenUiTest`, `LayoutTest`.
+- Mode gelap ditunda; seluruh warna memakai peran M3 sehingga dapat ditambahkan nanti.
+
 ## Keterbatasan
 
-Agen tidak punya browser. Tampilan, JavaScript, peta, GPS, polling, getar, dan notifikasi peramban tidak teruji secara visual. Yang teruji: tes HTTP/render sisi server, `npm run build`, pemindai konsistensi.
+Sesi pengerjaan tidak punya browser. Tampilan, JavaScript, peta, GPS, polling, getar, dan notifikasi peramban tidak teruji secara visual. Yang teruji: tes HTTP/render sisi server, `npm run build`, pemindai konsistensi, dan pemeriksaan bahwa setiap kelas Tailwind yang tertulis di view, JS, dan `Tampilan.php` ada sebagai selector di CSS hasil build.
+
+Khusus tampilan Material 3, yang belum pernah dilihat dan perlu diperiksa manual di browser (daftar langkah ada pada checklist di bawah):
+- Tata letak responsif: laci tetap di lg ke atas, bilah atas dan laci modal di bawah lg, titik henti `md` 768px dan `lg` 1024px.
+- Perilaku laci modal (scrim, Escape, fokus), snackbar, dan bayangan bilah atas saat gulir (JavaScript di `resources/js/sigap.js`).
+- Lapisan keadaan (hover 8%, fokus 10%, tekan 10%) dan area sentuh 48px (CSS `lapisan-keadaan` dan `target-sentuh` di `tambahan.css`).
+- Pemuatan font Roboto dan kerapian angka tabular.
+- Kontras: `designmd lint` hanya memeriksa pasangan warna pada token komponen di `DESIGN.md`; warna yang dirakit di markup tidak diperiksa otomatis.
+
+## Checklist uji tampilan Material 3 (±10 menit, sekali untuk semua peran)
+
+Jalankan `npm run build` lalu buka aplikasi di browser desktop dan ponsel (atau mode perangkat di devtools).
+- Lebar 1280px: laci navigasi tetap di kiri (lebar 280px), item aktif berbentuk pil `secondary-container`, tanpa bilah atas. Menu panjang bergulir dengan bilah tipis.
+- Lebar 390px: bilah atas 64px berisi tombol menu dan judul halaman; tombol menu membuka laci modal dengan scrim; laci menutup lewat tombol Tutup, klik scrim, dan Escape.
+- Dasbor Dinkes: judul 24px lebih besar dari keterangan; angka ringkasan (36px) di bawah label kecil; sel dipisah garis tipis; label tanggal grafik tidak pecah baris; lencana "Gawat" sejajar vertikal dengan teks layanan.
+- Tombol berbentuk pil setinggi 40px; hover, fokus papan ketik (Tab), dan tekan menampilkan lapisan tipis; tombol nonaktif tampak redup dan tidak bereaksi.
+- Isian: batas Outline, label di atas kolom, fokus menebalkan batas jadi biru 2px, galat menampilkan batas dan teks merah.
+- Aksi dengan konfirmasi (mis. Tolak): dialog berlatar scrim dengan sudut 28px; tombol aksi merusak berwarna merah.
+- Setelah aksi berhasil: snackbar hitam kebiruan di dasar layar, tombol Tutup menghilangkannya.
+- Buat Pesanan di ponsel: tombol "Tinjau pesanan" tetap terlihat di dasar layar dengan bayangan tipis.
+- Semua target sentuh terasa cukup besar (minimal 48px) dan teks tidak lebih kecil dari 12px.
 
 ## Checklist uji manual (±10 menit per peran)
 
@@ -82,4 +111,4 @@ Lihat `docs/laporan/ASUMSI_DAN_KEPUTUSAN.md` (kolom "Perlu konfirmasi Dinkes").
 
 ## Jumlah tes
 
-`php artisan test` pada 2026-10-11: 279 lulus (2079 assertion). `npm run build` sukses; `composer validate` valid; `migrate:fresh --seed` sukses di DB v2.
+`php artisan test` pada 2026-10-11 (setelah migrasi Material 3): 298 lulus (2523 assertion). `npm run build` sukses; `designmd lint DESIGN.md` 0 galat 0 peringatan; `node agent/tokens.mjs` tidak mengubah `design-tokens.css`. Sebelum migrasi (tahap 7 awal): 279 lulus, `composer validate` valid, `migrate:fresh --seed` sukses di DB v2; skema basis data tidak diubah oleh migrasi tampilan.
