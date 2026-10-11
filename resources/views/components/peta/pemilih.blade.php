@@ -8,7 +8,7 @@
     data-nominatim="{{ $peta['nominatim_url'] }}">
     <input type="hidden" id="f-{{ $lat }}" name="{{ $lat }}" value="{{ old($lat, $nilaiLat) }}">
     <input type="hidden" id="f-{{ $lng }}" name="{{ $lng }}" value="{{ old($lng, $nilaiLng) }}">
-    <x-ui.tombol nada="utama" ukuran="lg" ikon="crosshair" blok data-peta-lokasi>Gunakan lokasi saya</x-ui.tombol>
+    <x-ui.tombol nada="sekunder" ukuran="lg" ikon="crosshair" blok data-peta-lokasi>Gunakan lokasi saya</x-ui.tombol>
     <div class="flex gap-2">
         <input type="search" data-peta-kata placeholder="Cari alamat atau nama tempat" aria-label="Cari alamat"
             class="block w-full min-h-touch rounded-md border border-control-border bg-surface px-3 text-body text-on-surface placeholder:text-on-surface-muted">

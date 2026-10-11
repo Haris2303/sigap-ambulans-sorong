@@ -6,8 +6,8 @@
     </x-ui.judul-halaman>
 
     <x-ui.ringkasan>
-        <x-ui.ringkasan-sel data-ringkasan="pesanan_menunggu" label="Menunggu verifikasi" :nilai="$pesanan['pesanan_menunggu']" nada="peringatan" />
-        <x-ui.ringkasan-sel data-ringkasan="pesanan_terverifikasi" label="Menunggu penugasan" :nilai="$pesanan['pesanan_terverifikasi']" nada="info" />
+        <x-ui.ringkasan-sel data-ringkasan="pesanan_menunggu" :label="\App\Enums\PesananStatus::Menunggu->label()" :nilai="$pesanan['pesanan_menunggu']" :nada="\App\Enums\PesananStatus::Menunggu->nada()" />
+        <x-ui.ringkasan-sel data-ringkasan="pesanan_terverifikasi" :label="\App\Enums\PesananStatus::Terverifikasi->label()" :nilai="$pesanan['pesanan_terverifikasi']" :nada="\App\Enums\PesananStatus::Terverifikasi->nada()" keterangan="Menunggu penugasan" />
         <x-ui.ringkasan-sel data-ringkasan="pesanan_berjalan" label="Sedang berjalan" :nilai="$pesanan['pesanan_berjalan']" nada="info" />
         <x-ui.ringkasan-sel data-ringkasan="pesanan_selesai_hari_ini" label="Selesai hari ini" :nilai="$pesanan['pesanan_selesai_hari_ini']" nada="sukses" />
     </x-ui.ringkasan>
