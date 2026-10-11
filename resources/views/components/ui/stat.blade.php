@@ -1,5 +1,5 @@
 @props(['tone' => 'primary', 'value', 'label', 'hint' => null, 'icon', 'featured' => false, 'href' => null])
-{{-- Kartu statistik. Putih: chip ikon, angka, label, keterangan (tautan hanya pada label bila href). Utama (featured): latar primary, tone diabaikan, aksi lewat slot `aksi`. Angka diberi data-nilai agar dapat diperbarui. --}}
+{{-- Kartu statistik. Putih: chip ikon, angka, label, keterangan (tautan hanya pada label bila href). Utama (featured): latar primary, tone diabaikan, aksi lewat slot `aksi`, penanda tambahan di samping keterangan lewat slot `penanda` (mis. lencana Gawat). Angka diberi data-nilai agar dapat diperbarui. --}}
 @if ($featured)
     <div {{ $attributes->merge(['class' => 'rounded-lg bg-primary px-6 py-5 text-on-primary shadow-card-raised']) }}>
         <div class="flex items-center gap-3">
@@ -8,11 +8,14 @@
             </span>
             <p class="text-title-m">{{ $label }}</p>
         </div>
-        <div class="mt-4 flex items-baseline gap-3">
+        <div class="mt-4 flex flex-wrap items-baseline gap-x-3 gap-y-2">
             <p class="text-stat-hero tabular-nums" data-nilai>{{ $value }}</p>
             @if ($hint)
                 <p class="text-body-m text-primary-container">{{ $hint }}</p>
             @endif
+            @isset($penanda)
+                {{ $penanda }}
+            @endisset
         </div>
         @isset($aksi)
             <div class="mt-4">{{ $aksi }}</div>

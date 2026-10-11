@@ -80,7 +80,7 @@ const Sigap = {
 
 window.Sigap = Sigap;
 
-// Angka hidup Dinkes: JSON { data: { kunci: angka } } mengisi [data-ringkasan=kunci], [data-lencana=kunci], dan label [data-lonceng=kunci].
+// Angka hidup Dinkes: JSON { data: { kunci: angka } } mengisi [data-ringkasan=kunci], [data-lencana=kunci], [data-angka=kunci], dan label [data-lonceng=kunci].
 document.addEventListener('DOMContentLoaded', () => {
     const sumber = document.querySelector('[data-ringkasan-url]');
     if (!sumber) {
@@ -97,6 +97,13 @@ document.addEventListener('DOMContentLoaded', () => {
             });
             document.querySelectorAll(`[data-lonceng="${kunci}"]`).forEach((el) => {
                 el.setAttribute('aria-label', `${el.dataset.label}, ${angka}`);
+            });
+            // Angka mandiri (tanpa kartu pembungkus data-ringkasan) dan penanda yang disembunyikan saat nol, mis. lencana Gawat.
+            document.querySelectorAll(`[data-angka="${kunci}"]`).forEach((el) => {
+                el.textContent = angka;
+            });
+            document.querySelectorAll(`[data-sembunyi-nol="${kunci}"]`).forEach((el) => {
+                el.hidden = angka < 1;
             });
         });
     });

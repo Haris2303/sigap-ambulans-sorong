@@ -10,6 +10,10 @@
     <div class="flex flex-wrap gap-5">
         <x-ui.stat :featured="true" data-ringkasan="pesanan_menunggu" icon="clock" :value="$statistik['pesanan_menunggu']"
             :label="\App\Enums\PesananStatus::Menunggu->label()" hint="pesanan baru" class="min-w-0 flex-[1.5_1_18rem]">
+            {{-- Pesanan Gawat yang menunggu: tampil bila ada, ikut polling (data-angka dan data-sembunyi-nol). Daftar "Perlu tindakan" sudah menaruh Gawat paling atas. --}}
+            <x-slot:penanda>
+                <x-ui.lencana nada="bahaya" data-sembunyi-nol="pesanan_menunggu_gawat" :hidden="$statistik['pesanan_menunggu_gawat'] < 1"><span data-angka="pesanan_menunggu_gawat" class="tabular-nums">{{ $statistik['pesanan_menunggu_gawat'] }}</span> {{ \App\Enums\TingkatDarurat::Gawat->label() }}</x-ui.lencana>
+            </x-slot:penanda>
             <x-slot:aksi>
                 <x-ui.tombol nada="on-primary" :href="route('admin.pesanan.index', ['tab' => 'perlu-tindakan'])">Verifikasi pesanan</x-ui.tombol>
             </x-slot:aksi>

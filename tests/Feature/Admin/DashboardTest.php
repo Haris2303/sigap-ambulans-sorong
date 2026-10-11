@@ -94,6 +94,47 @@ class DashboardTest extends TestCase
         }
     }
 
+    public function test_kartu_utama_menonjolkan_jumlah_pesanan_gawat_yang_menunggu(): void
+    {
+        Pesanan::factory()->berstatus(PesananStatus::Menunggu)->gawat()->count(2)->create();
+        Pesanan::factory()->berstatus(PesananStatus::Menunggu)->create();
+        // Gawat pada status lain tidak dihitung: yang diminta adalah pesanan Gawat yang menunggu verifikasi.
+        Pesanan::factory()->berstatus(PesananStatus::Terverifikasi)->gawat()->create();
+
+        $utama = $this->bagian($this->dasbor(), 'data-ringkasan="pesanan_menunggu"', 'data-ringkasan="pesanan_terverifikasi"');
+
+        $this->assertMatchesRegularExpression('/data-nilai>3</', $utama, 'Tiga pesanan menunggu.');
+        $this->assertMatchesRegularExpression(
+            '/<span[^>]*data-sembunyi-nol="pesanan_menunggu_gawat"[^>]*>\s*<span class="size-1\.5[^>]*><\/span>\s*<span data-angka="pesanan_menunggu_gawat" class="tabular-nums">2<\/span> Gawat\s*<\/span>/',
+            $utama,
+        );
+        $this->assertStringContainsString('bg-error-container text-on-error-container', $utama);
+        $this->assertDoesNotMatchRegularExpression('/data-sembunyi-nol="pesanan_menunggu_gawat"[^>]*\shidden/', $utama);
+        // Tidak menimpa angka kartu lewat data-nilai (polling mengisi data-nilai di dalam data-ringkasan).
+        $this->assertSame(1, preg_match_all('/data-nilai>/', $utama));
+    }
+
+    public function test_lencana_gawat_disembunyikan_bila_tidak_ada_pesanan_gawat_menunggu(): void
+    {
+        Pesanan::factory()->berstatus(PesananStatus::Menunggu)->count(2)->create();
+
+        $utama = $this->bagian($this->dasbor(), 'data-ringkasan="pesanan_menunggu"', 'data-ringkasan="pesanan_terverifikasi"');
+
+        $this->assertMatchesRegularExpression('/data-sembunyi-nol="pesanan_menunggu_gawat"[^>]*\shidden/', $utama);
+        $this->assertMatchesRegularExpression('/data-angka="pesanan_menunggu_gawat"[^>]*>0</', $utama);
+    }
+
+    public function test_polling_json_memuat_jumlah_gawat_menunggu(): void
+    {
+        Pesanan::factory()->berstatus(PesananStatus::Menunggu)->gawat()->create();
+        Pesanan::factory()->berstatus(PesananStatus::Menunggu)->create();
+
+        $this->actingAs($this->buatAdmin())->getJson(route('admin.pesanan.ringkasan'))
+            ->assertOk()
+            ->assertJsonPath('data.pesanan_menunggu', 2)
+            ->assertJsonPath('data.pesanan_menunggu_gawat', 1);
+    }
+
     public function test_selesai_hari_ini_tidak_menghitung_hari_lain(): void
     {
         $this->dataDemo();

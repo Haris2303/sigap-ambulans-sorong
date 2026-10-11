@@ -59,7 +59,7 @@ class RingkasanDasborTest extends TestCase
         $data = $this->data();
 
         $this->assertSame(['statistik', 'ketersediaan', 'batang', 'donat', 'terbaru'], array_keys($data));
-        $this->assertSame(['pesanan_menunggu', 'pesanan_terverifikasi', 'pesanan_berjalan', 'pesanan_selesai_hari_ini'], array_keys($data['statistik']));
+        $this->assertSame(['pesanan_menunggu', 'pesanan_menunggu_gawat', 'pesanan_terverifikasi', 'pesanan_berjalan', 'pesanan_selesai_hari_ini'], array_keys($data['statistik']));
         $this->assertSame(['ambulans_tersedia', 'bed_igd_tersedia', 'bed_rawat_inap_tersedia', 'dokter_tersedia'], array_keys($data['ketersediaan']));
         $this->assertSame(['labels', 'values', 'highlight', 'rentang'], array_keys($data['batang']));
         $this->assertSame(['segments', 'total'], array_keys($data['donat']));
@@ -85,6 +85,7 @@ class RingkasanDasborTest extends TestCase
         $statistik = $this->data()['statistik'];
 
         $this->assertSame(2, $statistik['pesanan_menunggu']);
+        $this->assertSame(0, $statistik['pesanan_menunggu_gawat']);
         $this->assertSame(1, $statistik['pesanan_terverifikasi']);
         $this->assertSame(3, $statistik['pesanan_berjalan']);
         $this->assertSame(0, $statistik['pesanan_selesai_hari_ini']);
@@ -264,7 +265,7 @@ class RingkasanDasborTest extends TestCase
     {
         $data = $this->data();
 
-        $this->assertSame([0, 0, 0, 0], array_values($data['statistik']));
+        $this->assertSame([0, 0, 0, 0, 0], array_values($data['statistik']));
         $this->assertSame(0, $data['donat']['total']);
         $this->assertCount(7, $data['batang']['values']);
         $this->assertSame(array_fill(0, 7, 0), $data['batang']['values']);
