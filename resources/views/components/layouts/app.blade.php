@@ -18,7 +18,7 @@
                 <a href="{{ route($pengguna->role->ruteBeranda()) }}" class="text-title-l">SIGAP Ambulans</a>
                 <x-ui.tombol nada="hantu" ikon="x" aria-label="Tutup menu" class="lg:hidden" data-menu-tutup />
             </div>
-            <nav class="flex-1 space-y-1 overflow-y-auto px-3 py-2" aria-label="Menu utama">
+            <nav class="gulir-tipis flex-1 space-y-1 overflow-y-auto px-3 py-2" aria-label="Menu utama">
                 @foreach ($menu as $item)
                     @php
                         $aktif = request()->routeIs($item['cocok']);

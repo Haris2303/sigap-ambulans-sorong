@@ -106,6 +106,9 @@ class LayoutTest extends TestCase
             $this->assertStringContainsString($kelas, $html);
         }
 
+        // Daftar menu bergulir dengan bilah tipis.
+        $this->assertStringContainsString('gulir-tipis', $html);
+
         // Item menu: pil 56px dengan lapisan keadaan dan ikon 24px.
         foreach (['lapisan-keadaan', 'min-h-14', 'rounded-full', 'px-4', 'text-label-l', 'width="24"'] as $kelas) {
             $this->assertStringContainsString($kelas, $html);

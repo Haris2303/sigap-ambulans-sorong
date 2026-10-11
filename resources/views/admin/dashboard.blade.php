@@ -14,7 +14,7 @@
 
     <x-ui.bagian judul="Ketersediaan">
         <x-slot:aksi>
-            <x-ui.tombol nada="sekunder" ukuran="sm" :href="route('admin.ketersediaan.index')">Kelola ketersediaan</x-ui.tombol>
+            <x-ui.tombol nada="sekunder" :href="route('admin.ketersediaan.index')">Kelola ketersediaan</x-ui.tombol>
         </x-slot:aksi>
         <x-ui.ringkasan>
             <x-ui.ringkasan-sel label="Ambulans tersedia" :nilai="$ketersediaan['ambulans_tersedia']" />
@@ -32,7 +32,7 @@
 
     <x-ui.bagian judul="Pesanan terbaru">
         <x-slot:aksi>
-            <x-ui.tombol nada="sekunder" ukuran="sm" :href="route('admin.pesanan.index')">Semua pesanan</x-ui.tombol>
+            <x-ui.tombol nada="sekunder" :href="route('admin.pesanan.index')">Semua pesanan</x-ui.tombol>
         </x-slot:aksi>
         @if ($terbaru->isEmpty())
             <x-ui.kosong pesan="Belum ada pesanan." />
