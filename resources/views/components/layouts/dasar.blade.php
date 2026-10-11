@@ -12,7 +12,7 @@
     @endif
 </head>
 <body>
-    <a href="#isi" class="sr-only rounded-md bg-surface px-4 py-2 text-label text-primary focus:not-sr-only focus:absolute focus:left-2 focus:top-2 focus:z-50">Lewati ke isi</a>
+    <a href="#isi" class="sr-only rounded-full bg-primary px-4 py-2 text-label-l text-on-primary focus:not-sr-only focus:absolute focus:left-2 focus:top-2 focus:z-50">Lewati ke isi</a>
     {{ $slot }}
     <x-ui.dialog />
     @stack('skrip')

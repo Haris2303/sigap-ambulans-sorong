@@ -90,7 +90,7 @@ document.addEventListener('DOMContentLoaded', () => {
             });
             document.querySelectorAll(`[data-lencana="${kunci}"]`).forEach((el) => {
                 el.textContent = angka;
-                el.classList.toggle('hidden', angka < 1);
+                el.hidden = angka < 1;
             });
         });
     });
@@ -179,17 +179,40 @@ document.addEventListener('click', (e) => {
     }
 });
 
-// Menu laci pada ponsel.
-document.addEventListener('click', (e) => {
+// Laci navigasi modal di bawah lg: buka dengan tombol menu, tutup dengan tombol, scrim, atau Escape.
+const aturLaci = (buka) => {
     const rel = document.querySelector('[data-menu-rel]');
+    const scrim = document.querySelector('[data-menu-scrim]');
     if (!rel) {
         return;
     }
+    rel.classList.toggle('hidden', !buka);
+    rel.classList.toggle('flex', buka);
+    scrim?.classList.toggle('hidden', !buka);
+    (buka ? rel.querySelector('[data-menu-tutup]') : document.querySelector('[data-menu-buka]'))?.focus();
+};
+
+document.addEventListener('click', (e) => {
     if (e.target.closest('[data-menu-buka]')) {
-        rel.classList.remove('hidden');
-        rel.classList.add('flex');
-    } else if (e.target.closest('[data-menu-tutup]')) {
-        rel.classList.add('hidden');
-        rel.classList.remove('flex');
+        aturLaci(true);
+    } else if (e.target.closest('[data-menu-tutup]') || e.target.closest('[data-menu-scrim]')) {
+        aturLaci(false);
     }
+});
+
+document.addEventListener('keydown', (e) => {
+    if (e.key === 'Escape' && document.querySelector('[data-menu-scrim]:not(.hidden)')) {
+        aturLaci(false);
+    }
+});
+
+// Bilah atas naik ke Level 1 (bayangan) saat isi bergulir di bawahnya.
+document.addEventListener('DOMContentLoaded', () => {
+    const bilah = document.querySelector('[data-bilah-atas]');
+    if (!bilah) {
+        return;
+    }
+    const perbarui = () => bilah.classList.toggle('shadow-level-1', window.scrollY > 0);
+    window.addEventListener('scroll', perbarui, { passive: true });
+    perbarui();
 });

@@ -15,11 +15,12 @@ use Illuminate\Pagination\LengthAwarePaginator;
 use Illuminate\Support\Facades\Blade;
 use Illuminate\Support\ViewErrorBag;
 use Illuminate\View\ViewException;
+use Tests\Concerns\MemindaiNamaLama;
 use Tests\TestCase;
 
 class KomponenUiTest extends TestCase
 {
-    use RefreshDatabase;
+    use MemindaiNamaLama, RefreshDatabase;
 
     private function render(string $blade, array $data = []): string
     {
@@ -60,17 +61,7 @@ class KomponenUiTest extends TestCase
     {
         $sudahM3 = ['tombol', 'ikon', 'isian', 'pilihan', 'area-teks', 'centang', 'lencana', 'peringatan', 'flash',
             'dialog', 'panel', 'tabel', 'opsi-baris', 'snackbar'];
-        $lama = '/(?<![\w-])(?:(?:bg|text|border|divide|ring|outline)-(?:canvas|line|control-border|primary-soft|primary-hover'
-            .'|danger|danger-soft|danger-hover|warning-soft|success-soft|neutral-soft|on-surface-muted)'
-            .'|text-(?:h[123]|body|body-sm|label|caption|display)|bg-surface|shadow-overlay|font-semibold|w-rail)(?![\w-])/';
-
-        $temuan = [];
-        foreach ($sudahM3 as $nama) {
-            $isi = (string) file_get_contents(resource_path('views/components/ui/'.$nama.'.blade.php'));
-            if (preg_match_all($lama, $isi, $cocok) > 0) {
-                $temuan[] = $nama.': '.implode(', ', array_unique($cocok[0]));
-            }
-        }
+        $temuan = $this->cariNamaLama(array_map(fn (string $nama) => 'resources/views/components/ui/'.$nama.'.blade.php', $sudahM3));
 
         $this->assertSame([], $temuan, "Nama lama masih ada:\n".implode("\n", $temuan));
     }
