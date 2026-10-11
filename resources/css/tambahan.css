@@ -1,6 +1,6 @@
 /*
  * CSS tambahan (boleh diubah agen). Aturan:
  * - Hanya bila Tailwind + komponen Blade tidak cukup (mis. penyesuaian Leaflet).
- * - Warna hanya lewat variabel token: var(--color-primary), dst. Dilarang heksadesimal, rgb(), hsl().
- * - Dilarang gradien, bayangan baru, dan animasi.
+ * - Warna hanya lewat variabel token: var(--color-primary), dst.
+ * - Tanpa warna mentah, tanpa bayangan baru, tanpa animasi.
  */
