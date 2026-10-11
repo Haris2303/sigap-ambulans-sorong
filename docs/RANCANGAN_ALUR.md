@@ -40,7 +40,7 @@ Prinsip yang tidak boleh dilanggar (penyebab ketidakkonsistenan pada versi sebel
 | Jenis layanan | `jenis_layanan`: `darurat`, `rujukan`, `persalinan` | Darurat, Rujukan, Persalinan |
 | Tingkat darurat | `tingkat_darurat`: `biasa`, `gawat` | Biasa, Gawat |
 | Jenis ambulans | `ambulans.jenis`: `darurat`, `transport` | Darurat, Transport |
-| Jenis faskes | `faskes.jenis`: `rumah_sakit`, `puskesmas`, `klinik` | Rumah Sakit, Puskesmas, Klinik |
+| Jenis faskes | `faskes.jenis`: `rumah_sakit`, `puskesmas`, `klinik` | Rumah sakit, Puskesmas, Klinik |
 
 Larangan istilah (diperiksa otomatis): `rs_id`, `rs_tujuan`, `rumah_sakit_id`, `pengemudi`, `supir`, `ambulan` (tanpa "s"), `ambulance`, `RumahSakit`. Label tampilan selalu diambil dari Enum (`->label()`), bukan diketik ulang.
 Aturan penamaan lain: tabel/kolom/route/URI berbahasa Indonesia, huruf kecil, `snake_case` (kolom/route) dan `kebab-case` (URI); kolom waktu berakhiran `_pada`; kolom pelaku berakhiran `_oleh_id`; seluruh model menulis nama tabel eksplisit (`#[Table(name: '...')]`).
@@ -75,7 +75,7 @@ Fresh migration (boleh `php artisan migrate:fresh` pada database v2). Satu berka
 
 ## 5. Mesin status pesanan
 
-Status & label: `menunggu` "Menunggu Verifikasi", `terverifikasi` "Terverifikasi", `ditugaskan` "Ditugaskan", `diterima` "Diterima Sopir", `dalam_perjalanan` "Dalam Perjalanan", `selesai` "Selesai", `ditolak` "Ditolak", `dibatalkan` "Dibatalkan".
+Status & label: `menunggu` "Menunggu verifikasi", `terverifikasi` "Terverifikasi", `ditugaskan` "Ditugaskan", `diterima` "Diterima sopir", `dalam_perjalanan` "Dalam perjalanan", `selesai` "Selesai", `ditolak` "Ditolak", `dibatalkan` "Dibatalkan".
 Final: `selesai`, `ditolak`, `dibatalkan`. Memegang sumber daya (ambulans+sopir): `ditugaskan`, `diterima`, `dalam_perjalanan`. Tidak ada penjadwalan ulang.
 
 | # | Dari | Ke | Aktor | Syarat | Efek |

@@ -1,3 +1,3 @@
-<dl {{ $attributes->merge(['class' => 'divide-y divide-line rounded-lg border border-line bg-surface']) }}>
+<dl {{ $attributes->merge(['class' => 'divide-y divide-outline-variant rounded-md border border-outline-variant bg-surface-container-lowest']) }}>
     {{ $slot }}
 </dl>

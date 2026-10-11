@@ -51,10 +51,37 @@ class EnumTest extends TestCase
         $this->assertSame('sopir.dashboard', Role::Sopir->ruteBeranda());
     }
 
+    /**
+     * DESIGN.md bagian Writing: huruf awal kapital hanya pada awal kalimat. Kata setelah kata pertama berhuruf kecil,
+     * kecuali singkatan dan istilah baku (Faskes, Dinkes, BUMN).
+     */
+    #[DataProvider('semuaEnum')]
+    public function test_label_berhuruf_kapital_awal_kalimat_saja(string $enum): void
+    {
+        $pengecualian = ['Faskes', 'Dinkes', 'BUMN'];
+
+        foreach ($enum::cases() as $kasus) {
+            $kata = explode(' ', $kasus->label());
+            $this->assertMatchesRegularExpression('/^\p{Lu}/u', $kata[0], $kasus->label());
+            foreach (array_slice($kata, 1) as $berikut) {
+                if (! in_array($berikut, $pengecualian, true)) {
+                    $this->assertMatchesRegularExpression('/^\P{Lu}/u', $berikut, 'Kapital di tengah label: '.$kasus->label());
+                }
+            }
+        }
+    }
+
+    public function test_label_jenis_faskes_dan_dinkes(): void
+    {
+        $this->assertSame('Rumah sakit', JenisFaskes::Rs->label());
+        $this->assertSame('Dalam perjalanan', PesananStatus::DalamPerjalanan->label());
+        $this->assertSame('Petugas Faskes', Role::PetugasFaskes->label());
+    }
+
     public function test_label_dan_nada_status_pesanan(): void
     {
-        $this->assertSame('Menunggu Verifikasi', PesananStatus::Menunggu->label());
-        $this->assertSame('Diterima Sopir', PesananStatus::Diterima->label());
+        $this->assertSame('Menunggu verifikasi', PesananStatus::Menunggu->label());
+        $this->assertSame('Diterima sopir', PesananStatus::Diterima->label());
         $this->assertSame('peringatan', PesananStatus::Menunggu->nada());
         $this->assertSame('info', PesananStatus::Terverifikasi->nada());
         $this->assertSame('info', PesananStatus::Ditugaskan->nada());

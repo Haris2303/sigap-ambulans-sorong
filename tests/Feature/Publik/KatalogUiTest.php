@@ -23,7 +23,7 @@ class KatalogUiTest extends TestCase
         $this->get('/_ui')
             ->assertOk()
             ->assertSee('Katalog gaya')
-            ->assertSee('Menunggu Verifikasi')
+            ->assertSee('Menunggu verifikasi')
             ->assertSee('Belum diperbarui')
             ->assertSee('Data lama')
             ->assertSee('Belum ada pesanan.')

@@ -59,9 +59,14 @@ class KomponenUiTest extends TestCase
      */
     public function test_komponen_m3_tidak_memuat_nama_token_lama(): void
     {
-        $sudahM3 = ['tombol', 'ikon', 'isian', 'pilihan', 'area-teks', 'centang', 'lencana', 'peringatan', 'flash',
-            'dialog', 'panel', 'tabel', 'opsi-baris', 'snackbar'];
-        $temuan = $this->cariNamaLama(array_map(fn (string $nama) => 'resources/views/components/ui/'.$nama.'.blade.php', $sudahM3));
+        $sudahM3 = ['tombol', 'ikon', 'isian', 'pilihan', 'area-teks', 'centang', 'lencana', 'lencana-status', 'peringatan', 'flash',
+            'dialog', 'panel', 'tabel', 'opsi-baris', 'snackbar', 'judul-halaman', 'bagian', 'kosong', 'ringkasan', 'ringkasan-sel',
+            'rincian', 'rincian-baris', 'waktu', 'grafik-batang', 'paginasi', 'linimasa', 'ketersediaan'];
+        $temuan = $this->cariNamaLama(array_merge(
+            array_map(fn (string $nama) => 'resources/views/components/ui/'.$nama.'.blade.php', $sudahM3),
+            array_map(fn (string $nama) => 'resources/views/components/peta/'.$nama.'.blade.php', ['faskes', 'pelacak', 'pemilih']),
+            ['resources/js/peta.js'],
+        ));
 
         $this->assertSame([], $temuan, "Nama lama masih ada:\n".implode("\n", $temuan));
     }
@@ -197,12 +202,16 @@ class KomponenUiTest extends TestCase
     public function test_judul_halaman_bagian_panel_kosong(): void
     {
         $judul = $this->render('<x-ui.judul-halaman judul="Pesanan" deskripsi="Daftar pesanan."><x-slot:aksi>AKSI</x-slot:aksi></x-ui.judul-halaman>');
-        $this->assertStringContainsString('<h1 class="text-h1">Pesanan</h1>', $judul);
+        $this->assertStringContainsString('<h1 class="text-headline-s">Pesanan</h1>', $judul);
         $this->assertStringContainsString('Daftar pesanan.', $judul);
+        $this->assertStringContainsString('text-body-l text-on-surface-variant', $judul);
         $this->assertStringContainsString('AKSI', $judul);
+        // Judul 24px dan keterangan 16px tidak boleh setara: kelas ukuran keduanya berbeda.
+        $this->assertStringNotContainsString('<h1 class="text-body', $judul);
 
-        $bagian = $this->render('<x-ui.bagian judul="Terbaru">ISI</x-ui.bagian>');
-        $this->assertStringContainsString('<h2 class="text-h2">Terbaru</h2>', $bagian);
+        $bagian = $this->render('<x-ui.bagian judul="Terbaru" deskripsi="Sepuluh pesanan terakhir.">ISI</x-ui.bagian>');
+        $this->assertStringContainsString('<h2 class="text-title-l">Terbaru</h2>', $bagian);
+        $this->assertStringContainsString('text-body-m text-on-surface-variant', $bagian);
         $this->assertStringContainsString('mt-8', $bagian);
 
         $panel = $this->render('<x-ui.panel judul="Aksi">ISI<x-slot:kaki>KAKI</x-slot:kaki></x-ui.panel>');
@@ -213,6 +222,8 @@ class KomponenUiTest extends TestCase
         $kosong = $this->render('<x-ui.kosong pesan="Belum ada pesanan."><x-slot:aksi>BUAT</x-slot:aksi></x-ui.kosong>');
         $this->assertStringContainsString('Belum ada pesanan.', $kosong);
         $this->assertStringContainsString('BUAT', $kosong);
+        $this->assertStringContainsString('rounded-md border border-outline-variant bg-surface-container-lowest', $kosong);
+        $this->assertStringContainsString('text-body-l text-on-surface-variant', $kosong);
     }
 
     public function test_tabel(): void
@@ -272,7 +283,7 @@ class KomponenUiTest extends TestCase
         ]);
 
         $this->assertStringContainsString('<option value="">Semua jenis</option>', $html);
-        $this->assertStringContainsString('Rumah Sakit', $html);
+        $this->assertStringContainsString('Rumah sakit', $html);
         $this->assertMatchesRegularExpression('/<option value="puskesmas"\s+selected/', $html);
         $this->assertStringContainsString(Tampilan::kelasIsian(false), $html);
     }
@@ -306,14 +317,26 @@ class KomponenUiTest extends TestCase
     public function test_ringkasan_rincian_dan_waktu(): void
     {
         $ringkasan = $this->render('<x-ui.ringkasan><x-ui.ringkasan-sel label="Menunggu verifikasi" :nilai="3" nada="peringatan" keterangan="Sekarang" /><x-ui.ringkasan-sel label="Selesai" :nilai="12" /></x-ui.ringkasan>');
-        $this->assertStringContainsString('text-display', $ringkasan);
+        $this->assertStringContainsString('text-display-s tabular-nums', $ringkasan);
         $this->assertStringContainsString('text-warning', $ringkasan);
         $this->assertStringContainsString('Menunggu verifikasi', $ringkasan);
-        $this->assertStringContainsString('gap-px', $ringkasan);
+
+        // Wadah: sel dipisah garis 1px outline-variant (2 kolom ponsel, 4 kolom desktop).
+        foreach (['gap-px', 'bg-outline-variant', 'border-outline-variant', 'rounded-md', 'grid-cols-2', 'lg:grid-cols-4'] as $kelas) {
+            $this->assertStringContainsString($kelas, $ringkasan);
+        }
+        // Sel: label di atas angka, label lebih kecil dari angka.
+        $this->assertStringContainsString('bg-surface-container-lowest', $ringkasan);
+        $this->assertStringContainsString('<p class="text-label-l text-on-surface-variant">Menunggu verifikasi</p>', $ringkasan);
+        $this->assertLessThan(strpos($ringkasan, 'text-display-s'), strpos($ringkasan, 'Menunggu verifikasi'));
+        $this->assertStringContainsString('text-body-s text-on-surface-variant', $ringkasan);
 
         $rincian = $this->render('<x-ui.rincian><x-ui.rincian-baris label="Pasien">Budi</x-ui.rincian-baris></x-ui.rincian>');
         $this->assertStringContainsString('<dl', $rincian);
-        $this->assertStringContainsString('<dt class="text-on-surface-muted">Pasien</dt>', $rincian);
+        $this->assertStringContainsString('<dt class="text-on-surface-variant">Pasien</dt>', $rincian);
+        foreach (['divide-outline-variant', 'rounded-md', 'border-outline-variant', 'bg-surface-container-lowest', 'text-body-m'] as $kelas) {
+            $this->assertStringContainsString($kelas, $rincian);
+        }
 
         $waktu = $this->render('<x-ui.waktu nilai="2026-10-11 09:30:00" />');
         $this->assertStringContainsString('11 Okt 2026 09:30', $waktu);
@@ -330,6 +353,14 @@ class KomponenUiTest extends TestCase
         $this->assertStringContainsString('width: 100%', $html);
         $this->assertStringContainsString('width: 0%', $html);
 
+        // Kolom label berlebar tetap tanpa pemecahan baris; nilai rata kanan dengan angka tabular.
+        $labelPanjang = $this->render('<x-ui.grafik-batang :data="$d" />', ['d' => ['Sen 05/10' => 7]]);
+        $this->assertStringContainsString('w-24 shrink-0 whitespace-nowrap text-body-s text-on-surface-variant', $labelPanjang);
+        $this->assertStringContainsString('w-10 shrink-0 text-right tabular-nums', $labelPanjang);
+        $this->assertStringContainsString('bg-surface-container-highest', $labelPanjang);
+        $this->assertStringContainsString('bg-primary', $labelPanjang);
+        $this->assertStringContainsString('bg-success', $this->render('<x-ui.grafik-batang :data="$d" nada="sukses" />', ['d' => ['Sen' => 1]]));
+
         $kosong = $this->render('<x-ui.grafik-batang :data="[]" />');
         $this->assertStringContainsString('<ul', $kosong);
     }
@@ -344,6 +375,10 @@ class KomponenUiTest extends TestCase
         $this->assertStringContainsString('Berikutnya', $html);
         $this->assertStringContainsString('aria-current="page"', $html);
         $this->assertStringNotContainsString('Previous', $html);
+        $this->assertStringContainsString('bg-secondary-container text-on-secondary-container', $html);
+        foreach (['rounded-full', 'min-h-10', 'lapisan-keadaan', 'text-label-l', 'text-body-m text-on-surface-variant'] as $kelas) {
+            $this->assertStringContainsString($kelas, $html);
+        }
 
         $kosong = $this->render('<x-ui.paginasi :data="$p" />', ['p' => new LengthAwarePaginator([], 0, 20, 1)]);
         $this->assertSame('', trim($kosong));
@@ -360,12 +395,16 @@ class KomponenUiTest extends TestCase
 
         $html = $this->render('<x-ui.linimasa :log="$l" />', ['l' => $pesanan->log()->with('pelaku')->get()]);
 
-        $this->assertStringContainsString('Menunggu Verifikasi', $html);
+        $this->assertStringContainsString('Menunggu verifikasi', $html);
+        $this->assertStringNotContainsString('Menunggu Verifikasi', $html);
         $this->assertStringContainsString('Ditolak', $html);
         $this->assertStringContainsString('Siti', $html);
         $this->assertStringContainsString('(Dinkes)', $html);
         $this->assertStringContainsString('Data tidak lengkap', $html);
-        $this->assertSame(1, substr_count($html, 'font-semibold'));
+        $this->assertSame(1, substr_count($html, 'font-medium'));
+        $this->assertStringContainsString('bg-outline-variant', $html);
+        $this->assertStringContainsString('text-body-s text-on-surface-variant', $html);
+        $this->assertStringContainsString('size-2.5 rounded-full bg-error', $html);
     }
 
     public function test_ketersediaan_belum_diperbarui_data_lama_dan_segar(): void
@@ -384,5 +423,8 @@ class KomponenUiTest extends TestCase
         $this->assertStringContainsString('10/15', $htmlSegar);
         $this->assertStringNotContainsString('Data lama', $htmlSegar);
         $this->assertStringNotContainsString('Belum diperbarui', $htmlSegar);
+        $this->assertStringContainsString('text-body-m', $htmlSegar);
+        $this->assertStringContainsString('<dt class="text-on-surface-variant">Bed IGD</dt>', $htmlSegar);
+        $this->assertStringContainsString('text-body-s text-on-surface-variant', $htmlSegar);
     }
 }

@@ -102,7 +102,7 @@ class BerandaFaskesTest extends TestCase
         $this->assertCount(2, $daftar);
         $rs = $daftar->firstWhere('nama', 'RS Json');
         $this->assertSame('rumah_sakit', $rs['jenis']);
-        $this->assertSame('Rumah Sakit', $rs['jenis_label']);
+        $this->assertSame('Rumah sakit', $rs['jenis_label']);
         $this->assertSame(5, $rs['bed_igd_tersedia']);
         $this->assertSame(2, $rs['ambulans_tersedia']);
         $this->assertFalse($rs['belum_diperbarui']);

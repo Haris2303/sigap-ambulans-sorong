@@ -57,3 +57,9 @@
     height: max(100%, var(--spacing-touch));
     transform: translate(-50%, -50%);
 }
+
+/* Daftar yang bisa bergulir (mis. menu laci): bilah gulir tipis berwarna outline-variant. */
+.gulir-tipis {
+    scrollbar-width: thin;
+    scrollbar-color: var(--color-outline-variant) transparent;
+}

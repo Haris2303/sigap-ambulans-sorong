@@ -101,7 +101,7 @@ function pemilih(akar) {
                 daftar.forEach((item) => {
                     const tombol = document.createElement('button');
                     tombol.type = 'button';
-                    tombol.className = 'block w-full min-h-touch px-3 text-left text-body-sm hover:bg-canvas';
+                    tombol.className = 'lapisan-keadaan block w-full min-h-12 px-4 text-left text-body-m text-on-surface';
                     tombol.textContent = item.display_name;
                     tombol.addEventListener('click', () => {
                         hasil.replaceChildren();

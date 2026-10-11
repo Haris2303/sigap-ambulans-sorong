@@ -20,11 +20,11 @@ enum PesananStatus: string
     public function label(): string
     {
         return match ($this) {
-            self::Menunggu => 'Menunggu Verifikasi',
+            self::Menunggu => 'Menunggu verifikasi',
             self::Terverifikasi => 'Terverifikasi',
             self::Ditugaskan => 'Ditugaskan',
-            self::Diterima => 'Diterima Sopir',
-            self::DalamPerjalanan => 'Dalam Perjalanan',
+            self::Diterima => 'Diterima sopir',
+            self::DalamPerjalanan => 'Dalam perjalanan',
             self::Selesai => 'Selesai',
             self::Ditolak => 'Ditolak',
             self::Dibatalkan => 'Dibatalkan',

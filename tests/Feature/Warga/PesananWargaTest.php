@@ -52,7 +52,7 @@ class PesananWargaTest extends TestCase
             ->assertOk()
             ->assertSee('Pesanan aktif')
             ->assertSee('Dari 2 pesanan')
-            ->assertSee('Menunggu Verifikasi')
+            ->assertSee('Menunggu verifikasi')
             ->assertSee('Pesan ambulans');
     }
 
@@ -98,7 +98,7 @@ class PesananWargaTest extends TestCase
             ->assertSee('Darurat')->assertSee('Rujukan')->assertSee('Persalinan')
             ->assertSee('Tingkat darurat')
             ->assertSee('Gunakan lokasi saya')
-            ->assertSee('RS Tujuan (Rumah Sakit)')
+            ->assertSee('RS Tujuan (Rumah sakit)')
             ->assertSee('value="081234567890"', false)
             ->assertSee('Tinjau pesanan');
     }
@@ -227,7 +227,7 @@ class PesananWargaTest extends TestCase
             ->assertSee($pesanan->kode)
             ->assertSee('Budi Santoso')
             ->assertSee('Riwayat status')
-            ->assertSee('Menunggu Verifikasi')
+            ->assertSee('Menunggu verifikasi')
             ->assertSee('Batalkan pesanan')
             ->assertDontSee('Ambulans dan sopir');
     }
@@ -277,7 +277,7 @@ class PesananWargaTest extends TestCase
         $pesanan = $alur->buat($this->warga, $this->isian());
         $this->actingAs($this->warga)->getJson(route('warga.pesanan.status', $pesanan))
             ->assertOk()->assertJsonPath('ok', true)->assertJsonPath('data.status', 'menunggu')
-            ->assertJsonPath('data.label', 'Menunggu Verifikasi')->assertJsonPath('data.sopir', null)
+            ->assertJsonPath('data.label', 'Menunggu verifikasi')->assertJsonPath('data.sopir', null)
             ->assertJsonPath('data.final', false);
 
         $alur->verifikasi($pesanan, $admin);

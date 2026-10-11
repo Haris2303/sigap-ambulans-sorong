@@ -74,7 +74,7 @@ class LaporanTest extends TestCase
 
         $this->assertSame(3, $data['total']);
         $this->assertSame(2, $data['per_status']['Selesai']);
-        $this->assertSame(1, $data['per_status']['Menunggu Verifikasi']);
+        $this->assertSame(1, $data['per_status']['Menunggu verifikasi']);
         $this->assertSame(0, $data['per_status']['Ditolak']);
         $this->assertSame(3, $data['per_jenis']['Darurat']);
         $this->assertSame(['Faskes Laporan' => 2], $data['per_faskes']);

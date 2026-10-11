@@ -97,7 +97,7 @@ class AlurPenuhTest extends TestCase
 
         $this->actingAs($this->warga)->getJson(route('warga.pesanan.status', $pesanan))
             ->assertJsonPath('data.status', 'selesai')->assertJsonPath('data.final', true);
-        $this->get(route('warga.pesanan.show', $pesanan))->assertSee('Selesai')->assertSee('Diterima Sopir');
+        $this->get(route('warga.pesanan.show', $pesanan))->assertSee('Selesai')->assertSee('Diterima sopir');
     }
 
     public function test_jalur_ditolak_dinkes_tampil_dengan_alasan_ke_masyarakat(): void

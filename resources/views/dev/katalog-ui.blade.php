@@ -124,7 +124,7 @@
         <div class="grid gap-6 md:grid-cols-3">
             @foreach ($faskes as $f)
                 <div>
-                    <h3 class="mb-2 text-h3">{{ $f->nama }}</h3>
+                    <h3 class="mb-2 text-title-m">{{ $f->nama }}</h3>
                     <x-ui.ketersediaan :faskes="$f" />
                 </div>
             @endforeach

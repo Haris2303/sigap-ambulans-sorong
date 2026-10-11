@@ -15,7 +15,7 @@ enum JenisFaskes: string
     public function label(): string
     {
         return match ($this) {
-            self::Rs => 'Rumah Sakit',
+            self::Rs => 'Rumah sakit',
             self::Puskesmas => 'Puskesmas',
             self::Klinik => 'Klinik',
         };

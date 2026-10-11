@@ -122,7 +122,7 @@ class SmokeRouteTest extends TestCase
 
         $this->get(route('admin.dashboard'))->assertOk()->assertSee('Pesanan terbaru');
         $this->get(route('admin.pesanan.index'))->assertOk()
-            ->assertSee('Menunggu Verifikasi')->assertSee('Dalam Perjalanan')->assertSee('Selesai')->assertSee('Ditolak')->assertSee('Dibatalkan');
+            ->assertSee('Menunggu verifikasi')->assertSee('Dalam perjalanan')->assertSee('Selesai')->assertSee('Ditolak')->assertSee('Dibatalkan');
         $this->get(route('admin.laporan.pdf'))->assertOk();
         $this->get(route('admin.laporan.csv'))->assertOk();
     }
