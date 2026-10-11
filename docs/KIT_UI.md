@@ -22,7 +22,7 @@
 - Bayangan: `shadow-level-1`, `shadow-level-2`, `shadow-level-3`; level 0 adalah `shadow-none`.
 - Ukuran: `min-h-touch`/`h-touch` (48px), `w-drawer` (280px), `max-w-content` (1152px), `max-w-prose`.
 - Gerak: `transition-colors` dan `transition-opacity` memakai 150ms dengan easing standar M3 secara bawaan.
-- Kelas di `tambahan.css`: `lapisan-keadaan` (lapisan hover 8%, fokus 10%, tekan 10% berwarna `currentColor` di bawah isi kontrol) dan `target-sentuh` (memperluas area sentuh tak terlihat menjadi minimal 48px).
+- Kelas di `tambahan.css`: `gulir-tipis` (bilah gulir tipis `outline-variant` untuk daftar yang bisa bergulir, mis. menu laci), `lapisan-keadaan` (lapisan hover 8%, fokus 10%, tekan 10% berwarna `currentColor` di bawah isi kontrol) dan `target-sentuh` (memperluas area sentuh tak terlihat menjadi minimal 48px).
 
 **Tidak ada** (tidak menghasilkan CSS, dan dipindai): palet bawaan (`bg-red-500`, `text-gray-600`, `text-white`), `text-sm|xs|lg|xl…`, `font-bold|semibold`, `rounded-2xl+`, `shadow-xs…2xl`, `blur`, `tracking-*`, `uppercase`, `italic`, gradien, `animate-pulse|bounce|ping`, `hover:scale|translate`, nilai sembarang untuk `rounded` dan `shadow`. Boleh: `animate-spin` untuk indikator memuat.
 
@@ -43,6 +43,7 @@
 | Panel | `rounded-md border border-outline-variant bg-surface-container-lowest p-4 md:p-6` |
 | Pembungkus tabel | `overflow-x-auto rounded-md border border-outline-variant bg-surface-container-lowest`; kepala `bg-surface-container-low text-label-l text-on-surface-variant`; sel `px-4 py-3 text-body-m`; garis antarbaris `divide-y divide-outline-variant`; semua baris: `[&>tr:hover]:bg-on-surface/8` |
 | Lencana | `inline-flex min-h-6 items-center gap-1.5 rounded-sm px-2 text-label-m` + titik `size-1.5 rounded-full bg-current`; nada `netral: bg-surface-container-highest text-on-surface-variant`, `info: bg-primary-container text-on-primary-container`, `peringatan: bg-warning-container text-on-warning-container`, `sukses: bg-success-container text-on-success-container`, `bahaya: bg-error-container text-on-error-container` |
+| Teks dan lencana dalam satu sel | bungkus keduanya dengan `<span class="inline-flex items-center gap-2">…</span>` di dalam `<td>` (jangan menaruh `inline-flex` pada `<td>` itu sendiri) supaya sejajar vertikal |
 | Warna titik/latar nada | `info: bg-primary`, `peringatan: bg-warning`, `sukses: bg-success`, `bahaya: bg-error`, `netral: bg-on-surface-variant`; teks nada: `text-primary`, `text-warning`, `text-success`, `text-error`, `text-on-surface` |
 | Peringatan (banner) | `flex gap-3 rounded-md px-4 py-3 text-body-m` + warna container nada seperti lencana, ikon di kiri (`info`, `circle-check`, `triangle-alert`, `circle-x`) |
 | Snackbar | `fixed bottom-4 left-4 right-4 z-50 flex items-center gap-2 rounded-xs bg-inverse-surface py-1 pl-4 pr-2 text-body-m text-inverse-on-surface shadow-level-3 md:left-auto md:w-96`; pesan `min-w-0 flex-1 py-2`; aksi "Tutup": tombol `terbalik` |
@@ -70,13 +71,13 @@ Semua layout menerima `judul` dan menampilkan `<x-ui.flash />` di atas isi. Hala
 
 | Komponen | Props / slot | Catatan |
 |---|---|---|
-| `judul-halaman` | `judul`, `deskripsi?`; slot `aksi` | satu per halaman (`text-headline-s`); aksi utama di kanan (ponsel di bawah judul) |
-| `bagian` | `judul`, `deskripsi?`; slot isi, `aksi?` | blok isi dengan `text-title-l` dan jarak `mt-8` antar bagian; **bukan** kartu |
+| `judul-halaman` | `judul`, `deskripsi?`; slot `aksi` | satu per halaman. Judul `text-headline-s` (24px); keterangan di bawahnya `text-body-l text-on-surface-variant` (16px), sehingga keduanya jelas berbeda. Aksi utama di kanan (ponsel di bawah judul) |
+| `bagian` | `judul`, `deskripsi?`; slot isi, `aksi?` | blok isi dengan judul `text-title-l`, keterangan `text-body-m text-on-surface-variant`, dan jarak `mt-8` antar bagian; **bukan** kartu |
 | `panel` | `judul?`; slot, `kaki?` | wadah berbingkai (formulir, aksi). Judul `text-title-m`. Tidak boleh di dalam `panel` lain |
 | `tombol` | `nada` = `utama\|tonal\|sekunder\|hantu\|bahaya\|terbalik`, `ukuran` = `md\|lg`, `href?`, `tipe?`, `ikon?`, `konfirmasi?`, `blok?` | `href` menjadi `<a>`; selain itu `<button>`. Tanpa slot dan dengan `ikon` menjadi tombol ikon (wajib `aria-label`). `konfirmasi="…"` membuka `ui.dialog` lewat `sigap.js` |
 | `ikon` | `nama`, `ukuran` = `18\|24` (bawaan 24) | membaca `resources/icons/{nama}.svg`, menyisipkan `class`, `stroke-width="1.75"`, `aria-hidden="true"`; melempar `InvalidArgumentException` bila ikon tidak ada di daftar |
 | `lencana` | `nada` = `netral\|info\|peringatan\|sukses\|bahaya` | teks pendek; selalu dengan titik |
-| `lencana-status` | `status` (enum `PesananStatus`) | memakai `->label()` dan `->nada()`; **satu-satunya** cara menampilkan status |
+| `lencana-status` | `status` (enum `PesananStatus`) | memakai `->label()` dan `->nada()`; **satu-satunya** cara menampilkan status. Label Enum berhuruf kapital awal kalimat saja ("Menunggu verifikasi", "Dalam perjalanan"), kecuali istilah baku Faskes, Dinkes, dan BUMN (dijaga `EnumTest`) |
 | `flash` | — | membaca `session('sukses')` (tampil lewat `snackbar`), `session('galat')` dan ringkasan `$errors` (tampil sebagai `peringatan` bahaya di atas isi) |
 | `snackbar` | `tetap` (bawaan `true`; `false` hanya untuk katalog); slot pesan | pesan singkat hasil tindakan di dasar layar, dengan tombol Tutup (`data-snackbar-tutup`, ditangani `sigap.js`). Tanpa batas waktu otomatis |
 | `peringatan` | `nada` = `info\|peringatan\|sukses\|bahaya` | pesan sebaris di halaman (banner) |
@@ -91,7 +92,7 @@ Semua layout menerima `judul` dan menampilkan `<x-ui.flash />` di atas isi. Hala
 | `ringkasan` + `ringkasan-sel` | `label`, `nilai`, `nada?`, `keterangan?` | satu wadah berbingkai dengan sel dipisah garis (2 kolom ponsel, 4 desktop); angka `text-display-s tabular-nums`. Menggantikan "kartu statistik" |
 | `rincian` | slot daftar `rincian-baris` (`label`, slot nilai) | daftar definisi `<dl>`: label `text-on-surface-variant` di kiri, nilai di kanan, garis antarbaris. Dipakai di semua halaman detail |
 | `waktu` | `nilai`, `relatif?` | zona Asia/Jayapura, `d M Y H:i`; `relatif` menambah "x menit lalu"; `tabular-nums` |
-| `grafik-batang` | `data` (label→angka), `nada?` | batang CSS murni; satu-satunya tempat boleh `style="width:…"` |
+| `grafik-batang` | `data` (label→angka), `nada?` | batang CSS murni; satu-satunya tempat boleh `style="width:…"`. Kolom label `w-24 shrink-0 whitespace-nowrap text-body-s text-on-surface-variant` (tidak pecah baris), jalur `bg-surface-container-highest`, nilai `w-10 shrink-0 text-right tabular-nums` |
 | `paginasi` | `data` (paginator) | membuat markup sendiri dari `$data->linkCollection()` (tampilan paginasi bawaan Laravel memakai palet Tailwind lama dan **tidak boleh** dipakai); bahasa Indonesia ("Sebelumnya", "Berikutnya", "Menampilkan 1–20 dari 134"); halaman aktif `bg-secondary-container` |
 | `linimasa` | `log` (koleksi `PesananLog`) | sesuai `DESIGN.md` bagian Components: kolom waktu tetap, titik, label status, pelaku/peran, catatan; langkah terakhir `font-medium` |
 | `ketersediaan` | `faskes` | bed IGD x/y, bed rawat inap x/y, dokter umum, dokter spesialis, ambulans tersedia, "diperbarui …" / "Belum diperbarui" / "Data lama" (lencana `peringatan`) |
