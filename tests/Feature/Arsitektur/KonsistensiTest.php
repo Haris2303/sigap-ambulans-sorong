@@ -33,6 +33,14 @@ class KonsistensiTest extends TestCase
         $this->assertSame(1, preg_match($this->regex($istilah), 'class Supir {}'));
         $this->assertSame(0, preg_match($this->regex($istilah), 'class Sopir {}'));
 
+        // Nama ikon Lucide "ambulance" sebagai literal bertanda kutip diizinkan; ejaan lain tetap ditolak.
+        foreach (['<x-ui.icon-chip icon="ambulance" />', "'ikon' => 'ambulance'", '<x-ui.tile icon="ambulance" label="Ambulans tersedia" />', 'class Ambulans {}'] as $boleh) {
+            $this->assertSame(0, preg_match($this->regex($istilah), $boleh), $boleh.' harus diterima');
+        }
+        foreach (['<p>Ambulance darurat</p>', '<x-ui.icon-chip icon="ambulance-foo" />', 'icon="ambulan"', 'class Ambulan {}', 'ambulance_id', '"ambulance darurat"'] as $dilarang) {
+            $this->assertSame(1, preg_match($this->regex($istilah), $dilarang), $dilarang.' harus ditolak');
+        }
+
         $emoji = collect($this->muatAturan())->firstWhere('id', 'emoji');
         $this->assertSame(1, preg_match($this->regex($emoji), "ikon \u{1F600}"));
         $this->assertSame(0, preg_match($this->regex($emoji), 'teks biasa'));

@@ -37,11 +37,17 @@ class KomponenUiTest extends TestCase
         $this->assertStringContainsString('text-primary', $html);
         $this->assertStringContainsString('width="24"', $this->render('<x-ui.ikon nama="house" />'));
 
-        try {
-            $this->render('<x-ui.ikon nama="house" :ukuran="20" />');
-            $this->fail('Ukuran ikon di luar 18 dan 24 harus ditolak.');
-        } catch (ViewException $e) {
-            $this->assertStringContainsString('18 atau 24', $e->getMessage());
+        foreach ([18, 20, 22, 24, 26] as $ukuran) {
+            $this->assertStringContainsString('width="'.$ukuran.'"', $this->render('<x-ui.ikon nama="house" :ukuran="$u" />', ['u' => $ukuran]));
+        }
+
+        foreach ([16, 21, 28] as $salah) {
+            try {
+                $this->render('<x-ui.ikon nama="house" :ukuran="$u" />', ['u' => $salah]);
+                $this->fail('Ukuran ikon '.$salah.' harus ditolak.');
+            } catch (ViewException $e) {
+                $this->assertStringContainsString('18, 20, 22, 24, atau 26', $e->getMessage());
+            }
         }
 
         try {
@@ -58,7 +64,7 @@ class KomponenUiTest extends TestCase
             'stethoscope', 'bed-double', 'file-text', 'download', 'settings', 'log-out', 'menu', 'x', 'plus',
             'pencil', 'search', 'check', 'circle-check', 'circle-x', 'ban', 'triangle-alert', 'info', 'clock',
             'phone', 'map-pin', 'navigation', 'crosshair', 'refresh-cw', 'bell', 'chevron-down', 'chevron-right',
-            'arrow-left', 'hospital'];
+            'arrow-left', 'hospital', 'user-check'];
 
         foreach ($daftar as $nama) {
             $this->assertStringContainsString('<svg', $this->render('<x-ui.ikon :nama="$n" />', ['n' => $nama]), $nama);
@@ -79,6 +85,13 @@ class KomponenUiTest extends TestCase
         $this->assertStringContainsString('bg-secondary-container text-on-secondary-container', $this->render('<x-ui.tombol nada="tonal">A</x-ui.tombol>'));
         $this->assertStringContainsString('bg-error text-on-error', $this->render('<x-ui.tombol nada="bahaya">A</x-ui.tombol>'));
         $this->assertStringContainsString('text-inverse-primary', $this->render('<x-ui.tombol nada="terbalik">A</x-ui.tombol>'));
+
+        $diAtasUtama = $this->render('<x-ui.tombol nada="on-primary">Verifikasi pesanan</x-ui.tombol>');
+        $this->assertStringContainsString('bg-on-primary text-primary', $diAtasUtama);
+        $this->assertStringContainsString('disabled:bg-on-surface/12 disabled:text-on-surface/38', $diAtasUtama);
+        foreach (['lapisan-keadaan', 'target-sentuh', 'rounded-full', 'min-h-10', 'px-6'] as $kelas) {
+            $this->assertStringContainsString($kelas, $diAtasUtama);
+        }
 
         $hantu = $this->render('<x-ui.tombol nada="hantu">A</x-ui.tombol>');
         $this->assertStringContainsString('text-primary', $hantu);
@@ -114,7 +127,9 @@ class KomponenUiTest extends TestCase
             $html = $this->render('<x-ui.lencana :nada="$n">Teks</x-ui.lencana>', ['n' => $nada]);
             $this->assertStringContainsString($kelas, $html);
             $this->assertStringContainsString('rounded-full bg-current', $html);
-            $this->assertStringContainsString('rounded-sm', $html);
+            $this->assertStringContainsString('rounded-full px-2.5', $html);
+            $this->assertStringContainsString('min-h-6', $html);
+            $this->assertStringNotContainsString('rounded-sm', $html);
             $this->assertStringContainsString('text-label-m', $html);
         }
 
@@ -196,9 +211,16 @@ class KomponenUiTest extends TestCase
         $this->assertStringContainsString('mt-8', $bagian);
 
         $panel = $this->render('<x-ui.panel judul="Aksi">ISI<x-slot:kaki>KAKI</x-slot:kaki></x-ui.panel>');
-        $this->assertStringContainsString('rounded-md border border-outline-variant bg-surface-container-lowest', $panel);
+        $this->assertStringContainsString('bg-surface-container-lowest rounded-lg shadow-card', $panel);
+        $this->assertStringContainsString('p-6', $panel);
+        $this->assertStringNotContainsString('border border-outline-variant bg-surface-container-lowest', $panel);
         $this->assertStringContainsString('text-title-m', $panel);
         $this->assertStringContainsString('KAKI', $panel);
+
+        $flush = $this->render('<x-ui.panel :flush="true">TABEL</x-ui.panel>');
+        $this->assertStringContainsString('bg-surface-container-lowest rounded-lg shadow-card', $flush);
+        $this->assertStringContainsString('overflow-hidden', $flush);
+        $this->assertStringNotContainsString('p-6', $flush);
 
         $kosong = $this->render('<x-ui.kosong pesan="Belum ada pesanan."><x-slot:aksi>BUAT</x-slot:aksi></x-ui.kosong>');
         $this->assertStringContainsString('Belum ada pesanan.', $kosong);

@@ -7,7 +7,7 @@
     'konfirmasi' => null,
     'blok' => false,
 ])
-{{-- nada: utama (filled), tonal, sekunder (outlined), hantu (text), bahaya (error), terbalik (text di atas snackbar). Semua 40px dengan area sentuh 48px. --}}
+{{-- nada: utama (filled), tonal, sekunder (outlined), hantu (text), bahaya (error), terbalik (text di atas snackbar), on-primary (hanya di atas kartu utama primary). Semua 40px dengan area sentuh 48px. --}}
 @php
     $hanyaIkon = $ikon && trim((string) $slot) === '';
     $kelas = 'lapisan-keadaan target-sentuh inline-flex items-center justify-center gap-2 rounded-full text-label-l transition-colors';
@@ -16,6 +16,7 @@
         'sekunder' => 'border border-outline text-primary disabled:border-on-surface/12 disabled:text-on-surface/38',
         'bahaya' => 'bg-error text-on-error disabled:bg-on-surface/12 disabled:text-on-surface/38',
         'hantu' => 'text-primary disabled:text-on-surface/38',
+        'on-primary' => 'bg-on-primary text-primary disabled:bg-on-surface/12 disabled:text-on-surface/38',
         'terbalik' => 'text-inverse-primary disabled:text-inverse-on-surface/38',
         default => 'bg-primary text-on-primary disabled:bg-on-surface/12 disabled:text-on-surface/38',
     };

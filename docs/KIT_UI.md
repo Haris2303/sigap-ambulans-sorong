@@ -2,7 +2,7 @@
 
 > Pasangan `DESIGN.md` (identitas visual, token, larangan gaya). Dokumen ini menjawab "bagaimana dibangun di kode": tumpukan, kelas yang tersedia, komponen Blade, pola halaman. Tujuan: **semua halaman terasa satu aplikasi**. Halaman hanya merakit komponen; gaya tidak pernah ditulis per halaman. Sesi agen otonom tidak boleh mengubah dokumen ini; sesi interaktif boleh, bersama `DESIGN.md`.
 >
-> **Arah dasbor Material (keputusan pemilik proyek, `docs/DESAIN_DASBOR_MATERIAL.md`) mengalahkan aturan Don't dan Layout lama.** Token dan aturan konsistensi untuk arah ini sudah ada (langkah D1); komponen dan halaman belum diubah. Resep di §2 dan layout di §3 untuk panel, lencana, laci, bilah atas, dan latar halaman masih resep M3 sebelumnya sampai langkah D2 dan D4 menggantinya. Daftar komponen yang akan dibangun ada di §10.
+> **Arah dasbor Material (keputusan pemilik proyek, `docs/DESAIN_DASBOR_MATERIAL.md`) mengalahkan aturan Don't dan Layout lama.** Token dan aturan konsistensi sudah ada (langkah D1) dan komponen dasar sudah dibangun (langkah D2: `panel` kartu, `stat`, `icon-chip`, `tile`, `tabs`/`tab`, `avatar`, lencana pil, tombol `on-primary`, ikon `user-check`). Grafik, bilah atas, laci, latar `canvas`, dan dasbor belum; resep layout di §3 untuk laci dan bilah atas masih resep M3 sebelumnya sampai D4. Daftar yang belum dibangun ada di §10.
 >
 > **Material 3.** Token, aturan konsistensi, komponen, layout, dan halaman sudah Material 3. Nama token atau kelas lama ditolak oleh aturan `token-lama` di `agent/konsistensi.json` (pesannya memuat padanan baru). Catatan keputusan dan langkah migrasi ada di `docs/MIGRASI_M3.md`.
 
@@ -39,12 +39,19 @@
 | Tombol hantu (text) | `text-primary disabled:text-on-surface/38` |
 | Tombol bahaya (error) | `bg-error text-on-error` + nonaktif seperti utama |
 | Tombol terbalik | `text-inverse-primary disabled:text-inverse-on-surface/38`, hanya untuk aksi di atas snackbar (bentuk dan padding seperti hantu) |
+| Tombol on-primary | `bg-on-primary text-primary disabled:bg-on-surface/12 disabled:text-on-surface/38`, hanya di atas kartu statistik utama (latar `primary`) |
 | Ukuran tombol | `md`: bawaan (40px, area sentuh 48px); `lg`: `min-h-12` menggantikan `min-h-10` (hanya Kirim pesanan di ponsel) |
 | Isian / pilihan / area teks | `block w-full min-h-14 rounded-xs border border-outline bg-surface-container-lowest px-4 text-body-l text-on-surface placeholder:text-on-surface-variant hover:border-on-surface focus-visible:border-primary focus-visible:outline-1 focus-visible:-outline-offset-1 focus-visible:outline-primary disabled:border-on-surface/12 disabled:text-on-surface/38`; galat: `border-error hover:border-on-error-container focus-visible:border-error focus-visible:outline-error` |
 | Label isian | `mb-1 block text-label-l text-on-surface-variant`; bantuan `mt-1 text-body-s text-on-surface-variant`; galat `mt-1 text-body-s text-error` |
-| Panel | `rounded-md border border-outline-variant bg-surface-container-lowest p-4 md:p-6` |
+| Panel (kartu) | `bg-surface-container-lowest rounded-lg shadow-card` (konstanta `Tampilan::KARTU`) + `p-6`; `flush`: `overflow-hidden` tanpa padding. Tanpa batas |
 | Pembungkus tabel | `overflow-x-auto rounded-md border border-outline-variant bg-surface-container-lowest`; kepala `bg-surface-container-low text-label-l text-on-surface-variant`; sel `px-4 py-3 text-body-m`; garis antarbaris `divide-y divide-outline-variant`; semua baris: `[&>tr:hover]:bg-on-surface/8` |
-| Lencana | `inline-flex min-h-6 items-center gap-1.5 rounded-sm px-2 text-label-m` + titik `size-1.5 rounded-full bg-current`; nada `netral: bg-surface-container-highest text-on-surface-variant`, `info: bg-primary-container text-on-primary-container`, `peringatan: bg-warning-container text-on-warning-container`, `sukses: bg-success-container text-on-success-container`, `bahaya: bg-error-container text-on-error-container` |
+| Lencana | `inline-flex min-h-6 items-center gap-1.5 rounded-full px-2.5 text-label-m` + titik `size-1.5 rounded-full bg-current`; nada `netral: bg-surface-container-highest text-on-surface-variant`, `info: bg-primary-container text-on-primary-container`, `peringatan: bg-warning-container text-on-warning-container`, `sukses: bg-success-container text-on-success-container`, `bahaya: bg-error-container text-on-error-container` |
+| Chip ikon | `inline-flex shrink-0 items-center justify-center rounded-md` + `size-10` (ikon 22) atau `size-13` (ikon 26) + pasangan container nada (`Tampilan::kelasChip`) |
+| Kartu statistik putih | `Tampilan::KARTU` + `flex items-center gap-4 p-5`; chip `lg`, angka `text-stat-l tabular-nums`, label `text-label-l`, keterangan `text-body-s text-on-surface-variant` |
+| Kartu statistik utama | `rounded-lg bg-primary px-6 py-5 text-on-primary shadow-card-raised`; chip `size-11 rounded-md bg-on-primary/18` (ikon 22), judul `text-title-m`, angka `text-stat-hero tabular-nums`, keterangan `text-body-m text-primary-container` |
+| Petak | `rounded-md bg-surface-container-low p-4`, tanpa bayangan; chip `md`, angka `text-stat-m tabular-nums`, label `text-body-m text-on-surface-variant` |
+| Tab | wadah `gulir-tipis flex overflow-x-auto border-b border-surface-container-high`; tab `lapisan-keadaan target-sentuh flex min-h-11 shrink-0 items-center whitespace-nowrap border-b-3 px-4 text-label-l`; aktif `text-primary border-primary`, lainnya `text-on-surface-variant border-transparent` |
+| Avatar | `inline-flex size-10 shrink-0 items-center justify-center rounded-full bg-primary-container text-label-l text-on-primary-container` |
 | Teks dan lencana dalam satu sel | bungkus keduanya dengan `<span class="inline-flex items-center gap-2">…</span>` di dalam `<td>` (jangan menaruh `inline-flex` pada `<td>` itu sendiri) supaya sejajar vertikal |
 | Warna titik/latar nada | `info: bg-primary`, `peringatan: bg-warning`, `sukses: bg-success`, `bahaya: bg-error`, `netral: bg-on-surface-variant`; teks nada: `text-primary`, `text-warning`, `text-success`, `text-error`, `text-on-surface` |
 | Peringatan (banner) | `flex gap-3 rounded-md px-4 py-3 text-body-m` + warna container nada seperti lencana, ikon di kiri (`info`, `circle-check`, `triangle-alert`, `circle-x`) |
@@ -75,10 +82,15 @@ Semua layout menerima `judul` dan menampilkan `<x-ui.flash />` di atas isi. Hala
 |---|---|---|
 | `judul-halaman` | `judul`, `deskripsi?`; slot `aksi` | satu per halaman. Judul `text-headline-s` (24px); keterangan di bawahnya `text-body-l text-on-surface-variant` (16px), sehingga keduanya jelas berbeda. Aksi utama di kanan (ponsel di bawah judul) |
 | `bagian` | `judul`, `deskripsi?`; slot isi, `aksi?` | blok isi dengan judul `text-title-l`, keterangan `text-body-m text-on-surface-variant`, dan jarak `mt-8` antar bagian; **bukan** kartu |
-| `panel` | `judul?`; slot, `kaki?` | wadah berbingkai (formulir, aksi). Judul `text-title-m`. Tidak boleh di dalam `panel` lain |
-| `tombol` | `nada` = `utama\|tonal\|sekunder\|hantu\|bahaya\|terbalik`, `ukuran` = `md\|lg`, `href?`, `tipe?`, `ikon?`, `konfirmasi?`, `blok?` | `href` menjadi `<a>`; selain itu `<button>`. Tanpa slot dan dengan `ikon` menjadi tombol ikon (wajib `aria-label`). `konfirmasi="…"` membuka `ui.dialog` lewat `sigap.js` |
-| `ikon` | `nama`, `ukuran` = `18\|24` (bawaan 24) | membaca `resources/icons/{nama}.svg`, menyisipkan `class`, `stroke-width="1.75"`, `aria-hidden="true"`; melempar `InvalidArgumentException` bila ikon tidak ada di daftar |
-| `lencana` | `nada` = `netral\|info\|peringatan\|sukses\|bahaya` | teks pendek; selalu dengan titik |
+| `panel` | `judul?`, `flush?`; slot, `kaki?` | kartu putih berbayang `shadow-card`, sudut 16px, tanpa batas (formulir, aksi, tabel, grafik). Judul `text-title-m`. `flush`: tanpa padding, untuk tabel di dalam kartu. Kartu berbayang tidak boleh di dalam kartu berbayang |
+| `stat` | `tone` = `primary\|warning\|success\|error` (bawaan `primary`), `value`, `label`, `hint?`, `icon`, `featured?`, `href?`; slot `aksi` (hanya `featured`) | kartu statistik. Putih: chip ikon `lg`, angka, label, keterangan; `href` menjadikan hanya label sebuah tautan (kartu tidak dapat diklik seluruhnya). Utama (`featured`): latar `primary`, `tone` diabaikan, tombol `on-primary` lewat slot `aksi`. Atribut (mis. `data-ringkasan`) diteruskan ke akar; angka bertanda `data-nilai` untuk pembaruan otomatis |
+| `icon-chip` | `tone` = `primary\|warning\|success\|error`, `icon`, `size` = `md\|lg` | chip ikon pembawa makna (40px, ikon 22; 52px, ikon 26); sudut 12px; nada dan ukuran di luar daftar melempar `InvalidArgumentException`. Selalu disertai teks pendamping |
+| `tile` | `tone`, `icon`, `value`, `label` | petak tonal tanpa bayangan di dalam kartu (ketersediaan): chip `md`, angka `text-stat-m`, label |
+| `tabs` dan `tab` | `tabs`: `label?` (nama navigasi, bawaan "Tab"); `tab`: `href`, `aktif?` | tab primer M3 berupa tautan ke URL yang sama dengan `?tab=...`, tanpa JavaScript; tab aktif bertanda `aria-current="page"`; baris tab bergulir horizontal di ponsel |
+| `avatar` | `nama` | lingkaran 40px berinisial dua kata pertama (`Tampilan::inisial()`, "?" bila kosong); dekoratif (`aria-hidden`), nama selalu ada di sebelahnya |
+| `tombol` | `nada` = `utama\|tonal\|sekunder\|hantu\|bahaya\|terbalik\|on-primary`, `ukuran` = `md\|lg`, `href?`, `tipe?`, `ikon?`, `konfirmasi?`, `blok?` | `href` menjadi `<a>`; selain itu `<button>`. Tanpa slot dan dengan `ikon` menjadi tombol ikon (wajib `aria-label`). `konfirmasi="…"` membuka `ui.dialog` lewat `sigap.js` |
+| `ikon` | `nama`, `ukuran` = `18\|20\|22\|24\|26` (bawaan 24; 18 dalam tombol, 20 tombol keluar, 22 item menu dan chip md, 26 chip lg) | membaca `resources/icons/{nama}.svg`, menyisipkan `class`, `stroke-width="1.75"`, `aria-hidden="true"`; melempar `InvalidArgumentException` bila ikon tidak ada di daftar |
+| `lencana` | `nada` = `netral\|info\|peringatan\|sukses\|bahaya` | teks pendek berbentuk pil (tinggi 24px, padding 10px); selalu dengan titik |
 | `lencana-status` | `status` (enum `PesananStatus`) | memakai `->label()` dan `->nada()`; **satu-satunya** cara menampilkan status. Label Enum berhuruf kapital awal kalimat saja ("Menunggu verifikasi", "Dalam perjalanan"), kecuali istilah baku Faskes, Dinkes, dan BUMN (dijaga `EnumTest`) |
 | `flash` | — | membaca `session('sukses')` (tampil lewat `snackbar`), `session('galat')` dan ringkasan `$errors` (tampil sebagai `peringatan` bahaya di atas isi) |
 | `snackbar` | `tetap` (bawaan `true`; `false` hanya untuk katalog); slot pesan | pesan singkat hasil tindakan di dasar layar, dengan tombol Tutup (`data-snackbar-tutup`, ditangani `sigap.js`). Tanpa batas waktu otomatis |
@@ -117,7 +129,8 @@ Aturan komponen: dibangun dari resep §2; tidak ada kelas di luar §1; variasi b
 
 ## 6. Daftar ikon (satu-satunya yang tersedia)
 
-`ambulance`, `hospital`, `house`, `layout-dashboard`, `clipboard-list`, `list-checks`, `users`, `user`, `building-2`, `stethoscope`, `bed-double`, `file-text`, `download`, `settings`, `log-out`, `menu`, `x`, `plus`, `pencil`, `search`, `check`, `circle-check`, `circle-x`, `ban`, `triangle-alert`, `info`, `clock`, `phone`, `map-pin`, `navigation`, `crosshair`, `refresh-cw`, `bell`, `chevron-down`, `chevron-right`, `arrow-left`.
+`ambulance`, `hospital`, `house`, `layout-dashboard`, `clipboard-list`, `list-checks`, `users`, `user`, `user-check`, `building-2`, `stethoscope`, `bed-double`, `file-text`, `download`, `settings`, `log-out`, `menu`, `x`, `plus`, `pencil`, `search`, `check`, `circle-check`, `circle-x`, `ban`, `triangle-alert`, `info`, `clock`, `phone`, `map-pin`, `navigation`, `crosshair`, `refresh-cw`, `bell`, `chevron-down`, `chevron-right`, `arrow-left`.
+Nama ikon `ambulance` adalah satu-satunya literal yang dikecualikan dari aturan `istilah-baku` (hanya sebagai string bertanda kutip utuh).
 Ikon hanya di menu laci, tombol yang butuh penjelas visual (mis. lokasi), peringatan, dan keadaan kosong tertentu. Tidak di dalam lingkaran berwarna, tidak di samping judul.
 
 ## 7. JavaScript
@@ -135,18 +148,10 @@ Pada berkas di bawah `resources/views/` (kecuali `pdf/`): kelas warna/gaya di lu
 
 ## 10. Komponen dasbor (rencana)
 
-Status: **belum diimplementasikan**. Daftar ini mengikuti `docs/DESAIN_DASBOR_MATERIAL.md` bagian 5 dan 6; ukuran dan geometri lengkap ada di sana. Setelah sebuah komponen dibangun, baris di sini diganti menjadi dokumentasi sebenarnya (props, resep kelas, contoh pemakaian) dan statusnya berubah. Semua komponen berada di `resources/views/components/ui/` dan memakai nama `x-ui.*`; tiap komponen punya tes render.
+Komponen dasar (D2) sudah dibangun dan didokumentasikan di §2 dan §4; contoh di bawah tabel ini. Yang tersisa mengikuti `docs/DESAIN_DASBOR_MATERIAL.md` bagian 5.8 sampai 5.13 dan 6, dengan status **belum diimplementasikan**; ukuran dan geometri lengkap ada di sana. Setelah dibangun, barisnya dipindah ke §4.
 
 | Komponen | Props / ringkasan | Langkah | Status |
 |---|---|---|---|
-| `x-ui.panel` (diubah) | kartu: `bg-surface-container-lowest rounded-lg shadow-card p-6`, tanpa batas; prop baru `flush` (tanpa padding, untuk tabel) | D2 | belum diimplementasikan |
-| `x-ui.stat` | `tone` (`primary`, `warning`, `success`, `error`), `value`, `label`, `hint?`, `icon`, `featured?`, `href?`. Putih: chip ikon 52px, angka `text-stat-l`; utama: latar `primary`, `shadow-card-raised`, angka `text-stat-hero`, satu tombol `on-primary` | D2 | belum diimplementasikan |
-| `x-ui.icon-chip` | `tone`, `icon`, `size` (`md` 40px dengan ikon 22px, `lg` 52px dengan ikon 26px); `rounded-md`; ikon `aria-hidden`, teks pendamping selalu ada. Ikon baru `user-check` | D2 | belum diimplementasikan |
-| `x-ui.tile` | petak di dalam kartu ketersediaan: `bg-surface-container-low rounded-md p-4`, chip ikon `md`, angka `text-stat-m`, label `text-body-m` | D2 | belum diimplementasikan |
-| `x-ui.tabs` dan `x-ui.tab` | tab primer M3 (tinggi 44px, aktif `primary` dengan garis bawah 3px); tab adalah tautan `?tab=...` dengan `aria-current="page"`, tanpa JavaScript; baris bergulir horizontal di ponsel | D2 | belum diimplementasikan |
-| `x-ui.avatar` | lingkaran 40px `primary-container`, inisial dua huruf maksimum, `aria-hidden` (nama selalu ada di sebelahnya) | D2 | belum diimplementasikan |
-| `x-ui.lencana` / `lencana-status` (diubah) | pil (`rounded-full`), tinggi 24px, padding 10px, `text-label-m`, titik 6px tetap | D2 | belum diimplementasikan |
-| `x-ui.tombol` (diubah) | varian baru `on-primary` (latar `on-primary`, teks `primary`, 40px) hanya di atas kartu utama | D2 | belum diimplementasikan |
 | `x-ui.chart.bar` | `labels`, `values`, `highlight`, `title`; SVG server-side, viewBox `0 0 640 346`, label nilai terlihat, `role="img"` dengan `aria-label` | D3 | belum diimplementasikan |
 | `x-ui.chart.donut` | `segments` (`label`, `value`, `color`), `centerLabel`, `title`; SVG server-side, legenda teks | D3 | belum diimplementasikan |
 | `App\Support\Chart\BarGeometry`, `DonutGeometry` | hitungan geometri murni, diuji unit | D3 | belum diimplementasikan |
@@ -155,3 +160,34 @@ Status: **belum diimplementasikan**. Daftar ini mengikuti `docs/DESAIN_DASBOR_MA
 | Dasbor Dinkes | susunan di `docs/DESAIN_DASBOR_MATERIAL.md` bagian 6, data dari `App\Services\RingkasanDasbor` | D5 | belum diimplementasikan |
 
 Pemakaian warna chip menurut nada: primary = `primary-container` / `on-primary-container`; warning = `warning-container` / `on-warning-container`; success = `success-container` / `on-success-container`; error = `error-container` / `on-error-container`. Warna segmen donat tetap per status Enum (selesai `success`, dibatalkan `outline`, ditolak `error`, menunggu verifikasi `warning`, terverifikasi `primary`, ditugaskan sampai dalam perjalanan `chart-sky`); status baru di Enum diberi warna dengan prinsip yang sama dan dicatat di sini.
+
+### Contoh pemakaian komponen dasar dasbor
+
+```blade
+{{-- Kartu statistik: utama (satu per baris) dan putih --}}
+<x-ui.stat :featured="true" icon="clock" :value="$menunggu" label="Menunggu verifikasi" hint="pesanan baru" data-ringkasan="pesanan_menunggu">
+    <x-slot:aksi>
+        <x-ui.tombol nada="on-primary" :href="route('admin.pesanan.index', ['tab' => 'perlu-tindakan'])">Verifikasi pesanan</x-ui.tombol>
+    </x-slot:aksi>
+</x-ui.stat>
+<x-ui.stat tone="success" icon="circle-check" :value="$selesai" label="Selesai hari ini" hint="pesanan tuntas" />
+
+{{-- Kartu ketersediaan: petak di dalam panel --}}
+<x-ui.panel judul="Ketersediaan">
+    <div class="grid grid-cols-2 gap-4">
+        <x-ui.tile tone="primary" icon="ambulance" :value="$ambulans" label="Ambulans tersedia" />
+        <x-ui.tile tone="error" icon="bed-double" :value="$bedIgd" label="Bed IGD tersedia" />
+    </div>
+</x-ui.panel>
+
+{{-- Tab filter di dalam kartu tanpa padding --}}
+<x-ui.panel :flush="true">
+    <x-ui.tabs label="Filter pesanan">
+        <x-ui.tab :href="route('admin.dashboard', ['tab' => 'semua'])" :aktif="$tab === 'semua'">Semua</x-ui.tab>
+        <x-ui.tab :href="route('admin.dashboard', ['tab' => 'perlu-tindakan'])" :aktif="$tab === 'perlu-tindakan'">Perlu tindakan</x-ui.tab>
+    </x-ui.tabs>
+</x-ui.panel>
+
+{{-- Avatar selalu bersama nama --}}
+<x-ui.avatar :nama="$pengguna->name" /> <span>{{ $pengguna->name }}</span>
+```

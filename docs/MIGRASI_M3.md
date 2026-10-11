@@ -31,7 +31,7 @@ Setelah M5, tidak ada nama token lama di `resources/views` (kecuali `pdf/`, yang
 Setelah M1 sampai M7, pemilik proyek memilih gaya dasbor Material yang lebih kaya. Keputusannya ada di `docs/DESAIN_DASBOR_MATERIAL.md` dan mengalahkan aturan Don't dan Layout lama di `DESIGN.md`, `docs/KIT_UI.md`, dan `agent/konsistensi.json`. Satu langkah per sesi.
 
 - [x] D1 Aturan dan token: `DESIGN.md` (warna `canvas` dan `chart-sky`, lima gaya tipe dasbor, bayangan `card`, `card-raised`, `nav-active`, token komponen baru dan yang berubah, prosa dan Do's and Don'ts), `agent/tokens.mjs` (bayangan dengan warna per tingkat dan lapisan ambient opsional), `agent/konsistensi.json` (`token-lama` tidak lagi melarang `canvas`; `warna-css` mengizinkan tiga token bayangan baru) beserta kasus uji, dan `docs/KIT_UI.md` bagian 10 (rencana komponen). Belum ada perubahan pada Blade dan `app.css`; latar `canvas` dipasang di D4.
-- [ ] D2 Komponen dasar (panel, stat, icon-chip, tile, tabs, avatar, lencana pil, tombol on-primary, ikon `user-check`).
+- [x] D2 Komponen dasar: `panel` (kartu berbayang, prop `flush`), `stat` (putih dan utama), `icon-chip`, `tile`, `tabs` dan `tab`, `avatar`, lencana pil, tombol `on-primary`, ikon `user-check`, ukuran ikon 18/20/22/24/26, kelas bersama di `Tampilan` (`KARTU`, `kelasChip`, `inisial`). Tes render di `KomponenDasborTest`, `KomponenUiTest`, `TampilanTest`, dan katalog `/_ui`. Aturan `istilah-baku` diberi satu pengecualian sempit untuk nama ikon Lucide `ambulance`.
 - [ ] D3 Grafik (bar dan donat, geometri PHP murni).
 - [ ] D4 Kerangka aplikasi (bilah atas, laci, latar `canvas`, jarak halaman).
 - [ ] D5 Dasbor Dinkes (`RingkasanDasbor`, tab, batas query).

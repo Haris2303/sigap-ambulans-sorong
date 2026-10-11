@@ -52,6 +52,46 @@
         <x-ui.snackbar :tetap="false">Pesanan berhasil diverifikasi.</x-ui.snackbar>
     </x-ui.bagian>
 
+    <x-ui.bagian judul="Kartu statistik">
+        <div class="flex flex-wrap gap-5">
+            <x-ui.stat :featured="true" icon="clock" :value="2" label="Menunggu verifikasi" hint="pesanan baru" class="min-w-64 flex-[1.5]">
+                <x-slot:aksi>
+                    <x-ui.tombol nada="on-primary" :href="route('beranda')">Verifikasi pesanan</x-ui.tombol>
+                </x-slot:aksi>
+            </x-ui.stat>
+            <x-ui.stat tone="primary" icon="user-check" :value="1" label="Terverifikasi" hint="menunggu penugasan" class="min-w-56 flex-1" />
+            <x-ui.stat tone="warning" icon="ambulance" :value="3" label="Sedang berjalan" hint="ditugaskan sampai di jalan" class="min-w-56 flex-1" />
+            <x-ui.stat tone="success" icon="circle-check" :value="1" label="Selesai hari ini" hint="pesanan tuntas" :href="route('beranda')" class="min-w-56 flex-1" />
+            <x-ui.stat tone="error" icon="triangle-alert" :value="0" label="Ditolak hari ini" class="min-w-56 flex-1" />
+        </div>
+    </x-ui.bagian>
+
+    <x-ui.bagian judul="Chip ikon, petak, tab, dan avatar">
+        <div class="flex flex-wrap items-center gap-3">
+            @foreach (['primary', 'warning', 'success', 'error'] as $tone)
+                <x-ui.icon-chip :tone="$tone" icon="info" />
+                <x-ui.icon-chip :tone="$tone" icon="info" size="lg" />
+            @endforeach
+            <x-ui.avatar nama="Admin Dinkes" />
+            <span class="text-body-m">Admin Dinkes</span>
+        </div>
+        <x-ui.panel class="mt-5">
+            <div class="grid grid-cols-2 gap-4">
+                <x-ui.tile tone="primary" icon="ambulance" :value="19" label="Ambulans tersedia" />
+                <x-ui.tile tone="error" icon="bed-double" :value="1" label="Bed IGD tersedia" />
+                <x-ui.tile tone="warning" icon="bed-double" :value="1" label="Bed rawat inap tersedia" />
+                <x-ui.tile tone="success" icon="stethoscope" :value="6" label="Dokter tersedia" />
+            </div>
+        </x-ui.panel>
+        <x-ui.panel :flush="true" class="mt-5">
+            <x-ui.tabs label="Contoh tab">
+                <x-ui.tab :href="route('ui.katalog')" :aktif="true">Semua</x-ui.tab>
+                <x-ui.tab :href="route('ui.katalog', ['tab' => 'perlu-tindakan'])">Perlu tindakan</x-ui.tab>
+                <x-ui.tab :href="route('ui.katalog', ['tab' => 'berjalan'])">Berjalan</x-ui.tab>
+            </x-ui.tabs>
+        </x-ui.panel>
+    </x-ui.bagian>
+
     <x-ui.bagian judul="Ringkasan angka">
         <x-ui.ringkasan>
             <x-ui.ringkasan-sel label="Menunggu verifikasi" :nilai="3" nada="peringatan" keterangan="Perlu tindakan Dinkes" />

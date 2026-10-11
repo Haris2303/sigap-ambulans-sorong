@@ -6,6 +6,7 @@ clipboard-list
 list-checks
 users
 user
+user-check
 building-2
 stethoscope
 bed-double

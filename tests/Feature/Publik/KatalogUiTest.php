@@ -34,6 +34,20 @@ class KatalogUiTest extends TestCase
             ->assertSee('data-konfirmasi', false);
     }
 
+    public function test_katalog_ui_memuat_komponen_dasar_dasbor(): void
+    {
+        $this->get('/_ui')
+            ->assertOk()
+            ->assertSee('Kartu statistik')
+            ->assertSee('shadow-card-raised', false)
+            ->assertSee('text-stat-hero', false)
+            ->assertSee('bg-on-primary text-primary', false)
+            ->assertSee('size-13', false)
+            ->assertSee('aria-current="page"', false)
+            ->assertSee('>AD<', false)
+            ->assertSee('Bed IGD tersedia');
+    }
+
     #[DataProvider('kodeGalat')]
     public function test_halaman_galat_memakai_layout(int $kode, string $judul): void
     {

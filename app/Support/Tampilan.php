@@ -2,6 +2,8 @@
 
 namespace App\Support;
 
+use InvalidArgumentException;
+
 /**
  * Pemetaan nada dan bentuk ke kelas token (DESIGN.md, Material 3): satu sumber untuk lencana, peringatan, titik, angka, dan isian.
  */
@@ -14,6 +16,9 @@ class Tampilan
     public const BANTUAN_ISIAN = 'mt-1 text-body-s text-on-surface-variant';
 
     public const GALAT_ISIAN = 'mt-1 text-body-s text-error';
+
+    /** Kartu dasbor: latar putih, sudut 16px, bayangan card, tanpa batas (panel, kartu statistik putih). */
+    public const KARTU = 'bg-surface-container-lowest rounded-lg shadow-card';
 
     /** Container tonal + teks di atasnya (lencana, peringatan). */
     public static function kelasLembut(string $nada): string
@@ -49,6 +54,29 @@ class Tampilan
             'bahaya' => 'bg-error',
             default => 'bg-on-surface-variant',
         };
+    }
+
+    /** Pasangan container dan on-container untuk chip ikon (primary, warning, success, error). */
+    public static function kelasChip(string $tone): string
+    {
+        return match ($tone) {
+            'primary' => 'bg-primary-container text-on-primary-container',
+            'warning' => 'bg-warning-container text-on-warning-container',
+            'success' => 'bg-success-container text-on-success-container',
+            'error' => 'bg-error-container text-on-error-container',
+            default => throw new InvalidArgumentException('x-ui.icon-chip: nada "'.$tone.'" tidak dikenal (primary, warning, success, error).'),
+        };
+    }
+
+    /** Inisial avatar: huruf pertama dari dua kata pertama (kapital), "?" bila nama kosong. */
+    public static function inisial(string $nama): string
+    {
+        $kata = preg_split('/\s+/u', trim($nama), -1, PREG_SPLIT_NO_EMPTY) ?: [];
+        if ($kata === []) {
+            return '?';
+        }
+
+        return implode('', array_map(fn (string $k) => mb_strtoupper(mb_substr($k, 0, 1)), array_slice($kata, 0, 2)));
     }
 
     /** Isian outlined M3 (isian, pilihan, area teks): batas Outline, fokus 2px Primary, galat Error. */

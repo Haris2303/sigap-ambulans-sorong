@@ -5,7 +5,7 @@
     {
       "id": "istilah-baku",
       "tipe": "larang",
-      "pesan": "Istilah terlarang. Pakai istilah baku (RANCANGAN_ALUR bagian 2): sopir, ambulans, faskes.",
+      "pesan": "Istilah terlarang. Pakai istilah baku (RANCANGAN_ALUR bagian 2): sopir, ambulans, faskes. Satu-satunya pengecualian: nama ikon Lucide \"ambulance\" sebagai literal bertanda kutip.",
       "folder": [
         "app",
         "config",
@@ -24,7 +24,7 @@
       "kecuali": [
         "^tests/Feature/Arsitektur/"
       ],
-      "pola": "(?i)pengemudi|supir|ambulan(?!s)|rumah_sakit_id|rs_tujuan|(?<![a-z])rs_id|rumahsakit"
+      "pola": "(?i)pengemudi|supir|(?<![\"'])ambulan(?!s)|(?<=[\"'])ambulan(?!s|ce[\"'])|rumah_sakit_id|rs_tujuan|(?<![a-z])rs_id|rumahsakit"
     },
     {
       "id": "warna-mentah",
