@@ -36,21 +36,22 @@
 | Tombol sekunder (outlined) | `border border-outline text-primary disabled:border-on-surface/12 disabled:text-on-surface/38` |
 | Tombol hantu (text) | `text-primary disabled:text-on-surface/38` |
 | Tombol bahaya (error) | `bg-error text-on-error` + nonaktif seperti utama |
-| Ukuran tombol | `md`: bawaan (40px, area sentuh 48px); `lg`: tambah `min-h-12` (hanya Kirim pesanan di ponsel) |
+| Tombol terbalik | `text-inverse-primary disabled:text-inverse-on-surface/38`, hanya untuk aksi di atas snackbar (bentuk dan padding seperti hantu) |
+| Ukuran tombol | `md`: bawaan (40px, area sentuh 48px); `lg`: `min-h-12` menggantikan `min-h-10` (hanya Kirim pesanan di ponsel) |
 | Isian / pilihan / area teks | `block w-full min-h-14 rounded-xs border border-outline bg-surface-container-lowest px-4 text-body-l text-on-surface placeholder:text-on-surface-variant hover:border-on-surface focus-visible:border-primary focus-visible:outline-1 focus-visible:-outline-offset-1 focus-visible:outline-primary disabled:border-on-surface/12 disabled:text-on-surface/38`; galat: `border-error hover:border-on-error-container focus-visible:border-error focus-visible:outline-error` |
 | Label isian | `mb-1 block text-label-l text-on-surface-variant`; bantuan `mt-1 text-body-s text-on-surface-variant`; galat `mt-1 text-body-s text-error` |
 | Panel | `rounded-md border border-outline-variant bg-surface-container-lowest p-4 md:p-6` |
-| Pembungkus tabel | `overflow-x-auto rounded-md border border-outline-variant bg-surface-container-lowest`; kepala `bg-surface-container-low text-label-l text-on-surface-variant`; sel `px-4 py-3 text-body-m`; garis antarbaris `divide-y divide-outline-variant`; baris dapat diklik: `hover:bg-on-surface/8` |
+| Pembungkus tabel | `overflow-x-auto rounded-md border border-outline-variant bg-surface-container-lowest`; kepala `bg-surface-container-low text-label-l text-on-surface-variant`; sel `px-4 py-3 text-body-m`; garis antarbaris `divide-y divide-outline-variant`; semua baris: `[&>tr:hover]:bg-on-surface/8` |
 | Lencana | `inline-flex min-h-6 items-center gap-1.5 rounded-sm px-2 text-label-m` + titik `size-1.5 rounded-full bg-current`; nada `netral: bg-surface-container-highest text-on-surface-variant`, `info: bg-primary-container text-on-primary-container`, `peringatan: bg-warning-container text-on-warning-container`, `sukses: bg-success-container text-on-success-container`, `bahaya: bg-error-container text-on-error-container` |
 | Warna titik/latar nada | `info: bg-primary`, `peringatan: bg-warning`, `sukses: bg-success`, `bahaya: bg-error`, `netral: bg-on-surface-variant`; teks nada: `text-primary`, `text-warning`, `text-success`, `text-error`, `text-on-surface` |
 | Peringatan (banner) | `flex gap-3 rounded-md px-4 py-3 text-body-m` + warna container nada seperti lencana, ikon di kiri (`info`, `circle-check`, `triangle-alert`, `circle-x`) |
-| Snackbar | `fixed bottom-4 left-4 right-4 z-50 flex items-center gap-2 rounded-xs bg-inverse-surface px-4 py-3 text-body-m text-inverse-on-surface shadow-level-3 md:left-auto md:w-96`; aksi "Tutup": tombol hantu dengan `text-inverse-primary` |
+| Snackbar | `fixed bottom-4 left-4 right-4 z-50 flex items-center gap-2 rounded-xs bg-inverse-surface py-1 pl-4 pr-2 text-body-m text-inverse-on-surface shadow-level-3 md:left-auto md:w-96`; pesan `min-w-0 flex-1 py-2`; aksi "Tutup": tombol `terbalik` |
 | Item menu laci | `lapisan-keadaan flex min-h-14 items-center gap-3 rounded-full px-4 text-label-l text-on-surface-variant`; aktif `bg-secondary-container text-on-secondary-container` |
 | Hitungan menu | `inline-flex h-4 min-w-4 items-center justify-center rounded-full bg-error px-1 text-label-s text-on-error tabular-nums` |
 | Pilihan baris (opsi-baris) | `lapisan-keadaan flex min-h-14 cursor-pointer items-start gap-3 rounded-md border border-outline p-4 has-[:checked]:border-secondary-container has-[:checked]:bg-secondary-container has-[:checked]:text-on-secondary-container` |
 | Dialog | `m-auto w-full max-w-140 rounded-xl bg-surface-container-high p-6 text-on-surface shadow-level-3 backdrop:bg-scrim`; judul `text-headline-s`, isi `text-body-m text-on-surface-variant` |
 | Tautan teks | `text-primary underline underline-offset-2 hover:text-on-primary-container` |
-| Kotak centang / radio | `size-4.5 accent-primary` dalam baris `min-h-12` |
+| Kotak centang / radio | `size-4.5 shrink-0 accent-primary` dalam baris `lapisan-keadaan -mx-3 flex min-h-12 items-center gap-3 rounded-md px-3` (radio pada `opsi-baris`: `size-5`) |
 
 Catatan: di Tailwind 4 warna `border` bawaan adalah `currentColor`, jadi setiap `border` **harus** disertai warna token (`border-outline` untuk kontrol, `border-outline-variant` untuk pembatas). Fokus papan ketik global (cincin 2px `primary`, jarak 2px) berasal dari `app.css`; isian menggantinya dengan batas 2px (resep di atas).
 
@@ -72,11 +73,12 @@ Semua layout menerima `judul` dan menampilkan `<x-ui.flash />` di atas isi. Hala
 | `judul-halaman` | `judul`, `deskripsi?`; slot `aksi` | satu per halaman (`text-headline-s`); aksi utama di kanan (ponsel di bawah judul) |
 | `bagian` | `judul`, `deskripsi?`; slot isi, `aksi?` | blok isi dengan `text-title-l` dan jarak `mt-8` antar bagian; **bukan** kartu |
 | `panel` | `judul?`; slot, `kaki?` | wadah berbingkai (formulir, aksi). Judul `text-title-m`. Tidak boleh di dalam `panel` lain |
-| `tombol` | `nada` = `utama\|tonal\|sekunder\|bahaya\|hantu`, `ukuran` = `md\|lg`, `href?`, `tipe?`, `ikon?`, `konfirmasi?`, `blok?` | `href` menjadi `<a>`; selain itu `<button>`. Tanpa slot dan dengan `ikon` menjadi tombol ikon (wajib `aria-label`). `konfirmasi="…"` membuka `ui.dialog` lewat `sigap.js` |
+| `tombol` | `nada` = `utama\|tonal\|sekunder\|hantu\|bahaya\|terbalik`, `ukuran` = `md\|lg`, `href?`, `tipe?`, `ikon?`, `konfirmasi?`, `blok?` | `href` menjadi `<a>`; selain itu `<button>`. Tanpa slot dan dengan `ikon` menjadi tombol ikon (wajib `aria-label`). `konfirmasi="…"` membuka `ui.dialog` lewat `sigap.js` |
 | `ikon` | `nama`, `ukuran` = `18\|24` (bawaan 24) | membaca `resources/icons/{nama}.svg`, menyisipkan `class`, `stroke-width="1.75"`, `aria-hidden="true"`; melempar `InvalidArgumentException` bila ikon tidak ada di daftar |
 | `lencana` | `nada` = `netral\|info\|peringatan\|sukses\|bahaya` | teks pendek; selalu dengan titik |
 | `lencana-status` | `status` (enum `PesananStatus`) | memakai `->label()` dan `->nada()`; **satu-satunya** cara menampilkan status |
-| `flash` | — | membaca `session('sukses')` (tampil sebagai snackbar), `session('galat')` dan ringkasan `$errors` (tampil sebagai `peringatan` bahaya di atas isi) |
+| `flash` | — | membaca `session('sukses')` (tampil lewat `snackbar`), `session('galat')` dan ringkasan `$errors` (tampil sebagai `peringatan` bahaya di atas isi) |
+| `snackbar` | `tetap` (bawaan `true`; `false` hanya untuk katalog); slot pesan | pesan singkat hasil tindakan di dasar layar, dengan tombol Tutup (`data-snackbar-tutup`, ditangani `sigap.js`). Tanpa batas waktu otomatis |
 | `peringatan` | `nada` = `info\|peringatan\|sukses\|bahaya` | pesan sebaris di halaman (banner) |
 | `dialog` | `id`, `judul`, `pesan`, `aksi` (teks), `nada?` | elemen `<dialog>` bawaan; Level 3, latar `bg-scrim`; satu instance dipakai bersama oleh semua `data-konfirmasi`; dua tombol sejajar kanan (batal hantu; aksi hantu, atau bahaya bila merusak) |
 | `tabel` | slot `kepala`, slot isi | pembungkus tabel (resep §2) |

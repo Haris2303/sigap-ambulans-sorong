@@ -15,7 +15,7 @@ Catatan kemajuan untuk pergantian gaya dari "buku catatan dispatch" ke Material 
 ## Langkah
 
 - [x] M1 Fondasi: `CLAUDE.md` mode interaktif; `DESIGN.md` M3; `agent/tokens.mjs`; `app.css` dan templatnya; `docs/KIT_UI.md`; `agent/konsistensi.json` beserta kasus uji; `tambahan.css` (`lapisan-keadaan`, `target-sentuh`); `TokenDesainTest`.
-- [ ] M2 Komponen primitif: `tombol`, `isian`, `pilihan`, `area-teks`, `centang`, `lencana`, `peringatan`, `flash` (snackbar), `dialog`, `panel`, `tabel`, `opsi-baris`, `ikon` (ukuran 18 dan 24). Ubah `KomponenUiTest` lebih dulu, lalu komponennya.
+- [x] M2 Komponen primitif: `tombol` (nada baru `tonal` dan `terbalik`), `isian`, `pilihan`, `area-teks`, `centang`, `lencana`, `peringatan`, `flash`, `snackbar` (baru), `dialog`, `panel`, `tabel`, `opsi-baris`, `ikon` (hanya ukuran 18 dan 24). `KomponenUiTest` diubah lebih dulu, lalu komponennya; ditambah penjaga `test_komponen_m3_tidak_memuat_nama_token_lama` yang daftarnya bertambah tiap langkah. Sisa M2 yang sengaja ditunda ke M5: `ukuran="sm"` pada pemanggil tombol (kini diperlakukan sebagai `md`).
 - [ ] M3 Layout: `dasar`, `app` (laci navigasi dan bilah atas), `publik`, `auth`. Ubah `LayoutTest` lebih dulu.
 - [ ] M4 Komponen turunan: `judul-halaman`, `bagian`, `ringkasan`, `ringkasan-sel`, `rincian`, `linimasa`, `paginasi`, `ketersediaan`, `kosong`, `waktu`, `grafik-batang`, `peta.*`, dan katalog `/_ui`.
 - [ ] M5 Penyapuan halaman per peran (publik, auth, warga, admin, petugas, sopir, errors): hapus `ukuran="sm"` dan semua nama kelas lama (pemetaan di `docs/KIT_UI.md` §10).
@@ -26,7 +26,7 @@ Catatan kemajuan untuk pergantian gaya dari "buku catatan dispatch" ke Material 
 
 Selama M2 sampai M5 belum selesai, komponen dan halaman lama masih memakai nama kelas token lama (`bg-canvas`, `border-line`, `text-h1`, dan seterusnya). Nama itu tidak lagi menghasilkan CSS, jadi tampilan aplikasi belum representatif sampai langkah-langkah itu selesai. Tes tetap hijau karena hanya memeriksa string kelas yang dikeluarkan komponen.
 
-`KomponenUiTest` dan `LayoutTest` sengaja belum diubah di M1: keduanya menyatakan kelas yang masih dikeluarkan komponen lama. Pernyataan yang harus diganti bersama komponennya:
+`KomponenUiTest` dan `LayoutTest` diubah bersama komponen yang diganti, bukan lebih awal. Yang masih menyatakan kelas lama dan harus diganti pada langkahnya:
 
-- `KomponenUiTest`: `bg-primary text-on-primary` (tetap valid), `border-control-border`, `bg-danger`, `hover:bg-primary-soft`, `min-h-9`, `min-h-12`, `bg-neutral-soft`/`bg-primary-soft`/`bg-warning-soft`/`bg-success-soft`/`bg-danger-soft`, `shadow-overlay`, `text-h1`, `text-h2`, `rounded-lg border border-line bg-surface`, `divide-line`, `border-primary bg-primary-soft`, `text-display`, `text-warning`, `<dt class="text-on-surface-muted">`, `font-semibold` (linimasa), ukuran ikon 16.
-- `LayoutTest`: `bg-primary-soft text-primary` (item menu aktif).
+- M3 (`LayoutTest`): `bg-primary-soft text-primary` (item menu aktif).
+- M4 (`KomponenUiTest`): `text-h1` (judul-halaman), `text-h2` dan `mt-8` (bagian), `text-display` (ringkasan), `<dt class="text-on-surface-muted">` (rincian), `font-semibold` (linimasa).
