@@ -2,6 +2,8 @@
 
 namespace App\Providers;
 
+use App\Models\User;
+use Illuminate\Support\Facades\Route;
 use Illuminate\Support\ServiceProvider;
 
 class AppServiceProvider extends ServiceProvider
@@ -19,6 +21,8 @@ class AppServiceProvider extends ServiceProvider
      */
     public function boot(): void
     {
-        //
+        // Akun peran lain pada {sopir}/{petugas} menghasilkan 404.
+        Route::bind('sopir', fn (string $nilai) => User::sopir()->findOrFail($nilai));
+        Route::bind('petugas', fn (string $nilai) => User::petugas()->findOrFail($nilai));
     }
 }

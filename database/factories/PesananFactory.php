@@ -23,6 +23,7 @@ class PesananFactory extends Factory
             'jenis_layanan' => JenisLayanan::Darurat,
             'tingkat_darurat' => TingkatDarurat::Biasa,
             'lokasi_jemput' => 'Jalan Ahmad Yani, Kota Sorong',
+            'status' => PesananStatus::Menunggu,
         ];
     }
 
