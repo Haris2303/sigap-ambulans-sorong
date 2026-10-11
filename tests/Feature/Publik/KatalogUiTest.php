@@ -34,6 +34,14 @@ class KatalogUiTest extends TestCase
             ->assertSee('data-konfirmasi', false);
     }
 
+    public function test_katalog_ui_memuat_kedua_varian_kontak_darurat_dengan_nomor_contoh(): void
+    {
+        $html = $this->get('/_ui')->assertOk()->assertSee('Kontak darurat')->getContent();
+
+        $this->assertSame(2, substr_count($html, 'href="tel:000000000000"'));
+        $this->assertStringContainsString('Hubungi Dinkes di 0000 0000 0000', $html);
+    }
+
     public function test_katalog_ui_memuat_tiga_nada_waktu_tunggu(): void
     {
         $html = $this->get('/_ui')->assertOk()->assertSee('Waktu tunggu')->getContent();

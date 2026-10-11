@@ -132,6 +132,11 @@
         </x-ui.panel>
     </x-ui.bagian>
 
+    <x-ui.bagian judul="Kontak darurat" deskripsi="Nomor contoh. Aplikasi asli menampilkannya hanya bila KONTAK_DARURAT_NOMOR diisi di .env.">
+        <x-ui.kontak-darurat>Keadaan darurat dan aplikasi ini tidak bisa dipakai?</x-ui.kontak-darurat>
+        <x-ui.kontak-darurat varian="tautan" class="mt-4">Formulir tidak bisa dipakai?</x-ui.kontak-darurat>
+    </x-ui.bagian>
+
     <x-ui.bagian judul="Navigasi ke lokasi jemput">
         <x-ui.navigasi :lat="-0.8762" :lng="131.2558" alamat="Jalan Basuki Rahmat Km 8" />
         <x-ui.navigasi class="mt-3" alamat="Jalan Basuki Rahmat Km 8" />

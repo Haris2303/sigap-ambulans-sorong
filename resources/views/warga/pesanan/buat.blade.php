@@ -1,5 +1,6 @@
 <x-layouts.app judul="Pesan ambulans" :peta="true">
     <x-ui.judul-halaman judul="Pesan ambulans" deskripsi="Isi data pesanan. Anda dapat memeriksanya kembali sebelum dikirim." />
+    <x-ui.kontak-darurat varian="tautan" class="mb-6 max-w-xl">Formulir tidak bisa dipakai?</x-ui.kontak-darurat>
 
     <form method="POST" action="{{ route('warga.pesanan.tinjau') }}" class="max-w-xl">
         @csrf

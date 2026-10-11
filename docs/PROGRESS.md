@@ -87,3 +87,4 @@ Catatan di luar checklist tahap 0 sampai 7 di atas (tidak mengubah status agen).
 - Selesai: seluruh langkah M1 sampai M7 dan D1 sampai D7 pada branch `material-design`.
 - Menunggu keputusan pemilik proyek: halaman Masyarakat (Buat Pesanan, lacak) "tanpa laci" seperti tertulis di dokumen arah; saat ini masih memakai laci navigasi.
 - Belum dilakukan: pemeriksaan visual di browser (sesi pengerjaan tidak punya browser); lihat checklist uji tampilan di `docs/HASIL_AKHIR.md`.
+- Audit UX (`docs/AUDIT_UX.md`): gelombang pertama T1 sampai T8 selesai pada branch `material-design` (status dan penyimpangan di bagian 11 dokumen itu). Yang menunggu Dinkes: nomor darurat (`KONTAK_DARURAT_NOMOR`) dan ambang waktu tunggu.

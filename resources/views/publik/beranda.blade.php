@@ -6,6 +6,7 @@
             <x-ui.tombol :href="$aksiUtama['url']">{{ $aksiUtama['label'] }}</x-ui.tombol>
             <x-ui.tombol nada="sekunder" :href="route('faskes.index')">Info Faskes</x-ui.tombol>
         </div>
+        <x-ui.kontak-darurat class="mt-6">Keadaan darurat dan aplikasi ini tidak bisa dipakai?</x-ui.kontak-darurat>
 
         <x-ui.bagian judul="Cara kerja">
             <x-ui.panel>

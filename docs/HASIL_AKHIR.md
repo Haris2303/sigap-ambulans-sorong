@@ -24,6 +24,8 @@ php artisan serve
 
 Pesanan demo (semua status, 7 hari) hanya dibuat bila `APP_ENV=local`.
 
+**Diisi Dinkes sebelum dipakai:** `KONTAK_DARURAT_NOMOR` (dan `KONTAK_DARURAT_NAMA`) di `.env`: nomor telepon darurat yang tampil di beranda, halaman galat, formulir pesanan, dan pelacakan; selama kosong tidak ada nomor yang tampil. Ambang waktu tunggu pesanan (`waktu_tunggu` di `config/sigap.php`, contoh 5 dan 10 menit) juga perlu ditetapkan Dinkes.
+
 ## Akun demo
 
 Domain `@sigap.test`. Sandi: nilai `SEED_PASSWORD` bila diisi; bila tidak, `password` pada `local`/`testing`, dan acak (dicetak sekali oleh seeder) di lingkungan lain.
@@ -111,4 +113,4 @@ Lihat `docs/laporan/ASUMSI_DAN_KEPUTUSAN.md` (kolom "Perlu konfirmasi Dinkes").
 
 ## Jumlah tes
 
-`php artisan test` pada 2026-10-11 (setelah migrasi Material 3): 440 lulus (3456 assertion), termasuk langkah D1 sampai D7 dasbor Material. `npm run build` sukses; `designmd lint DESIGN.md` 0 galat 0 peringatan; `node agent/tokens.mjs` tidak mengubah `design-tokens.css`. Sebelum migrasi (tahap 7 awal): 279 lulus, `composer validate` valid, `migrate:fresh --seed` sukses di DB v2; skema basis data tidak diubah oleh migrasi tampilan.
+`php artisan test` pada 2026-10-11 (setelah gelombang pertama audit UX, T1 sampai T8): 487 lulus (3730 assertion), termasuk migrasi Material 3, dasbor Material (D1 sampai D7), grafik Chart.js (D3b), dan audit UX. `npm run build` sukses; `designmd lint DESIGN.md` 0 galat 0 peringatan; `node agent/tokens.mjs` tidak mengubah `design-tokens.css`. Sebelum migrasi (tahap 7 awal): 279 lulus, `composer validate` valid, `migrate:fresh --seed` sukses di DB v2; skema basis data tidak diubah oleh migrasi tampilan.

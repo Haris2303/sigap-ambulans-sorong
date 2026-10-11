@@ -35,6 +35,13 @@ return [
         'web_alamat' => 'https://www.openstreetmap.org/search?query={alamat}',
     ],
 
+    // Nomor telepon Dinkes untuk keadaan darurat bila aplikasi tidak dapat dipakai (tanpa internet, GPS gagal, galat). Diisi lewat .env
+    // (KONTAK_DARURAT_NOMOR); kosong = komponen x-ui.kontak-darurat tidak menampilkan apa pun. Nomor resmi berasal dari Dinkes.
+    'kontak_darurat' => [
+        'nama' => env('KONTAK_DARURAT_NAMA', 'Dinkes'),
+        'nomor' => env('KONTAK_DARURAT_NOMOR'),
+    ],
+
     // Waktu tunggu pesanan yang belum ditugaskan (Menunggu dan Terverifikasi), dalam menit sejak dibuat: mulai `peringatan_menit` lencana waktu
     // tunggu berwarna kuning, mulai `bahaya_menit` merah. Nilai awal hanya contoh; Dinkes menetapkan batas yang dipakai.
     'waktu_tunggu' => [

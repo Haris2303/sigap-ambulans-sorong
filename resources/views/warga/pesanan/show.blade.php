@@ -2,6 +2,9 @@
     <x-ui.judul-halaman :judul="'Pesanan '.$pesanan->kode">
         <x-slot:aksi>
             <x-ui.lencana-status :status="$pesanan->status" />
+            @unless ($pesanan->status->final())
+                <x-ui.kontak-darurat />
+            @endunless
         </x-slot:aksi>
     </x-ui.judul-halaman>
 

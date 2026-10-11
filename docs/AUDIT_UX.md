@@ -554,3 +554,35 @@ Pola yang cukup dicatat di `docs/KIT_UI.md` tanpa mengubah `DESIGN.md`: bilah ak
 3. **Gelombang ketiga:** T27 dan C2 (pelacakan dan jalur status), T33, T34, serta keputusan hosting peta (T29) dan pendaftaran (T30) yang bergantung pada Dinkes.
 
 Batas audit ini: temuan yang bertanda Dugaan perlu dicoba di perangkat nyata (ponsel Android kelas menengah, jaringan seluler biasa) sebelum menjadi keputusan, dan belum ada uji dengan pengguna sebenarnya.
+
+## 11. Status pengerjaan
+
+### Gelombang pertama (T1 sampai T8): selesai pada 2026-10-11
+
+Semua dikerjakan di branch `material-design`, satu commit per temuan, dengan tes dan gerbang penuh (lint `DESIGN.md`, token, `npm run build`, `route:list`, `php artisan test`: 487 lulus, 3730 assertion). Gambar akhir di layar tidak teruji tanpa browser; yang teruji adalah markup, data, dan logika JavaScript (dijalankan dengan DOM tiruan di Node saat pengembangan).
+
+| No | Temuan | Commit | Catatan |
+|---|---|---|---|
+| T1 | Gawat di sel kode | `b6c1151` | Daftar Dinkes (tampil di bawah md) dan dasbor Petugas. |
+| T2 | Aksi tidak di dasar halaman | `51fd0ba` | Urutan DOM diubah, bukan `order-*`; aksi tepat setelah Lokasi jemput. |
+| T3 | Status memuat dan klik ganda | `91cb805` | `resources/js/formulir.js`, prop `memuat` pada tombol, dan Kirim pesanan idempoten di server (kunci cache dan jendela 120 detik). |
+| T4 | Aksi utama sopir | `9163044` | Komponen baru `bilah-aksi` dan `lipat`; snackbar naik di atas bilah di bawah `lg`. |
+| T5 | Navigasi sopir | `83c05e2`, `cd332d2` | Komponen `navigasi`; skema `geo:` dengan cadangan OpenStreetMap. |
+| T6 | Gawat di kartu utama | `00973de` | Dihitung dalam query yang sama; ikut polling. |
+| T7 | Waktu tunggu | `751247a` | Komponen `waktu-tunggu`; dihitung maju di klien dari detik yang dikirim server. |
+| T8 | Nomor darurat | commit T8 | Komponen `kontak-darurat`; nomor dari `.env`. |
+
+Penyimpangan dari usulan semula:
+
+- **T6:** tombol "Verifikasi pesanan" tetap menuju daftar Perlu tindakan, bukan langsung ke pesanan Gawat tertua. Daftar itu sudah mengurutkan Gawat paling atas, dan tautannya tidak basi saat angka berubah.
+- **T5:** tidak memakai tautan peta pihak ketiga selain OpenStreetMap, sesuai catatan di `config/sigap.php`.
+- **T7:** teks lencana memuat kata "Menunggu" ("Menunggu 12 mnt") agar jelas tanpa judul kolom; kartu utama dasbor ("terlama 12 mnt") belum dibuat, itu bagian ciri khas C1.
+- **T3:** satu penyesuaian kontrak: ketukan kedua sesudah pesanan terkirim kini menuju pesanan itu, tidak lagi menampilkan galat "Isi data pesanan terlebih dahulu.".
+
+Yang harus diisi atau diputuskan Dinkes sebelum dipakai (tidak ada nilai bawaan yang dikarang):
+
+1. **`KONTAK_DARURAT_NOMOR`** di `.env` (T8). Selama kosong, nomor darurat tidak tampil di mana pun.
+2. **Ambang waktu tunggu** di `config/sigap.php` (T7): 5 dan 10 menit hanyalah contoh.
+3. Apakah tautan navigasi `geo:` cukup bagi perangkat sopir. Skema itu dikenal Android; di iOS kemungkinan tombolnya tidak membuka aplikasi peta dan hanya tautan peta web yang berfungsi (dugaan, belum diuji) (T5).
+
+Belum diuji di perangkat: perilaku bilah aksi lekat, pengungkap, `geo:`, dan penghitung waktu tunggu di ponsel nyata.
