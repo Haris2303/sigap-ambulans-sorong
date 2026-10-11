@@ -2,20 +2,18 @@
 
 namespace App\Http\Controllers\Admin;
 
+use App\Enums\TabPesanan;
 use App\Http\Controllers\Controller;
-use App\Models\Pesanan;
-use App\Services\RingkasanDinkes;
+use App\Services\RingkasanDasbor;
 use Illuminate\Contracts\View\View;
+use Illuminate\Http\Request;
 
 class DashboardController extends Controller
 {
-    public function __invoke(RingkasanDinkes $ringkasan): View
+    public function __invoke(Request $request, RingkasanDasbor $dasbor): View
     {
-        return view('admin.dashboard', [
-            'pesanan' => $ringkasan->pesanan(),
-            'ketersediaan' => $ringkasan->ketersediaan(),
-            'grafik' => $ringkasan->pesananTujuhHari(),
-            'terbaru' => Pesanan::with('pemohon')->latest()->orderByDesc('id')->limit(10)->get(),
-        ]);
+        $tab = TabPesanan::tryFrom((string) $request->query('tab')) ?? TabPesanan::Semua;
+
+        return view('admin.dashboard', $dasbor->ambil($tab));
     }
 }

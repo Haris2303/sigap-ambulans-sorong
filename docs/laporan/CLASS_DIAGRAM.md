@@ -69,7 +69,9 @@ classDiagram
     class RingkasanDinkes {
         +pesanan()
         +ketersediaan()
-        +pesananTujuhHari()
+    }
+    class RingkasanDasbor {
+        +ambil(TabPesanan)
     }
     class PesananStatus {
         <<enumeration>>

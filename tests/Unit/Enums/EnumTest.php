@@ -9,6 +9,7 @@ use App\Enums\Kepemilikan;
 use App\Enums\PesananStatus;
 use App\Enums\Role;
 use App\Enums\StatusAmbulans;
+use App\Enums\TabPesanan;
 use App\Enums\TingkatDarurat;
 use PHPUnit\Framework\Attributes\DataProvider;
 use PHPUnit\Framework\TestCase;
@@ -19,7 +20,7 @@ class EnumTest extends TestCase
     {
         return [
             [Role::class], [PesananStatus::class], [JenisLayanan::class], [TingkatDarurat::class],
-            [JenisFaskes::class], [JenisAmbulans::class], [StatusAmbulans::class], [Kepemilikan::class],
+            [JenisFaskes::class], [JenisAmbulans::class], [StatusAmbulans::class], [Kepemilikan::class], [TabPesanan::class],
         ];
     }
 
@@ -69,6 +70,25 @@ class EnumTest extends TestCase
                 }
             }
         }
+    }
+
+    public function test_tab_pesanan_label_nilai_url_dan_status_yang_dicakup(): void
+    {
+        $this->assertSame(['semua', 'perlu-tindakan', 'berjalan'], array_column(TabPesanan::cases(), 'value'));
+        $this->assertSame(['semua' => 'Semua', 'perlu-tindakan' => 'Perlu tindakan', 'berjalan' => 'Berjalan'], TabPesanan::opsi());
+
+        // Semua mencakup setiap status; Perlu tindakan hanya menunggu dan terverifikasi; Berjalan hanya status yang memegang sumber daya.
+        foreach (PesananStatus::cases() as $status) {
+            $this->assertTrue(TabPesanan::Semua->mencakup($status), $status->value);
+            $this->assertSame(
+                in_array($status, [PesananStatus::Menunggu, PesananStatus::Terverifikasi], true),
+                TabPesanan::PerluTindakan->mencakup($status),
+                'Perlu tindakan: '.$status->value,
+            );
+            $this->assertSame($status->memegangSumberDaya(), TabPesanan::Berjalan->mencakup($status), 'Berjalan: '.$status->value);
+        }
+        $this->assertSame(TabPesanan::PerluTindakan, TabPesanan::tryFrom('perlu-tindakan'));
+        $this->assertNull(TabPesanan::tryFrom('ngawur'));
     }
 
     public function test_label_jenis_faskes_dan_dinkes(): void

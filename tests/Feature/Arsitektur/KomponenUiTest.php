@@ -198,7 +198,8 @@ class KomponenUiTest extends TestCase
     public function test_judul_halaman_bagian_panel_kosong(): void
     {
         $judul = $this->render('<x-ui.judul-halaman judul="Pesanan" deskripsi="Daftar pesanan."><x-slot:aksi>AKSI</x-slot:aksi></x-ui.judul-halaman>');
-        $this->assertStringContainsString('<h1 class="text-headline-s">Pesanan</h1>', $judul);
+        $this->assertStringContainsString('<h1 class="text-page-title">Pesanan</h1>', $judul);
+        $this->assertStringNotContainsString('text-headline-s', $judul);
         $this->assertStringContainsString('Daftar pesanan.', $judul);
         $this->assertStringContainsString('text-body-l text-on-surface-variant', $judul);
         $this->assertStringContainsString('AKSI', $judul);
@@ -238,6 +239,22 @@ class KomponenUiTest extends TestCase
         $this->assertStringContainsString('SGP-000001', $html);
         $this->assertStringContainsString('divide-outline-variant', $html);
         $this->assertStringContainsString('rounded-md border border-outline-variant bg-surface-container-lowest', $html);
+        $this->assertStringContainsString('bg-surface-container-low', $html);
+        $this->assertStringNotContainsString('min-w-', $html);
+    }
+
+    public function test_tabel_tanpa_bingkai_di_dalam_kartu_dengan_lebar_minimum(): void
+    {
+        $html = $this->render('<x-ui.tabel :bingkai="false" lebar-min="min-w-136"><x-slot:kepala><th>Kode</th></x-slot:kepala><tr><td>SGP-000001</td></tr></x-ui.tabel>');
+
+        // Hanya pembungkus gulir: tanpa batas, sudut, dan latar sendiri; kolom pertama dan terakhir sejajar padding kartu 24px.
+        $this->assertStringContainsString('overflow-x-auto', $html);
+        $this->assertStringNotContainsString('rounded-md', $html);
+        $this->assertStringNotContainsString('border-outline-variant bg-surface-container-lowest', $html);
+        $this->assertStringContainsString('min-w-136', $html);
+        $this->assertStringContainsString('[&>th:first-child]:pl-6', $html);
+        $this->assertStringContainsString('[&_td:first-child]:pl-6', $html);
+        $this->assertStringContainsString('divide-outline-variant', $html);
         $this->assertStringContainsString('bg-surface-container-low', $html);
     }
 
@@ -346,6 +363,9 @@ class KomponenUiTest extends TestCase
         $this->assertStringContainsString('tabular-nums', $waktu);
         $this->assertStringContainsString('>-<', $this->render('<x-ui.waktu :nilai="null" />'));
         $this->assertStringContainsString('yang lalu', $this->render('<x-ui.waktu :nilai="$t" :relatif="true" />', ['t' => now()->subMinutes(5)]));
+
+        // Format dapat diganti (dasbor memakai pemisah koma antara tanggal dan jam).
+        $this->assertStringContainsString('>11 Okt 2026, 09:30<', $this->render('<x-ui.waktu nilai="2026-10-11 09:30:00" format="d M Y, H:i" />'));
     }
 
     public function test_grafik_batang(): void

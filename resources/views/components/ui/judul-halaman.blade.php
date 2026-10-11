@@ -1,7 +1,7 @@
 @props(['judul', 'deskripsi' => null])
 <header class="mb-6 flex flex-col gap-4 md:flex-row md:items-start md:justify-between">
     <div class="min-w-0">
-        <h1 class="text-headline-s">{{ $judul }}</h1>
+        <h1 class="text-page-title">{{ $judul }}</h1>
         @if ($deskripsi)
             <p class="mt-1 max-w-prose text-body-l text-on-surface-variant">{{ $deskripsi }}</p>
         @endif

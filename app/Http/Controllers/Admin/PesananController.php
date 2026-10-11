@@ -70,7 +70,8 @@ class PesananController extends Controller
 
     public function ringkasan(RingkasanDinkes $ringkasan): JsonResponse
     {
-        return $this->ok($ringkasan->pesanan());
+        // Angka hidup dasbor: kartu statistik, petak ketersediaan, lencana menu, dan lonceng (kunci = data-ringkasan/data-lencana).
+        return $this->ok($ringkasan->pesanan() + $ringkasan->ketersediaan());
     }
 
     public function show(Pesanan $pesanan): View
