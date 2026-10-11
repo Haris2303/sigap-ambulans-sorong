@@ -1,7 +1,7 @@
-@props(['nama', 'label', 'tipe' => 'text', 'nilai' => null, 'bantuan' => null, 'wajib' => false])
+@props(['nama', 'label', 'tipe' => 'text', 'nilai' => null, 'bantuan' => null, 'wajib' => false, 'galat' => null])
 @php
     $id = 'f-'.str_replace(['.', '[', ']'], '-', $nama);
-    $galat = ($errors ?? new \Illuminate\Support\ViewErrorBag)->first($nama);
+    $galat = $galat ?? ($errors ?? new \Illuminate\Support\ViewErrorBag)->first($nama);
     $isi = $tipe === 'password' ? null : old($nama, $nilai instanceof \BackedEnum ? $nilai->value : $nilai);
     $deskripsi = collect([$bantuan ? $id.'-bantuan' : null, $galat ? $id.'-galat' : null])->filter()->implode(' ');
 @endphp

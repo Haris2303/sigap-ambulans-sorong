@@ -1,7 +1,7 @@
-@props(['nama', 'label', 'nilai' => null, 'bantuan' => null, 'wajib' => false, 'baris' => 3])
+@props(['nama', 'label', 'nilai' => null, 'bantuan' => null, 'wajib' => false, 'baris' => 3, 'galat' => null])
 @php
     $id = 'f-'.str_replace(['.', '[', ']'], '-', $nama);
-    $galat = ($errors ?? new \Illuminate\Support\ViewErrorBag)->first($nama);
+    $galat = $galat ?? ($errors ?? new \Illuminate\Support\ViewErrorBag)->first($nama);
     $isi = old($nama, $nilai);
     $deskripsi = collect([$bantuan ? $id.'-bantuan' : null, $galat ? $id.'-galat' : null])->filter()->implode(' ');
 @endphp

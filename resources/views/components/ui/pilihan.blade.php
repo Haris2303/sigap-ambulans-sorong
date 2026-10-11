@@ -1,7 +1,7 @@
-@props(['nama', 'label', 'opsi', 'nilai' => null, 'kosong' => null, 'bantuan' => null, 'wajib' => false])
+@props(['nama', 'label', 'opsi', 'nilai' => null, 'kosong' => null, 'bantuan' => null, 'wajib' => false, 'galat' => null])
 @php
     $id = 'f-'.str_replace(['.', '[', ']'], '-', $nama);
-    $galat = ($errors ?? new \Illuminate\Support\ViewErrorBag)->first($nama);
+    $galat = $galat ?? ($errors ?? new \Illuminate\Support\ViewErrorBag)->first($nama);
     $terpilih = (string) old($nama, $nilai instanceof \BackedEnum ? $nilai->value : $nilai);
     $deskripsi = collect([$bantuan ? $id.'-bantuan' : null, $galat ? $id.'-galat' : null])->filter()->implode(' ');
 @endphp
