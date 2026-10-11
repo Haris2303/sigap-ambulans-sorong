@@ -1,5 +1,7 @@
 @props(['tone', 'icon', 'size' => 'md'])
-{{-- Chip ikon pembawa makna (DESIGN.md Components): selalu disertai teks pendamping. md 40px dengan ikon 22px, lg 52px dengan ikon 26px. --}}
+{{-- Chip ikon pembawa makna (DESIGN.md 6.6): selalu disertai teks pendamping. Tone tertiary dan neutral tersedia sejak
+     R2; ukuran (40/44px) dan warna ikon primary/warning (plain, bukan on-container) menunggu R4 bersama x-ui.stat dan
+     x-ui.tile yang memakai size="lg" ini. --}}
 @php
     $kelasNada = \App\Support\Tampilan::kelasChip($tone);
     [$kotak, $ukuranIkon] = match ($size) {

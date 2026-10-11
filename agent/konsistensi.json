@@ -54,7 +54,7 @@
       "kecuali": [
         "^resources/views/pdf/"
       ],
-      "pola": "(?<![\\w-])(?:bg-(?:linear|radial|conic|gradient)[\\w./-]*|(?:from|via|to)-(?:primary|surface|canvas|danger|error|warning|success|neutral|secondary|tertiary|selected|chart|inverse|outline|on|line|control|scrim)[\\w./-]*|(?:backdrop-)?blur(?:-(?:xs|sm|md|lg|xl|2xl|3xl|none))?|drop-shadow[\\w-]*|shadow-(?!(?:none|card|control|chip|overlay|level-[123]|card-raised|nav-active)(?![\\w./-]))[\\w./\\[\\]-]+|rounded(?:-[a-z]{1,2})?-\\[[^\\]]*\\]|rounded(?:-[a-z]{1,2})?-(?:3xl|4xl)|tracking-[a-z]+|uppercase|italic|font-(?:thin|extralight|light|semibold|bold|extrabold|black|\\d+|\\[[^\\]]*\\])|animate-(?:bounce|ping|pulse)|hover:-?(?:translate|scale)-[\\w./-]+)(?![\\w-])"
+      "pola": "(?<![\\w-])(?:bg-(?:linear|radial|conic|gradient)[\\w./-]*|(?:from|via|to)-(?:primary|surface|canvas|danger|error|warning|success|neutral|secondary|tertiary|selected|chart|inverse|outline|on|line|control|scrim)[\\w./-]*|(?:backdrop-)?blur(?:-(?:xs|sm|md|lg|xl|2xl|3xl|none))?|drop-shadow[\\w-]*|shadow-(?!(?:none|card|control|chip|overlay|level-[123]|card-raised|nav-active)(?![\\w/-]))[\\w/\\[\\]-]+|rounded(?:-[a-z]{1,2})?-\\[[^\\]]*\\]|rounded(?:-[a-z]{1,2})?-(?:3xl|4xl)|tracking-[a-z]+|uppercase|italic|font-(?:thin|extralight|light|semibold|bold|extrabold|black|\\d+|\\[[^\\]]*\\])|animate-(?:bounce|ping|pulse)|hover:-?(?:translate|scale)-[\\w./-]+)(?![\\w-])"
     },
     {
       "id": "teks-mentah",
@@ -77,7 +77,7 @@
     {
       "id": "token-lama",
       "tipe": "larang",
-      "pesan": "Nama token atau kelas pra-Material 3. Pakai padanan M3: border-line, divide-line -> border-outline-variant, divide-outline-variant; border-control-border -> border-outline; text-on-surface-muted -> text-on-surface-variant; *-primary-soft -> bg-primary-container atau bg-secondary-container; hover:*-primary-hover -> lapisan-keadaan; *-danger -> *-error; *-danger-soft, *-warning-soft, *-success-soft -> *-error-container, *-warning-container, *-success-container; *-neutral-soft -> bg-surface-container-highest; text-h1/h2/h3 -> text-headline-s/title-l/title-m; text-body, text-body-sm, text-label, text-caption, text-display -> text-body-l, text-body-m, text-label-l, text-body-s, text-display-s; w-rail -> w-drawer; ukuran=\"sm\" pada tombol dihapus (DESIGN.md). (shadow-overlay kini token arah B; font-semibold dilarang lewat aturan gaya-dilarang.)",
+      "pesan": "Nama token atau kelas pra-Material 3. Pakai padanan M3: border-line, divide-line -> border-outline-variant, divide-outline-variant; border-control-border -> border-outline; text-on-surface-muted -> text-on-surface-variant; *-primary-soft -> bg-primary-container atau bg-secondary-container; hover:*-primary-hover -> lapisan-keadaan; *-danger -> *-error; *-danger-soft, *-warning-soft, *-success-soft -> *-error-container, *-warning-container, *-success-container; *-neutral-soft -> bg-surface-container-highest; text-h1/h2/h3 -> text-headline-s/title-l/title-m; text-body, text-body-sm, text-label, text-caption, text-display -> text-body-l, text-body-m, text-label-l, text-body-s, text-display-s; w-rail -> w-drawer. (shadow-overlay kini token arah B; font-semibold dilarang lewat aturan gaya-dilarang; ukuran=\"sm\" pada tombol kembali dipakai sejak arah B, docs/RETEMA_B.md 6.2.)",
       "folder": [
         "resources/views",
         "resources/js",
@@ -90,7 +90,7 @@
       "kecuali": [
         "^resources/views/pdf/"
       ],
-      "pola": "(?<![\\w-])(?:(?:bg|text|border|divide|ring|outline|placeholder|fill|stroke)-(?:line|control-border|primary-soft|primary-hover|danger|danger-soft|danger-hover|warning-soft|success-soft|neutral-soft|on-surface-muted)|text-(?:h[123]|body|body-sm|label|caption|display)|w-rail)(?![\\w-])|\\bukuran=\"sm\""
+      "pola": "(?<![\\w-])(?:(?:bg|text|border|divide|ring|outline|placeholder|fill|stroke)-(?:line|control-border|primary-soft|primary-hover|danger|danger-soft|danger-hover|warning-soft|success-soft|neutral-soft|on-surface-muted)|text-(?:h[123]|body|body-sm|label|caption|display)|w-rail)(?![\\w-])"
     },
     {
       "id": "komponen-lama",

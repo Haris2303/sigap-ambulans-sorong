@@ -1,5 +1,6 @@
 @props(['nama', 'label', 'tipe' => 'text', 'nilai' => null, 'bantuan' => null, 'wajib' => false, 'galat' => null, 'labelTersembunyi' => false, 'tanpaOld' => false, 'idUnik' => null])
-{{-- tanpaOld: abaikan old() dan galat sesi (baris tabel yang memakai nama kolom sama). labelTersembunyi: label hanya untuk pembaca layar. --}}
+{{-- tanpaOld: abaikan old() dan galat sesi (baris tabel yang memakai nama kolom sama). labelTersembunyi: label hanya untuk pembaca layar.
+     Tanda wajib ditulis dalam label ("(wajib)"), bukan bintang berwarna (DESIGN.md 6.3). --}}
 @php
     $id = $idUnik ?? 'f-'.str_replace(['.', '[', ']'], '-', $nama);
     $galat = $galat ?? ($tanpaOld ? null : ($errors ?? new \Illuminate\Support\ViewErrorBag)->first($nama));
@@ -8,7 +9,7 @@
     $deskripsi = collect([$bantuan ? $id.'-bantuan' : null, $galat ? $id.'-galat' : null])->filter()->implode(' ');
 @endphp
 <div>
-    <label for="{{ $id }}" class="{{ $labelTersembunyi ? 'sr-only' : \App\Support\Tampilan::LABEL_ISIAN }}">{{ $label }}</label>
+    <label for="{{ $id }}" class="{{ $labelTersembunyi ? 'sr-only' : \App\Support\Tampilan::LABEL_ISIAN }}">{{ $label }}@if ($wajib) (wajib)@endif</label>
     <input id="{{ $id }}" name="{{ $nama }}" type="{{ $tipe }}" @if ($isi !== null) value="{{ $isi }}" @endif
         @if ($wajib) required @endif
         @if ($galat) aria-invalid="true" @endif

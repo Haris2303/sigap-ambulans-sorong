@@ -13,7 +13,7 @@
 @endphp
 <x-layouts.dasar :judul="$judul" :peta="$peta">
     <div class="min-h-screen lg:flex">
-        <div data-menu-scrim class="fixed inset-0 z-30 hidden bg-scrim lg:hidden"></div>
+        <div data-menu-scrim class="fixed inset-0 z-30 hidden bg-scrim/45 lg:hidden"></div>
 
         <aside data-menu-rel @if ($urlRingkasan) data-ringkasan-url="{{ $urlRingkasan }}" data-detik="{{ config('sigap.polling.admin_detik') }}" @endif class="gulir-tipis fixed inset-y-0 left-0 z-40 hidden w-80 max-w-[calc(100%-3.5rem)] flex-col overflow-y-auto rounded-r-lg bg-surface-container-lowest shadow-level-1 lg:sticky lg:top-0 lg:z-auto lg:flex lg:h-screen lg:w-drawer lg:max-w-none lg:shrink-0 lg:rounded-none lg:border-r lg:border-surface-container-high lg:shadow-none">
             <div class="flex shrink-0 items-center justify-between gap-3 px-4 pb-5 pt-5">
