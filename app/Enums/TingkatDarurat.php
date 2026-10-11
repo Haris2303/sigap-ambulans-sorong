@@ -19,6 +19,14 @@ enum TingkatDarurat: string
         };
     }
 
+    public function deskripsi(): string
+    {
+        return match ($this) {
+            self::Biasa => 'Pasien dalam keadaan stabil.',
+            self::Gawat => 'Pasien dalam bahaya dan butuh penanganan segera.',
+        };
+    }
+
     public function nada(): string
     {
         return $this === self::Gawat ? 'bahaya' : 'netral';

@@ -21,6 +21,15 @@ enum JenisLayanan: string
         };
     }
 
+    public function deskripsi(): string
+    {
+        return match ($this) {
+            self::Darurat => 'Kecelakaan, sesak napas, atau keadaan lain yang mengancam nyawa.',
+            self::Rujukan => 'Memindahkan pasien ke Faskes lain. Faskes tujuan wajib dipilih.',
+            self::Persalinan => 'Ibu hamil yang akan atau sedang bersalin.',
+        };
+    }
+
     /** Faskes tujuan wajib diisi untuk jenis ini. */
     public function wajibFaskesTujuan(): bool
     {

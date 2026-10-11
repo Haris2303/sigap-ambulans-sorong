@@ -1,5 +1,5 @@
-@props(['judul', 'deskripsi' => null])
-<section {{ $attributes->merge(['class' => 'mt-8']) }}>
+@props(['judul', 'deskripsi' => null, 'jarak' => true])
+<section {{ $attributes->merge(['class' => $jarak ? 'mt-8' : '']) }}>
     <div class="mb-3 flex flex-col gap-2 sm:flex-row sm:items-end sm:justify-between">
         <div class="min-w-0">
             <h2 class="text-h2">{{ $judul }}</h2>
