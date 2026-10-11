@@ -49,6 +49,20 @@ class Faskes extends Model
         $query->where('aktif', true);
     }
 
+    /** Nama kolom ketersediaan yang boleh diubah Dinkes dan Petugas Faskes. */
+    public const KOLOM_KETERSEDIAAN = [
+        'bed_igd_total', 'bed_igd_tersedia', 'bed_rawat_inap_total', 'bed_rawat_inap_tersedia',
+        'dokter_umum_tersedia', 'dokter_spesialis_tersedia', 'dokter_spesialis_keterangan',
+    ];
+
+    /** Satu pintu pembaruan ketersediaan: mengisi kolom yang dikirim dan memberi stempel waktu. */
+    public function perbaruiKetersediaan(array $data): void
+    {
+        $this->fill(array_intersect_key($data, array_flip(self::KOLOM_KETERSEDIAAN)));
+        $this->ketersediaan_diperbarui_pada = now();
+        $this->save();
+    }
+
     public function punyaKoordinat(): bool
     {
         return $this->lat !== null && $this->lng !== null;

@@ -1,12 +1,14 @@
-@props(['nama', 'label', 'tipe' => 'text', 'nilai' => null, 'bantuan' => null, 'wajib' => false, 'galat' => null])
+@props(['nama', 'label', 'tipe' => 'text', 'nilai' => null, 'bantuan' => null, 'wajib' => false, 'galat' => null, 'labelTersembunyi' => false, 'tanpaOld' => false, 'idUnik' => null])
+{{-- tanpaOld: abaikan old() dan galat sesi (baris tabel yang memakai nama kolom sama). labelTersembunyi: label hanya untuk pembaca layar. --}}
 @php
-    $id = 'f-'.str_replace(['.', '[', ']'], '-', $nama);
-    $galat = $galat ?? ($errors ?? new \Illuminate\Support\ViewErrorBag)->first($nama);
-    $isi = $tipe === 'password' ? null : old($nama, $nilai instanceof \BackedEnum ? $nilai->value : $nilai);
+    $id = $idUnik ?? 'f-'.str_replace(['.', '[', ']'], '-', $nama);
+    $galat = $galat ?? ($tanpaOld ? null : ($errors ?? new \Illuminate\Support\ViewErrorBag)->first($nama));
+    $nilaiAwal = $nilai instanceof \BackedEnum ? $nilai->value : $nilai;
+    $isi = $tipe === 'password' ? null : ($tanpaOld ? $nilaiAwal : old($nama, $nilaiAwal));
     $deskripsi = collect([$bantuan ? $id.'-bantuan' : null, $galat ? $id.'-galat' : null])->filter()->implode(' ');
 @endphp
 <div>
-    <label for="{{ $id }}" class="mb-1 block text-label text-on-surface">{{ $label }}</label>
+    <label for="{{ $id }}" class="{{ $labelTersembunyi ? 'sr-only' : 'mb-1 block text-label text-on-surface' }}">{{ $label }}</label>
     <input id="{{ $id }}" name="{{ $nama }}" type="{{ $tipe }}" @if ($isi !== null) value="{{ $isi }}" @endif
         @if ($wajib) required @endif
         @if ($galat) aria-invalid="true" @endif

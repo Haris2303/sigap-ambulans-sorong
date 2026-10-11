@@ -1,6 +1,8 @@
 <?php
 
 use App\Http\Controllers\Admin\DashboardController as AdminDashboardController;
+use App\Http\Controllers\Admin\FaskesController as AdminFaskesController;
+use App\Http\Controllers\Admin\KetersediaanController as AdminKetersediaanController;
 use App\Http\Controllers\Admin\PesananController as AdminPesananController;
 use App\Http\Controllers\Auth\LoginController;
 use App\Http\Controllers\Auth\RegisterController;
@@ -49,6 +51,12 @@ Route::middleware(['auth', 'role:admin'])->prefix('admin')->name('admin.')->grou
     Route::put('/pesanan/{pesanan}/tugaskan', [AdminPesananController::class, 'tugaskan'])->name('pesanan.tugaskan');
     Route::put('/pesanan/{pesanan}/lepas', [AdminPesananController::class, 'lepas'])->name('pesanan.lepas');
     Route::put('/pesanan/{pesanan}/batalkan', [AdminPesananController::class, 'batalkan'])->name('pesanan.batalkan');
+
+    Route::resource('faskes', AdminFaskesController::class)->except(['show', 'destroy'])->parameters(['faskes' => 'faskes']);
+    Route::put('/faskes/{faskes}/aktif', [AdminFaskesController::class, 'aktif'])->name('faskes.aktif');
+
+    Route::get('/ketersediaan', [AdminKetersediaanController::class, 'index'])->name('ketersediaan.index');
+    Route::put('/ketersediaan/{faskes}', [AdminKetersediaanController::class, 'update'])->name('ketersediaan.update');
 });
 
 if (app()->environment('local', 'testing')) {
