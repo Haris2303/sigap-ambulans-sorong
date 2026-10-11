@@ -15,7 +15,7 @@
         <div class="mt-6 flex flex-col gap-2 sm:flex-row">
             <form method="POST" action="{{ route('warga.pesanan.simpan') }}">
                 @csrf
-                <x-ui.tombol tipe="submit" ukuran="lg" :blok="true">Kirim pesanan</x-ui.tombol>
+                <x-ui.tombol tipe="submit" ukuran="lg" :blok="true" memuat="Mengirim pesanan...">Kirim pesanan</x-ui.tombol>
             </form>
             <x-ui.tombol nada="sekunder" ukuran="lg" :href="route('warga.pesanan.buat')">Ubah</x-ui.tombol>
         </div>

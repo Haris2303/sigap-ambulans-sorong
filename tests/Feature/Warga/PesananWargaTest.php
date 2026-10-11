@@ -165,13 +165,68 @@ class PesananWargaTest extends TestCase
         $this->get(route('warga.pesanan.konfirmasi'))->assertRedirect(route('warga.pesanan.buat'));
     }
 
+    public function test_tombol_kirim_pesanan_berlabel_proses_agar_tidak_terkirim_dua_kali(): void
+    {
+        $this->actingAs($this->warga)->post(route('warga.pesanan.tinjau'), $this->isian());
+
+        $this->get(route('warga.pesanan.konfirmasi'))->assertOk()
+            ->assertSee('data-memuat="Mengirim pesanan..."', false);
+    }
+
     public function test_pesanan_ganda_tidak_terjadi_saat_simpan_diulang(): void
     {
         $this->actingAs($this->warga)->post(route('warga.pesanan.tinjau'), $this->isian());
         $this->post(route('warga.pesanan.simpan'));
-        $this->post(route('warga.pesanan.simpan'))->assertRedirect(route('warga.pesanan.buat'));
+
+        // Ketukan kedua sesudah pesanan terkirim menuju pesanan itu, tanpa galat "Isi data pesanan terlebih dahulu.".
+        $pesanan = Pesanan::firstOrFail();
+        $this->post(route('warga.pesanan.simpan'))
+            ->assertRedirect(route('warga.pesanan.show', $pesanan))
+            ->assertSessionMissing('galat');
 
         $this->assertSame(1, Pesanan::count());
+    }
+
+    public function test_dua_permintaan_dengan_draf_yang_sama_hanya_membuat_satu_pesanan(): void
+    {
+        $this->actingAs($this->warga);
+        $draf = $this->isian();
+
+        // Dua permintaan yang sama-sama membaca draf (draf belum terhapus dari salinan sesi masing-masing).
+        $this->withSession(['draf_pesanan' => $draf])->post(route('warga.pesanan.simpan'));
+        $pertama = Pesanan::firstOrFail();
+        $this->withSession(['draf_pesanan' => $draf])->post(route('warga.pesanan.simpan'))
+            ->assertRedirect(route('warga.pesanan.show', $pertama))
+            ->assertSessionHas('sukses');
+
+        $this->assertSame(1, Pesanan::count());
+    }
+
+    public function test_pesanan_berbeda_atau_pesanan_lama_yang_final_tidak_dianggap_ganda(): void
+    {
+        $this->actingAs($this->warga);
+
+        $this->withSession(['draf_pesanan' => $this->isian()])->post(route('warga.pesanan.simpan'));
+        // Pasien lain pada lokasi yang sama: pesanan baru yang sah.
+        $this->withSession(['draf_pesanan' => $this->isian(['nama_pasien' => 'Siti Aminah'])])->post(route('warga.pesanan.simpan'));
+        $this->assertSame(2, Pesanan::count());
+
+        // Pesanan identik yang sudah dibatalkan tidak dipakai ulang; memesan lagi membuat pesanan baru.
+        Pesanan::query()->update(['status' => PesananStatus::Dibatalkan->value]);
+        $this->withSession(['draf_pesanan' => $this->isian()])->post(route('warga.pesanan.simpan'));
+        $this->assertSame(3, Pesanan::count());
+        $this->assertSame(1, Pesanan::where('status', PesananStatus::Menunggu->value)->count());
+    }
+
+    public function test_pesanan_identik_di_luar_jendela_waktu_tetap_dibuat_baru(): void
+    {
+        $this->actingAs($this->warga);
+
+        $this->withSession(['draf_pesanan' => $this->isian()])->post(route('warga.pesanan.simpan'));
+        Pesanan::query()->update(['created_at' => now()->subMinutes(10)]);
+        $this->withSession(['draf_pesanan' => $this->isian()])->post(route('warga.pesanan.simpan'));
+
+        $this->assertSame(2, Pesanan::count());
     }
 
     public function test_validasi_form_pesanan(): void

@@ -590,7 +590,7 @@ Bentuk dan perilaku komponen didefinisikan di token `components` di atas; padana
 
 ## Interaction states
 
-Umpan balik memakai **lapisan keadaan**: lapisan berwarna sama dengan teks atau ikon kontrol, dengan opasitas tetap, di atas latar kontrol. Opasitasnya: hover 8%, fokus 10%, tekan 10%, seret 16%. Kontrol nonaktif memakai konten 38% dan wadah 12%; tidak ada kontrol nonaktif yang hanya berubah warna aksen. Fokus papan ketik menambah cincin 2px Primary. Tidak ada riak (ripple) dan tidak ada efek angkat.
+Umpan balik memakai **lapisan keadaan**: lapisan berwarna sama dengan teks atau ikon kontrol, dengan opasitas tetap, di atas latar kontrol. Opasitasnya: hover 8%, fokus 10%, tekan 10%, seret 16%. Kontrol nonaktif memakai konten 38% dan wadah 12%; tidak ada kontrol nonaktif yang hanya berubah warna aksen. Fokus papan ketik menambah cincin 2px Primary. Tidak ada riak (ripple) dan tidak ada efek angkat. **Memuat:** saat formulir dikirim, tombol kirim dinonaktifkan dan labelnya berganti kata kerja proses ("Mengirim pesanan...", bawaan "Memproses..."), dan formulir diberi `aria-busy`; tidak ada spinner berputar karena tidak ada animasi berulang.
 
 ## Iconography
 

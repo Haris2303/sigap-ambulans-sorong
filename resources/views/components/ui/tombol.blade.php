@@ -7,8 +7,10 @@
     'konfirmasi' => null,
     'blok' => false,
     'ikonUkuran' => null,
+    'memuat' => null,
 ])
-{{-- nada: utama (filled), tonal, sekunder (outlined), hantu (text), bahaya (error), terbalik (text di atas snackbar), on-primary (hanya di atas kartu utama primary). Semua 40px dengan area sentuh 48px. --}}
+{{-- nada: utama (filled), tonal, sekunder (outlined), hantu (text), bahaya (error), terbalik (text di atas snackbar), on-primary (hanya di atas kartu utama primary). Semua 40px dengan area sentuh 48px.
+     memuat: label saat formulir dikirim (tombol tipe submit), mis. "Mengirim pesanan..."; bawaan "Memproses..." (resources/js/formulir.js). --}}
 @php
     $hanyaIkon = $ikon && trim((string) $slot) === '';
     $kelas = 'lapisan-keadaan target-sentuh inline-flex items-center justify-center gap-2 rounded-full text-label-l transition-colors';
@@ -42,7 +44,7 @@
         {{ $slot }}
     </a>
 @else
-    <button type="{{ $tipe }}" @if ($konfirmasi) data-konfirmasi="{{ $konfirmasi }}" @endif {{ $attributes->merge(['class' => $kelas]) }}>
+    <button type="{{ $tipe }}" @if ($konfirmasi) data-konfirmasi="{{ $konfirmasi }}" @endif @if ($memuat && $tipe === 'submit') data-memuat="{{ $memuat }}" @endif {{ $attributes->merge(['class' => $kelas]) }}>
         @if ($ikon)<x-ui.ikon :nama="$ikon" :ukuran="$ukuranIkon" />@endif
         {{ $slot }}
     </button>

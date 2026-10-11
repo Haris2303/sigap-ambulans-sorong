@@ -55,7 +55,7 @@
                         @csrf
                         @method('PUT')
                         <p class="text-body-m text-on-surface-variant">Pastikan data pasien dan lokasi jemput sudah jelas.</p>
-                        <x-ui.tombol tipe="submit" :blok="true">Verifikasi</x-ui.tombol>
+                        <x-ui.tombol tipe="submit" :blok="true" memuat="Memverifikasi...">Verifikasi</x-ui.tombol>
                     </form>
                 </x-ui.panel>
                 <x-ui.panel judul="Tolak pesanan">
@@ -84,7 +84,7 @@
                             @method('PUT')
                             <x-ui.pilihan nama="ambulans_id" label="Ambulans" :opsi="$opsiPenugasan['ambulans']" kosong="Pilih ambulans" :wajib="true" bantuan="Dikelompokkan per Faskes. Yang disarankan tampil lebih dulu." />
                             <x-ui.pilihan nama="sopir_id" label="Sopir" :opsi="$opsiPenugasan['sopir']" kosong="Pilih sopir" :wajib="true" bantuan="Sopir harus dari Faskes yang sama dengan ambulans." />
-                            <x-ui.tombol tipe="submit" :blok="true">Tugaskan</x-ui.tombol>
+                            <x-ui.tombol tipe="submit" :blok="true" memuat="Menugaskan...">Tugaskan</x-ui.tombol>
                         </form>
                     @endif
                 </x-ui.panel>

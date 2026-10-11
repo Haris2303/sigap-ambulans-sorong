@@ -354,6 +354,18 @@ class PesananAdminTest extends TestCase
 
     // T5.3 tugaskan dan lepas
 
+    public function test_tombol_verifikasi_dan_tugaskan_berlabel_proses(): void
+    {
+        $menunggu = $this->pesanan();
+        $this->actingAs($this->admin)->get(route('admin.pesanan.show', $menunggu))->assertOk()
+            ->assertSee('data-memuat="Memverifikasi..."', false);
+
+        $this->sumberDaya();
+        $terverifikasi = $this->pesanan(PesananStatus::Terverifikasi);
+        $this->actingAs($this->admin)->get(route('admin.pesanan.show', $terverifikasi))->assertOk()
+            ->assertSee('data-memuat="Menugaskan..."', false);
+    }
+
     public function test_tugaskan_berhasil(): void
     {
         [, $ambulans, $sopir] = $this->sumberDaya();

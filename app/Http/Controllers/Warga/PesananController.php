@@ -13,12 +13,15 @@ use App\Http\Requests\Warga\BatalkanPesananRequest;
 use App\Http\Requests\Warga\PesananRequest;
 use App\Models\Faskes;
 use App\Models\Pesanan;
+use App\Models\User;
 use App\Services\PesananWorkflow;
+use Illuminate\Contracts\Cache\LockTimeoutException;
 use Illuminate\Contracts\View\View;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Cache;
 use Illuminate\Support\Facades\Gate;
 
 class PesananController extends Controller
@@ -26,6 +29,9 @@ class PesananController extends Controller
     use MembalasJson;
 
     private const KUNCI_DRAF = 'draf_pesanan';
+
+    /** Detik: pesanan aktif identik yang dibuat dalam jendela ini dianggap kiriman ganda dari satu draf (ketukan ganda, permintaan bersamaan). */
+    private const JENDELA_GANDA_DETIK = 120;
 
     public function __construct(private readonly PesananWorkflow $alur) {}
 
@@ -74,20 +80,52 @@ class PesananController extends Controller
 
     public function simpan(Request $request): RedirectResponse
     {
+        $pengguna = $request->user();
         $draf = $request->session()->get(self::KUNCI_DRAF);
+
         if (! is_array($draf)) {
-            return redirect()->route('warga.pesanan.buat')->with('galat', 'Isi data pesanan terlebih dahulu.');
+            // Draf sudah terpakai: ketukan kedua sesudah pesanan terkirim menuju pesanan itu, bukan galat yang menyesatkan.
+            $terkirim = $this->pesananTerkirim($pengguna);
+
+            return $terkirim !== null
+                ? redirect()->route('warga.pesanan.show', $terkirim)
+                : redirect()->route('warga.pesanan.buat')->with('galat', 'Isi data pesanan terlebih dahulu.');
+        }
+
+        // Permintaan bersamaan dari satu pengguna diproses berurutan; yang kedua mendapati pesanan pertama dan memakainya.
+        $kunci = Cache::lock('pesanan-baru:'.$pengguna->id, 10);
+        try {
+            $kunci->block(5);
+        } catch (LockTimeoutException) {
+            return redirect()->route('warga.pesanan.konfirmasi')->with('galat', 'Pesanan sedang diproses. Tunggu sebentar, lalu periksa Riwayat pesanan.');
         }
 
         try {
-            $pesanan = $this->alur->buat($request->user(), $draf);
+            $pesanan = $this->pesananTerkirim($pengguna, $draf) ?? $this->alur->buat($pengguna, $draf);
         } catch (TransisiTidakValidException $e) {
             return redirect()->route('warga.pesanan.buat')->with('galat', $e->getMessage());
+        } finally {
+            $kunci->release();
         }
 
         $request->session()->forget(self::KUNCI_DRAF);
 
         return redirect()->route('warga.pesanan.show', $pesanan)->with('sukses', 'Pesanan berhasil dikirim. Dinkes akan memverifikasi pesanan Anda.');
+    }
+
+    /** Pesanan aktif terbaru milik pengguna dalam jendela singkat; dengan $draf, hanya yang isinya sama. */
+    private function pesananTerkirim(User $pengguna, ?array $draf = null): ?Pesanan
+    {
+        return Pesanan::where('user_id', $pengguna->id)
+            ->aktif()
+            ->where('created_at', '>=', now()->subSeconds(self::JENDELA_GANDA_DETIK))
+            ->when($draf !== null, fn (Builder $q) => $q->where([
+                'nama_pasien' => $draf['nama_pasien'],
+                'no_telepon_kontak' => $draf['no_telepon_kontak'],
+                'jenis_layanan' => $draf['jenis_layanan'],
+                'lokasi_jemput' => $draf['lokasi_jemput'],
+            ]))
+            ->latest()->orderByDesc('id')->first();
     }
 
     public function show(Pesanan $pesanan): View
