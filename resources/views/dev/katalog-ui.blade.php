@@ -39,6 +39,14 @@
         </div>
     </x-ui.bagian>
 
+    <x-ui.bagian judul="Waktu tunggu" deskripsi="Lama pesanan menunggu penugasan; nada naik menurut ambang di config. Status lain tidak menampilkan apa pun.">
+        <div class="flex flex-wrap items-center gap-2">
+            @foreach ($waktuTunggu as $pesananContoh)
+                <x-ui.waktu-tunggu :pesanan="$pesananContoh" />
+            @endforeach
+        </div>
+    </x-ui.bagian>
+
     <x-ui.bagian judul="Peringatan">
         <div class="space-y-3">
             <x-ui.peringatan nada="info">Pesanan baru menunggu verifikasi.</x-ui.peringatan>

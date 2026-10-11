@@ -64,6 +64,33 @@ class PesananAdminTest extends TestCase
         $this->assertSame(2, preg_match_all('/Gawat\s*<\/span>/', $html), 'Satu di sel kode dan satu di kolom Layanan.');
     }
 
+    public function test_daftar_menampilkan_waktu_tunggu_hanya_untuk_pesanan_yang_belum_ditugaskan(): void
+    {
+        $this->pesanan(PesananStatus::Menunggu, ['created_at' => now()->subMinutes(12)]);
+        $this->pesanan(PesananStatus::Terverifikasi, ['created_at' => now()->subMinutes(3)]);
+        $this->pesanan(PesananStatus::Ditugaskan, ['created_at' => now()->subMinutes(40)]);
+        $this->pesanan(PesananStatus::Selesai, ['created_at' => now()->subHours(5)]);
+
+        $html = $this->actingAs($this->admin)->get(route('admin.pesanan.index'))->assertOk()->getContent();
+
+        $this->assertSame(2, substr_count($html, 'data-waktu-tunggu'), 'Hanya Menunggu dan Terverifikasi.');
+        $this->assertMatchesRegularExpression('/data-nada="bahaya"[^>]*>\s*<span class="size-1\.5[^>]*><\/span>\s*<span data-teks>Menunggu 12 mnt<\/span>/', $html);
+        $this->assertMatchesRegularExpression('/data-nada="netral"[^>]*>\s*<span class="size-1\.5[^>]*><\/span>\s*<span data-teks>Menunggu 3 mnt<\/span>/', $html);
+        // Di sel kode, tepat di bawah tautan kode (terlihat di ponsel).
+        $this->assertMatchesRegularExpression('/<td class="tabular-nums">\s*<a [^>]*>SGP-\d+<\/a>\s*<div class="mt-1"><span data-waktu-tunggu/', $html);
+    }
+
+    public function test_detail_menampilkan_waktu_tunggu_di_samping_status(): void
+    {
+        $menunggu = $this->pesanan(PesananStatus::Menunggu, ['created_at' => now()->subMinutes(7)]);
+        $selesai = $this->pesanan(PesananStatus::Selesai, ['created_at' => now()->subMinutes(7)]);
+
+        $this->actingAs($this->admin)->get(route('admin.pesanan.show', $menunggu))->assertOk()
+            ->assertSee('data-waktu-tunggu', false)->assertSee('Menunggu 7 mnt')->assertSee('data-nada="peringatan"', false);
+        $this->actingAs($this->admin)->get(route('admin.pesanan.show', $selesai))->assertOk()
+            ->assertDontSee('data-waktu-tunggu', false);
+    }
+
     public function test_daftar_mengurutkan_gawat_dulu_lalu_terlama_dan_status_final_terakhir(): void
     {
         $biasaBaru = $this->pesanan(atribut: ['created_at' => now()->subMinutes(5)]);

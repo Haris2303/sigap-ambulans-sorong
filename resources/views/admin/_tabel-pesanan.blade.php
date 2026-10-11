@@ -15,6 +15,9 @@
                 @if ($pesanan->tingkat_darurat === \App\Enums\TingkatDarurat::Gawat)
                     <div class="mt-1 md:hidden"><x-ui.lencana nada="bahaya">{{ $pesanan->tingkat_darurat->label() }}</x-ui.lencana></div>
                 @endif
+                @if ($pesanan->status->menungguPenugasan())
+                    <div class="mt-1"><x-ui.waktu-tunggu :pesanan="$pesanan" /></div>
+                @endif
             </td>
             <td>{{ $pesanan->nama_pasien }}</td>
             <td class="hidden md:table-cell"><span class="inline-flex items-center gap-2">{{ $pesanan->jenis_layanan->label() }}@if ($pesanan->tingkat_darurat === \App\Enums\TingkatDarurat::Gawat) <x-ui.lencana nada="bahaya">{{ $pesanan->tingkat_darurat->label() }}</x-ui.lencana>@endif</span></td>

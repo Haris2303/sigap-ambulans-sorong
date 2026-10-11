@@ -34,6 +34,16 @@ class KatalogUiTest extends TestCase
             ->assertSee('data-konfirmasi', false);
     }
 
+    public function test_katalog_ui_memuat_tiga_nada_waktu_tunggu(): void
+    {
+        $html = $this->get('/_ui')->assertOk()->assertSee('Waktu tunggu')->getContent();
+
+        $this->assertSame(3, substr_count($html, 'data-waktu-tunggu'), 'Pesanan Ditugaskan tidak menampilkan lencana.');
+        foreach (['netral', 'peringatan', 'bahaya'] as $nada) {
+            $this->assertStringContainsString('data-nada="'.$nada.'"', $html);
+        }
+    }
+
     public function test_katalog_ui_memuat_pengungkap_bilah_aksi_dan_navigasi(): void
     {
         $this->get('/_ui')

@@ -58,4 +58,17 @@ class TampilanTest extends TestCase
 
         Tampilan::kelasChip('ungu');
     }
+
+    public function test_kelas_waktu_tunggu_sama_dengan_kelas_lembut_untuk_tiga_nada(): void
+    {
+        $dari = Tampilan::WAKTU_TUNGGU;
+
+        foreach (['netral', 'peringatan', 'bahaya'] as $nada) {
+            foreach (explode(' ', Tampilan::kelasLembut($nada)) as $kelas) {
+                $this->assertStringContainsString('data-[nada='.$nada.']:'.$kelas, $dari, $nada.': '.$kelas);
+            }
+        }
+        // Hanya tiga nada itu: tidak ada kelas lain yang menyelinap.
+        $this->assertSame(6, count(explode(' ', $dari)));
+    }
 }

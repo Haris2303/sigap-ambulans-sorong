@@ -35,6 +35,13 @@ return [
         'web_alamat' => 'https://www.openstreetmap.org/search?query={alamat}',
     ],
 
+    // Waktu tunggu pesanan yang belum ditugaskan (Menunggu dan Terverifikasi), dalam menit sejak dibuat: mulai `peringatan_menit` lencana waktu
+    // tunggu berwarna kuning, mulai `bahaya_menit` merah. Nilai awal hanya contoh; Dinkes menetapkan batas yang dipakai.
+    'waktu_tunggu' => [
+        'peringatan_menit' => 5,
+        'bahaya_menit' => 10,
+    ],
+
     'per_halaman' => 20,
 
     // Sandi akun demo. Kosong: "password" di local/testing, selain itu acak dan dicetak sekali.

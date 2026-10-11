@@ -90,6 +90,9 @@
                             <td>
                                 <a href="{{ route('admin.pesanan.show', $pesanan) }}" class="tabular-nums text-primary underline underline-offset-2 hover:text-on-primary-container">{{ $pesanan->kode }}</a>
                                 <x-ui.waktu :nilai="$pesanan->created_at" format="d M Y, H:i" class="block text-body-s text-on-surface-variant" />
+                                @if ($pesanan->status->menungguPenugasan())
+                                    <div class="mt-1"><x-ui.waktu-tunggu :pesanan="$pesanan" /></div>
+                                @endif
                             </td>
                             <td>{{ $pesanan->nama_pasien }}</td>
                             <td><span class="inline-flex items-center gap-2">{{ $pesanan->jenis_layanan->label() }}@if ($pesanan->tingkat_darurat === \App\Enums\TingkatDarurat::Gawat) <x-ui.lencana nada="bahaya">{{ $pesanan->tingkat_darurat->label() }}</x-ui.lencana>@endif</span></td>

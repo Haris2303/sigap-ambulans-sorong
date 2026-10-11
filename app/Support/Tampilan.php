@@ -20,6 +20,14 @@ class Tampilan
     /** Kartu dasbor: latar putih, sudut 16px, bayangan card, tanpa batas (panel, kartu statistik putih). */
     public const KARTU = 'bg-surface-container-lowest rounded-lg shadow-card';
 
+    /**
+     * Lencana waktu tunggu: nada dibaca dari atribut data-nada supaya JavaScript cukup mengganti atribut itu saat waktu berjalan.
+     * Pasangan kelasnya sama dengan kelasLembut() untuk netral, peringatan, dan bahaya (dijaga TampilanTest); ditulis utuh agar terbaca pemindai Tailwind.
+     */
+    public const WAKTU_TUNGGU = 'data-[nada=netral]:bg-surface-container-highest data-[nada=netral]:text-on-surface-variant'
+        .' data-[nada=peringatan]:bg-warning-container data-[nada=peringatan]:text-on-warning-container'
+        .' data-[nada=bahaya]:bg-error-container data-[nada=bahaya]:text-on-error-container';
+
     /** Container tonal + teks di atasnya (lencana, peringatan). */
     public static function kelasLembut(string $nada): string
     {

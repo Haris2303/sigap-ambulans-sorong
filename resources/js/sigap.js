@@ -1,7 +1,9 @@
 // Helper bersama SIGAP. Halaman hanya memanggil helper ini; URL selalu dioper dari route() lewat atribut data-*.
 import { pasangPenjagaKirim } from './formulir';
+import { pasangWaktuTunggu } from './waktu-tunggu';
 
 pasangPenjagaKirim();
+pasangWaktuTunggu();
 
 const token = () => document.querySelector('meta[name="csrf-token"]')?.content ?? '';
 

@@ -94,6 +94,20 @@ class DashboardTest extends TestCase
         }
     }
 
+    public function test_tabel_pesanan_terbaru_menampilkan_waktu_tunggu_untuk_menunggu_dan_terverifikasi(): void
+    {
+        $this->dataDemo();
+
+        $html = $this->dasbor();
+
+        // Dua Menunggu dan satu Terverifikasi di tabel; waktu sekarang 11 Okt 18:00 dan dibuat 09:00 (9 jam), 10 Okt 09:00 (33 jam), 9 Okt 09:00 (57 jam).
+        $this->assertSame(3, substr_count($html, 'data-waktu-tunggu'));
+        $this->assertStringContainsString('Menunggu 9 j', $html);
+        $this->assertStringContainsString('Menunggu 1 hari', $html);
+        $this->assertStringContainsString('Menunggu 2 hari', $html);
+        $this->assertSame(3, substr_count($html, 'data-nada="bahaya"'));
+    }
+
     public function test_kartu_utama_menonjolkan_jumlah_pesanan_gawat_yang_menunggu(): void
     {
         Pesanan::factory()->berstatus(PesananStatus::Menunggu)->gawat()->count(2)->create();

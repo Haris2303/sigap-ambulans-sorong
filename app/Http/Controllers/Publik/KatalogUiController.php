@@ -6,6 +6,7 @@ use App\Enums\PesananStatus;
 use App\Enums\Role;
 use App\Http\Controllers\Controller;
 use App\Models\Faskes;
+use App\Models\Pesanan;
 use App\Models\PesananLog;
 use App\Models\User;
 use Illuminate\Contracts\View\View;
@@ -45,7 +46,12 @@ class KatalogUiController extends Controller
             $f->setAttribute('ambulans_tersedia_count', 1);
         }
 
+        // Waktu tunggu contoh: netral, peringatan, dan bahaya menurut ambang config('sigap.waktu_tunggu'), serta satu pesanan yang sudah ditugaskan (tidak tampil).
+        $waktuTunggu = collect([[PesananStatus::Menunggu, 2], [PesananStatus::Terverifikasi, 7], [PesananStatus::Menunggu, 14], [PesananStatus::Ditugaskan, 30]])
+            ->map(fn (array $c) => (new Pesanan)->forceFill(['status' => $c[0], 'created_at' => now()->subMinutes($c[1])->subSeconds(20)]));
+
         return view('dev.katalog-ui', [
+            'waktuTunggu' => $waktuTunggu,
             'log' => $log,
             'faskes' => [$faskesSegar, $faskesLama, $faskesBaru],
             'halaman' => new LengthAwarePaginator(array_fill(0, 20, 'x'), 134, 20, 2, ['path' => route('ui.katalog')]),

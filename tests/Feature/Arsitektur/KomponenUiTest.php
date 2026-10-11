@@ -12,6 +12,7 @@ use App\Models\User;
 use App\Support\Tampilan;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 use Illuminate\Pagination\LengthAwarePaginator;
+use Illuminate\Support\Carbon;
 use Illuminate\Support\Facades\Blade;
 use Illuminate\Support\ViewErrorBag;
 use Illuminate\View\ViewException;
@@ -114,6 +115,42 @@ class KomponenUiTest extends TestCase
 
         $konfirmasi = $this->render('<x-ui.tombol nada="bahaya" tipe="submit" konfirmasi="Batalkan pesanan ini?">Batalkan</x-ui.tombol>');
         $this->assertStringContainsString('data-konfirmasi="Batalkan pesanan ini?"', $konfirmasi);
+    }
+
+    public function test_waktu_tunggu_menurut_status_ambang_dan_nada(): void
+    {
+        Carbon::setTestNow(Carbon::parse('2026-10-11 10:00:00', 'Asia/Jayapura'));
+
+        $buat = fn (PesananStatus $status, string $menitLalu) => Pesanan::factory()->berstatus($status)->create(['created_at' => Carbon::now()->subMinutes((int) $menitLalu)->subSeconds(20)]);
+        $html = fn (Pesanan $p) => $this->render('<x-ui.waktu-tunggu :pesanan="$p" class="mt-1" />', ['p' => $p->fresh()]);
+
+        // 12 menit 20 detik: bahaya (ambang bawaan 5 dan 10), detik dikirim ke klien.
+        $bahaya = $html($buat(PesananStatus::Menunggu, '12'));
+        $this->assertStringContainsString('data-waktu-tunggu', $bahaya);
+        $this->assertStringContainsString('data-tunggu-detik="740"', $bahaya);
+        $this->assertStringContainsString('data-ambang-peringatan="5" data-ambang-bahaya="10"', $bahaya);
+        $this->assertStringContainsString('data-nada="bahaya"', $bahaya);
+        $this->assertMatchesRegularExpression('/<span data-teks>Menunggu 12 mnt<\/span>/', $bahaya);
+        $this->assertStringContainsString('mt-1', $bahaya);
+        $this->assertStringContainsString(Tampilan::WAKTU_TUNGGU, $bahaya);
+
+        // Terverifikasi 7 menit: peringatan. 2 menit: netral. Baru dibuat: teks khusus.
+        $this->assertStringContainsString('data-nada="peringatan"', $html($buat(PesananStatus::Terverifikasi, '7')));
+        $this->assertStringContainsString('data-nada="netral"', $html($buat(PesananStatus::Menunggu, '2')));
+        $this->assertStringContainsString('Baru dibuat', $this->render('<x-ui.waktu-tunggu :pesanan="$p" />', ['p' => Pesanan::factory()->create(['created_at' => Carbon::now()->subSeconds(10)])->fresh()]));
+
+        // Status lain tidak menampilkan apa pun.
+        foreach ([PesananStatus::Ditugaskan, PesananStatus::DalamPerjalanan, PesananStatus::Selesai, PesananStatus::Ditolak, PesananStatus::Dibatalkan] as $status) {
+            $this->assertSame('', trim($html($buat($status, '30'))), $status->value);
+        }
+
+        // Ambang dari config.
+        config(['sigap.waktu_tunggu' => ['peringatan_menit' => 1, 'bahaya_menit' => 3]]);
+        $kustom = $html($buat(PesananStatus::Menunggu, '2'));
+        $this->assertStringContainsString('data-nada="peringatan"', $kustom);
+        $this->assertStringContainsString('data-ambang-peringatan="1" data-ambang-bahaya="3"', $kustom);
+
+        Carbon::setTestNow();
     }
 
     public function test_lipat_adalah_pengungkap_bawaan_dengan_ikon_dan_target_48px(): void

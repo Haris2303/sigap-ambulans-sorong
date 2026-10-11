@@ -61,6 +61,12 @@ enum PesananStatus: string
         return in_array($this, [self::Selesai, self::Ditolak, self::Dibatalkan], true);
     }
 
+    /** Belum ada ambulans dan sopir: pesanan masih menunggu (waktu tunggu dihitung pada status ini). */
+    public function menungguPenugasan(): bool
+    {
+        return in_array($this, [self::Menunggu, self::Terverifikasi], true);
+    }
+
     /** Pesanan memegang ambulans dan sopir pada status ini. */
     public function memegangSumberDaya(): bool
     {

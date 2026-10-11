@@ -2,6 +2,7 @@
     <x-ui.judul-halaman :judul="'Pesanan '.$pesanan->kode">
         <x-slot:aksi>
             <x-ui.lencana-status :status="$pesanan->status" />
+            <x-ui.waktu-tunggu :pesanan="$pesanan" />
             <x-ui.tombol nada="sekunder" ikon="arrow-left" :href="route('admin.pesanan.index')">Daftar pesanan</x-ui.tombol>
         </x-slot:aksi>
     </x-ui.judul-halaman>
