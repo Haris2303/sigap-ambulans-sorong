@@ -216,4 +216,48 @@ class KomponenDasborTest extends TestCase
         $this->assertStringContainsString('>B<', $this->html('<x-ui.avatar nama="budi" />'));
         $this->assertStringContainsString('>?<', $this->html('<x-ui.avatar nama="" />'));
     }
+
+    // ---------- kolom cari ----------
+
+    public function test_kolom_cari_adalah_form_get_berbentuk_pil_dengan_input_berlabel(): void
+    {
+        $html = $this->html('<x-ui.cari aksi="https://contoh.test/pesanan" label="Cari kode pesanan atau nama pasien" placeholder="Cari kode pesanan atau nama pasien" />');
+
+        $this->assertMatchesRegularExpression('~<form method="GET" action="https://contoh.test/pesanan" role="search"~', $html);
+        foreach (['h-12', 'rounded-full', 'bg-surface-container', 'min-w-0', 'flex-1', 'has-[:focus-visible]:outline-primary'] as $kelas) {
+            $this->assertStringContainsString($kelas, $html);
+        }
+        $this->assertStringContainsString('<svg', $html);
+        $this->assertMatchesRegularExpression('/<label for="([^"]+)" class="sr-only">Cari kode pesanan atau nama pasien<\/label>\s*<input id="\1"/', $html);
+        $this->assertMatchesRegularExpression('/<input[^>]*type="search"[^>]*name="q"/', $html);
+        $this->assertStringContainsString('placeholder="Cari kode pesanan atau nama pasien"', $html);
+        $this->assertStringContainsString('text-body-l', $html);
+        $this->assertStringContainsString('outline-hidden', $html);
+    }
+
+    public function test_kolom_cari_mempertahankan_dan_menyaring_nilai_dan_menerima_nama_lain(): void
+    {
+        $html = $this->html('<x-ui.cari aksi="https://contoh.test/x" label="Cari" nama="kata" nilai="Budi <b>" />');
+
+        $this->assertStringContainsString('name="kata"', $html);
+        $this->assertStringContainsString('value="Budi &lt;b&gt;"', $html);
+        $this->assertStringNotContainsString('<b>', $html);
+
+        $tanpa = $this->html('<x-ui.cari aksi="https://contoh.test/x" label="Cari" />');
+        $this->assertStringNotContainsString(' value=', $tanpa);
+    }
+
+    // ---------- tombol ikon dengan ukuran ikon ----------
+
+    public function test_tombol_ikon_dapat_memakai_ukuran_ikon_baku_lain(): void
+    {
+        $html = $this->html('<x-ui.tombol nada="hantu" tipe="submit" ikon="log-out" ikon-ukuran="20" aria-label="Keluar" />');
+
+        $this->assertStringContainsString('size-10 px-0', $html);
+        $this->assertStringContainsString('width="20"', $html);
+        $this->assertStringContainsString('aria-label="Keluar"', $html);
+
+        $this->expectException(ViewException::class);
+        $this->html('<x-ui.tombol nada="hantu" ikon="log-out" ikon-ukuran="21" aria-label="Keluar" />');
+    }
 }

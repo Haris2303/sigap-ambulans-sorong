@@ -541,7 +541,7 @@ Hierarki dibentuk oleh **latar Canvas lawan kartu putih berbayang**, lalu jarak;
 - **Card** (`shadow-card`): panel, kartu statistik putih, dan bilah atas.
 - **Card-raised** (`shadow-card-raised`): kartu statistik utama (Primary).
 - **Nav-active** (`shadow-nav-active`): item menu aktif.
-- **Level 1** (`shadow-level-1`): bilah atas dan bilah tombol bawah di ponsel ketika isi bergulir di bawahnya. Latar: Surface-container-low.
+- **Level 1** (`shadow-level-1`): laci modal di bawah `lg` dan bilah tombol bawah di ponsel (mis. Tinjau pesanan). Bilah atas memakai `shadow-card`. Latar: Surface-container-low.
 - **Level 2** (`shadow-level-2`): menu tarik dan daftar saran alamat. Latar: Surface-container.
 - **Level 3** (`shadow-level-3`): dialog konfirmasi dan snackbar. Latar dialog: Surface-container-high, ditambah scrim di belakangnya.
 

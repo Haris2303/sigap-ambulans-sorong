@@ -77,7 +77,7 @@ const Sigap = {
 
 window.Sigap = Sigap;
 
-// Angka hidup Dinkes: JSON { data: { kunci: angka } } mengisi [data-ringkasan=kunci] dan [data-lencana=kunci].
+// Angka hidup Dinkes: JSON { data: { kunci: angka } } mengisi [data-ringkasan=kunci], [data-lencana=kunci], dan label [data-lonceng=kunci].
 document.addEventListener('DOMContentLoaded', () => {
     const sumber = document.querySelector('[data-ringkasan-url]');
     if (!sumber) {
@@ -91,6 +91,9 @@ document.addEventListener('DOMContentLoaded', () => {
             document.querySelectorAll(`[data-lencana="${kunci}"]`).forEach((el) => {
                 el.textContent = angka;
                 el.hidden = angka < 1;
+            });
+            document.querySelectorAll(`[data-lonceng="${kunci}"]`).forEach((el) => {
+                el.setAttribute('aria-label', `${el.dataset.label}, ${angka}`);
             });
         });
     });
@@ -204,15 +207,4 @@ document.addEventListener('keydown', (e) => {
     if (e.key === 'Escape' && document.querySelector('[data-menu-scrim]:not(.hidden)')) {
         aturLaci(false);
     }
-});
-
-// Bilah atas naik ke Level 1 (bayangan) saat isi bergulir di bawahnya.
-document.addEventListener('DOMContentLoaded', () => {
-    const bilah = document.querySelector('[data-bilah-atas]');
-    if (!bilah) {
-        return;
-    }
-    const perbarui = () => bilah.classList.toggle('shadow-level-1', window.scrollY > 0);
-    window.addEventListener('scroll', perbarui, { passive: true });
-    perbarui();
 });

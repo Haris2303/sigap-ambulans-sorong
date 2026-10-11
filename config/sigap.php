@@ -30,7 +30,8 @@ return [
     // Sandi akun demo. Kosong: "password" di local/testing, selain itu acak dan dicetak sekali.
     'seed_password' => env('SEED_PASSWORD'),
 
-    // Menu rel per peran: nama route, label, ikon (daftar ikon di docs/KIT_UI.md bagian 6).
+    // Menu laci per peran: nama route, label, ikon (daftar ikon di docs/KIT_UI.md bagian 6). `grup` (opsional) memberi label
+    // grup; label tampil saat grup berganti. `lencana` menunjuk kunci angka hidup (RingkasanDinkes).
     'menu' => [
         'warga' => [
             ['route' => 'warga.beranda', 'cocok' => 'warga.beranda', 'label' => 'Beranda', 'ikon' => 'house'],
@@ -39,14 +40,14 @@ return [
             ['route' => 'faskes.index', 'cocok' => 'faskes.*', 'label' => 'Info Faskes', 'ikon' => 'hospital'],
         ],
         'admin' => [
-            ['route' => 'admin.dashboard', 'cocok' => 'admin.dashboard', 'label' => 'Dasbor', 'ikon' => 'layout-dashboard'],
-            ['route' => 'admin.pesanan.index', 'cocok' => 'admin.pesanan.*', 'label' => 'Pesanan', 'ikon' => 'clipboard-list', 'lencana' => 'pesanan_menunggu'],
-            ['route' => 'admin.ketersediaan.index', 'cocok' => 'admin.ketersediaan.*', 'label' => 'Ketersediaan', 'ikon' => 'bed-double'],
-            ['route' => 'admin.faskes.index', 'cocok' => 'admin.faskes.*', 'label' => 'Faskes', 'ikon' => 'building-2'],
-            ['route' => 'admin.ambulans.index', 'cocok' => 'admin.ambulans.*', 'label' => 'Ambulans', 'ikon' => 'navigation'],
-            ['route' => 'admin.sopir.index', 'cocok' => 'admin.sopir.*', 'label' => 'Sopir', 'ikon' => 'user'],
-            ['route' => 'admin.petugas.index', 'cocok' => 'admin.petugas.*', 'label' => 'Petugas Faskes', 'ikon' => 'users'],
-            ['route' => 'admin.laporan.index', 'cocok' => 'admin.laporan.*', 'label' => 'Laporan', 'ikon' => 'file-text'],
+            ['route' => 'admin.dashboard', 'cocok' => 'admin.dashboard', 'label' => 'Dasbor', 'ikon' => 'layout-dashboard', 'grup' => 'Operasional'],
+            ['route' => 'admin.pesanan.index', 'cocok' => 'admin.pesanan.*', 'label' => 'Pesanan', 'ikon' => 'clipboard-list', 'lencana' => 'pesanan_menunggu', 'grup' => 'Operasional'],
+            ['route' => 'admin.ketersediaan.index', 'cocok' => 'admin.ketersediaan.*', 'label' => 'Ketersediaan', 'ikon' => 'bed-double', 'grup' => 'Operasional'],
+            ['route' => 'admin.laporan.index', 'cocok' => 'admin.laporan.*', 'label' => 'Laporan', 'ikon' => 'file-text', 'grup' => 'Operasional'],
+            ['route' => 'admin.faskes.index', 'cocok' => 'admin.faskes.*', 'label' => 'Faskes', 'ikon' => 'building-2', 'grup' => 'Data master'],
+            ['route' => 'admin.ambulans.index', 'cocok' => 'admin.ambulans.*', 'label' => 'Ambulans', 'ikon' => 'ambulance', 'grup' => 'Data master'],
+            ['route' => 'admin.sopir.index', 'cocok' => 'admin.sopir.*', 'label' => 'Sopir', 'ikon' => 'user', 'grup' => 'Data master'],
+            ['route' => 'admin.petugas.index', 'cocok' => 'admin.petugas.*', 'label' => 'Petugas Faskes', 'ikon' => 'users', 'grup' => 'Data master'],
         ],
         'petugas_faskes' => [
             ['route' => 'petugas.dashboard', 'cocok' => 'petugas.dashboard', 'label' => 'Dasbor', 'ikon' => 'layout-dashboard'],
@@ -55,6 +56,20 @@ return [
         ],
         'sopir' => [
             ['route' => 'sopir.dashboard', 'cocok' => 'sopir.dashboard', 'label' => 'Penugasan', 'ikon' => 'navigation'],
+        ],
+    ],
+
+    // Bilah atas (kartu melayang). `cari`: route daftar pesanan per peran yang menerima GET ?q=; peran yang tidak tercantum
+    // tidak punya kolom cari. `lonceng`: jumlah pesanan menunggu verifikasi (bukan notifikasi umum), hanya Dinkes.
+    'bilah_atas' => [
+        'cari' => ['admin' => 'admin.pesanan.index'],
+        'lonceng' => [
+            'admin' => [
+                'route' => 'admin.pesanan.index',
+                'query' => ['tab' => 'perlu-tindakan'],
+                'lencana' => 'pesanan_menunggu',
+                'label' => 'Pesanan menunggu verifikasi',
+            ],
         ],
     ],
 

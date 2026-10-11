@@ -6,6 +6,7 @@
     'ikon' => null,
     'konfirmasi' => null,
     'blok' => false,
+    'ikonUkuran' => null,
 ])
 {{-- nada: utama (filled), tonal, sekunder (outlined), hantu (text), bahaya (error), terbalik (text di atas snackbar), on-primary (hanya di atas kartu utama primary). Semua 40px dengan area sentuh 48px. --}}
 @php
@@ -32,7 +33,8 @@
     if ($blok) {
         $kelas .= ' w-full';
     }
-    $ukuranIkon = $hanyaIkon ? 24 : 18;
+    // ikon-ukuran menimpa ukuran bawaan (18 dalam tombol bertulisan, 24 pada tombol ikon), mis. 20 pada tombol keluar.
+    $ukuranIkon = $ikonUkuran !== null ? (int) $ikonUkuran : ($hanyaIkon ? 24 : 18);
 @endphp
 @if ($href)
     <a href="{{ $href }}" {{ $attributes->merge(['class' => $kelas]) }}>
