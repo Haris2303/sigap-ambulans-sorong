@@ -7,12 +7,12 @@
     $deskripsi = collect([$bantuan ? $id.'-bantuan' : null, $galat ? $id.'-galat' : null])->filter()->implode(' ');
 @endphp
 <div>
-    <label for="{{ $id }}" class="mb-1 block text-label text-on-surface">{{ $label }}</label>
+    <label for="{{ $id }}" class="{{ \App\Support\Tampilan::LABEL_ISIAN }}">{{ $label }}</label>
     <select id="{{ $id }}" name="{{ $nama }}"
         @if ($wajib) required @endif
         @if ($galat) aria-invalid="true" @endif
         @if ($deskripsi !== '') aria-describedby="{{ $deskripsi }}" @endif
-        {{ $attributes->merge(['class' => 'block w-full min-h-touch rounded-md border bg-surface px-3 text-body text-on-surface '.($galat ? 'border-danger' : 'border-control-border')]) }}>
+        {{ $attributes->merge(['class' => \App\Support\Tampilan::kelasIsian((bool) $galat)]) }}>
         @if ($kosong !== null)
             <option value="">{{ $kosong }}</option>
         @endif
@@ -29,9 +29,9 @@
         @endforeach
     </select>
     @if ($bantuan)
-        <p id="{{ $id }}-bantuan" class="mt-1 text-caption text-on-surface-muted">{{ $bantuan }}</p>
+        <p id="{{ $id }}-bantuan" class="{{ \App\Support\Tampilan::BANTUAN_ISIAN }}">{{ $bantuan }}</p>
     @endif
     @if ($galat)
-        <p id="{{ $id }}-galat" class="mt-1 text-body-sm text-danger">{{ $galat }}</p>
+        <p id="{{ $id }}-galat" class="{{ \App\Support\Tampilan::GALAT_ISIAN }}">{{ $galat }}</p>
     @endif
 </div>

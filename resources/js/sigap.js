@@ -147,12 +147,10 @@ document.addEventListener('click', (e) => {
     dialog.querySelector('[data-dialog-pesan]').textContent = pemicu.dataset.konfirmasi;
     const aksi = dialog.querySelector('[data-dialog-aksi]');
     aksi.textContent = pemicu.dataset.aksi || pemicu.textContent.trim();
-    // Nada tombol aksi: bahaya (bawaan) atau utama.
-    const utama = pemicu.dataset.nada === 'utama';
-    aksi.classList.toggle('bg-primary', utama);
-    aksi.classList.toggle('hover:bg-primary-hover', utama);
-    aksi.classList.toggle('bg-danger', !utama);
-    aksi.classList.toggle('hover:bg-danger-hover', !utama);
+    // Nada tombol aksi: bahaya (error, bawaan) atau teks biasa (data-nada="utama").
+    const biasa = pemicu.dataset.nada === 'utama';
+    ['bg-error', 'text-on-error', 'px-6'].forEach((kelas) => aksi.classList.toggle(kelas, !biasa));
+    ['text-primary', 'px-3'].forEach((kelas) => aksi.classList.toggle(kelas, biasa));
     dialog.pemicu = pemicu;
     dialog.showModal();
 });
@@ -171,6 +169,13 @@ document.addEventListener('click', (e) => {
         if (form) {
             form.requestSubmit(pemicu.form ? pemicu : undefined);
         }
+    }
+});
+
+// Snackbar: tombol Tutup menghapus pesan.
+document.addEventListener('click', (e) => {
+    if (e.target.closest('[data-snackbar-tutup]')) {
+        e.target.closest('[data-snackbar]')?.remove();
     }
 });
 

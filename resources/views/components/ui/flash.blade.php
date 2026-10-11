@@ -2,11 +2,8 @@
     // $errors tidak ada pada halaman galat yang dirender di luar middleware web.
     $galatForm = $errors ?? new \Illuminate\Support\ViewErrorBag;
 @endphp
-@if (session('sukses') || session('galat') || $galatForm->any())
+@if (session('galat') || $galatForm->any())
     <div class="mb-6 space-y-3">
-        @if (session('sukses'))
-            <x-ui.peringatan nada="sukses">{{ session('sukses') }}</x-ui.peringatan>
-        @endif
         @if (session('galat'))
             <x-ui.peringatan nada="bahaya">{{ session('galat') }}</x-ui.peringatan>
         @endif
@@ -21,4 +18,7 @@
             </x-ui.peringatan>
         @endif
     </div>
+@endif
+@if (session('sukses'))
+    <x-ui.snackbar>{{ session('sukses') }}</x-ui.snackbar>
 @endif

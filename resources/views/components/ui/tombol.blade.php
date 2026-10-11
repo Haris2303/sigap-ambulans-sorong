@@ -7,23 +7,31 @@
     'konfirmasi' => null,
     'blok' => false,
 ])
+{{-- nada: utama (filled), tonal, sekunder (outlined), hantu (text), bahaya (error), terbalik (text di atas snackbar). Semua 40px dengan area sentuh 48px. --}}
 @php
-    $kelas = 'inline-flex items-center justify-center gap-2 rounded-md text-label transition-colors disabled:opacity-50';
+    $hanyaIkon = $ikon && trim((string) $slot) === '';
+    $kelas = 'lapisan-keadaan target-sentuh inline-flex items-center justify-center gap-2 rounded-full text-label-l transition-colors';
     $kelas .= ' '.match ($nada) {
-        'sekunder' => 'border border-control-border bg-surface text-on-surface hover:bg-canvas',
-        'bahaya' => 'bg-danger text-on-primary hover:bg-danger-hover',
-        'hantu' => 'text-primary hover:bg-primary-soft',
-        default => 'bg-primary text-on-primary hover:bg-primary-hover',
+        'tonal' => 'bg-secondary-container text-on-secondary-container disabled:bg-on-surface/12 disabled:text-on-surface/38',
+        'sekunder' => 'border border-outline text-primary disabled:border-on-surface/12 disabled:text-on-surface/38',
+        'bahaya' => 'bg-error text-on-error disabled:bg-on-surface/12 disabled:text-on-surface/38',
+        'hantu' => 'text-primary disabled:text-on-surface/38',
+        'terbalik' => 'text-inverse-primary disabled:text-inverse-on-surface/38',
+        default => 'bg-primary text-on-primary disabled:bg-on-surface/12 disabled:text-on-surface/38',
     };
-    $kelas .= match ($ukuran) {
-        'sm' => ' min-h-9 px-3',
-        'lg' => ' min-h-12 px-6',
-        default => ' min-h-touch px-4',
-    };
+    $kelas .= $ukuran === 'lg' ? ' min-h-12' : ' min-h-10';
+    $teks = in_array($nada, ['hantu', 'terbalik'], true);
+    if ($hanyaIkon) {
+        $kelas .= ' size-10 px-0';
+    } elseif ($ikon) {
+        $kelas .= $teks ? ' pl-3 pr-4' : ' pl-4 pr-6';
+    } else {
+        $kelas .= $teks ? ' px-3' : ' px-6';
+    }
     if ($blok) {
         $kelas .= ' w-full';
     }
-    $ukuranIkon = $ukuran === 'sm' ? 16 : 20;
+    $ukuranIkon = $hanyaIkon ? 24 : 18;
 @endphp
 @if ($href)
     <a href="{{ $href }}" {{ $attributes->merge(['class' => $kelas]) }}>

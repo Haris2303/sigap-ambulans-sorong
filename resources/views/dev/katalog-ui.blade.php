@@ -8,14 +8,21 @@
     <x-ui.bagian judul="Tombol">
         <div class="flex flex-wrap items-center gap-2">
             <x-ui.tombol>Utama</x-ui.tombol>
+            <x-ui.tombol nada="tonal">Tonal</x-ui.tombol>
             <x-ui.tombol nada="sekunder">Sekunder</x-ui.tombol>
-            <x-ui.tombol nada="bahaya">Bahaya</x-ui.tombol>
             <x-ui.tombol nada="hantu">Hantu</x-ui.tombol>
-            <x-ui.tombol ukuran="sm">Kecil</x-ui.tombol>
+            <x-ui.tombol nada="bahaya">Bahaya</x-ui.tombol>
             <x-ui.tombol ukuran="lg">Besar</x-ui.tombol>
             <x-ui.tombol ikon="crosshair">Dengan ikon</x-ui.tombol>
+            <x-ui.tombol nada="hantu" ikon="menu" aria-label="Buka menu" />
             <x-ui.tombol nada="bahaya" tipe="submit" konfirmasi="Pesanan akan dibatalkan dan tidak dapat dipulihkan." >Buka dialog</x-ui.tombol>
-            <x-ui.tombol disabled>Nonaktif</x-ui.tombol>
+        </div>
+        <div class="mt-3 flex flex-wrap items-center gap-2">
+            <x-ui.tombol disabled>Utama nonaktif</x-ui.tombol>
+            <x-ui.tombol nada="tonal" disabled>Tonal nonaktif</x-ui.tombol>
+            <x-ui.tombol nada="sekunder" disabled>Sekunder nonaktif</x-ui.tombol>
+            <x-ui.tombol nada="hantu" disabled>Hantu nonaktif</x-ui.tombol>
+            <x-ui.tombol nada="bahaya" disabled>Bahaya nonaktif</x-ui.tombol>
         </div>
     </x-ui.bagian>
 
@@ -39,6 +46,10 @@
             <x-ui.peringatan nada="peringatan">Data ketersediaan Faskes sudah lama.</x-ui.peringatan>
             <x-ui.peringatan nada="bahaya">Ambulans tidak tersedia. Pilih ambulans lain.</x-ui.peringatan>
         </div>
+    </x-ui.bagian>
+
+    <x-ui.bagian judul="Snackbar">
+        <x-ui.snackbar :tetap="false">Pesanan berhasil diverifikasi.</x-ui.snackbar>
     </x-ui.bagian>
 
     <x-ui.bagian judul="Ringkasan angka">
@@ -81,6 +92,7 @@
             <div class="space-y-5">
                 <x-ui.isian nama="nama_pasien" label="Nama pasien" nilai="Budi Santoso" bantuan="Sesuai kartu identitas." :wajib="true" />
                 <x-ui.isian nama="no_telepon_kontak" label="Nomor kontak" tipe="tel" galat="Nomor kontak wajib diisi." />
+                <x-ui.isian nama="kode_cadangan" label="Kode cadangan" nilai="Tidak dapat diubah" :tanpa-old="true" disabled />
                 <x-ui.pilihan nama="jenis" label="Jenis Faskes" :opsi="\App\Enums\JenisFaskes::opsi()" :nilai="\App\Enums\JenisFaskes::Puskesmas" kosong="Semua jenis" />
                 <x-ui.area-teks nama="catatan" label="Catatan" nilai="Pasien sesak napas." />
                 <x-ui.centang nama="aktif" label="Akun aktif" :nilai="true" />

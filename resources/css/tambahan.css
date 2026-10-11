@@ -29,7 +29,8 @@
     }
 }
 
-.lapisan-keadaan:focus-visible::before {
+.lapisan-keadaan:focus-visible::before,
+.lapisan-keadaan:has(input:focus-visible)::before {
     opacity: var(--state-focus);
 }
 
