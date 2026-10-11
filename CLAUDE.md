@@ -8,7 +8,7 @@ Aplikasi Laravel 13 (PHP 8.3) dengan Tailwind CSS 4.3 lewat Vite, Blade, dan SQL
 - `DESIGN.md`: sumber token visual (Material Design 3, bukan Expressive). `resources/css/design-tokens.css` dihasilkan darinya oleh `agent/tokens.mjs`; jangan mengubah hasilnya dengan tangan.
 - `docs/KIT_UI.md`: kelas yang tersedia, resep kelas, komponen Blade, pola halaman.
 - `agent/konsistensi.json`: aturan pemindai yang dijalankan `KonsistensiTest`. Baca sebelum menulis kode tampilan.
-- `docs/PROGRESS.md`: catatan kemajuan, termasuk daftar langkah migrasi ke Material 3.
+- `docs/MIGRASI_M3.md`: keputusan dan daftar langkah migrasi tampilan ke Material 3. `docs/PROGRESS.md`: catatan kemajuan pembangunan awal.
 
 ## Tampilan
 

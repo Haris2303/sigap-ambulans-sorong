@@ -38,6 +38,48 @@ class KonsistensiTest extends TestCase
         $this->assertSame(0, preg_match($this->regex($emoji), 'teks biasa'));
     }
 
+    public function test_gaya_dilarang_menolak_gaya_di_luar_token_dan_menerima_token_material_3(): void
+    {
+        $aturan = collect($this->muatAturan())->firstWhere('id', 'gaya-dilarang');
+        $this->assertNotNull($aturan);
+
+        $dilarang = ['shadow-md', 'shadow-xl', 'rounded-2xl', 'rounded-t-3xl', 'uppercase', 'italic', 'font-bold', 'tracking-wide',
+            'text-lg', 'text-2xl', 'backdrop-blur-sm', 'blur-md', 'drop-shadow-lg', 'bg-linear-to-r', 'bg-gradient-to-r',
+            'from-primary', 'hover:scale-105', 'hover:-translate-y-1', 'animate-pulse', 'rounded-[10px]', 'shadow-[0_2px_4px_black]'];
+        foreach ($dilarang as $kelas) {
+            $this->assertSame(1, preg_match($this->regex($aturan), '<div class="flex '.$kelas.' gap-2">'), $kelas.' harus ditolak');
+        }
+
+        $diterima = ['shadow-level-1', 'shadow-level-3', 'shadow-none', 'rounded-xs', 'rounded-sm', 'rounded-md', 'rounded-lg',
+            'rounded-xl', 'rounded-t-xl', 'rounded-full', 'text-display-s', 'text-headline-s', 'text-title-m', 'text-body-l',
+            'text-label-l', 'font-medium', 'font-normal', 'bg-surface-container-high', 'border-outline-variant',
+            'bg-secondary-container', 'text-on-secondary-container', 'hover:bg-primary', 'transition-colors', 'min-h-touch', 'w-drawer'];
+        foreach ($diterima as $kelas) {
+            $this->assertSame(0, preg_match($this->regex($aturan), '<div class="flex '.$kelas.' gap-2">'), $kelas.' harus diterima');
+        }
+    }
+
+    public function test_warna_css_menerima_hanya_var_token_dan_menolak_nilai_mentah(): void
+    {
+        $aturan = collect($this->muatAturan())->firstWhere('id', 'warna-css');
+        $this->assertNotNull($aturan);
+
+        $dilarang = ['color: #fff;', 'color: #0b5c80;', 'color: rgb(0 0 0);', 'color: oklch(0.5 0.1 200);',
+            'background: linear-gradient(red, blue);', 'box-shadow: 0 1px 2px black;', 'box-shadow: 0 0 4px var(--shadow-level-1);',
+            'box-shadow: var(--shadow-level-4);', 'background: color-mix(in srgb, red 50%, white);',
+            '@keyframes geser {', 'animation: geser 1s;'];
+        foreach ($dilarang as $baris) {
+            $this->assertSame(1, preg_match($this->regex($aturan), $baris), $baris.' harus ditolak');
+        }
+
+        $diterima = ['background-color: var(--color-surface);', 'box-shadow: none;', 'box-shadow: var(--shadow-level-2);',
+            'box-shadow: var(--shadow-level-3) !important;', 'opacity: var(--state-hover);',
+            'background: color-mix(in oklab, var(--color-primary) 8%, transparent);', 'transition: opacity 150ms;'];
+        foreach ($diterima as $baris) {
+            $this->assertSame(0, preg_match($this->regex($aturan), $baris), $baris.' harus diterima');
+        }
+    }
+
     /** @return array<int, array<string, mixed>> */
     private function muatAturan(): array
     {
