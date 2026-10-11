@@ -112,6 +112,24 @@ class EnumTest extends TestCase
         $this->assertSame('netral', PesananStatus::Dibatalkan->nada());
     }
 
+    /** Satu tabel status arah B (docs/RETEMA_B.md 4.3): status aktif setelah terverifikasi sampai dalam perjalanan bertone tertiary. */
+    public function test_tone_status_pesanan_sesuai_tabel_status(): void
+    {
+        $this->assertSame('warning', PesananStatus::Menunggu->tone());
+        $this->assertSame('primary', PesananStatus::Terverifikasi->tone());
+        $this->assertSame('tertiary', PesananStatus::Ditugaskan->tone());
+        $this->assertSame('tertiary', PesananStatus::Diterima->tone());
+        $this->assertSame('tertiary', PesananStatus::DalamPerjalanan->tone());
+        $this->assertSame('success', PesananStatus::Selesai->tone());
+        $this->assertSame('error', PesananStatus::Ditolak->tone());
+        $this->assertSame('neutral', PesananStatus::Dibatalkan->tone());
+
+        foreach (PesananStatus::cases() as $status) {
+            $this->assertContains($status->tone(), ['primary', 'warning', 'success', 'error', 'tertiary', 'neutral'], $status->value);
+            $this->assertSame($status->memegangSumberDaya(), $status->tone() === 'tertiary', 'Tone tertiary tepat untuk status yang memegang sumber daya: '.$status->value);
+        }
+    }
+
     public function test_status_final_dan_pemegang_sumber_daya(): void
     {
         $final = array_filter(PesananStatus::cases(), fn ($s) => $s->final());

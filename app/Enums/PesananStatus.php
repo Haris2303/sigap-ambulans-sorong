@@ -43,6 +43,22 @@ enum PesananStatus: string
         };
     }
 
+    /**
+     * Tone arah B (docs/RETEMA_B.md 4.3): satu sumber warna lencana, chip, dan grafik.
+     * primary|warning|success|error|tertiary|neutral. Status baru wajib diberi tone dan dicatat di docs/KIT_UI.md.
+     */
+    public function tone(): string
+    {
+        return match ($this) {
+            self::Menunggu => 'warning',
+            self::Terverifikasi => 'primary',
+            self::Ditugaskan, self::Diterima, self::DalamPerjalanan => 'tertiary',
+            self::Selesai => 'success',
+            self::Ditolak => 'error',
+            self::Dibatalkan => 'neutral',
+        };
+    }
+
     /** Warna tetap per status pada grafik donat (nama token; docs/DESAIN_DASBOR_MATERIAL.md 5.12). Status baru wajib diberi warna. */
     public function warnaGrafik(): string
     {
