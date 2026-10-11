@@ -62,30 +62,36 @@
                     </div>
                 @endif
 
-                <div class="mt-6 space-y-3 border-t border-outline-variant pt-5">
-                    <p class="text-title-m">Tindakan</p>
-                    @if ($penugasan->status === \App\Enums\PesananStatus::Ditugaskan)
-                        <form method="POST" action="{{ route('sopir.pesanan.terima', $penugasan) }}">
-                            @csrf
-                            <x-ui.tombol tipe="submit" ukuran="lg" :blok="true">Terima</x-ui.tombol>
-                        </form>
-                        <form method="POST" action="{{ route('sopir.pesanan.tolak', $penugasan) }}" class="mt-6 space-y-3 border-t border-outline-variant pt-4">
+                {{-- Tindakan: aksi utama berada di bilah lekat di dasar layar (terjangkau ibu jari); "Tolak" tersembunyi di pengungkap supaya tidak tersentuh keliru. --}}
+                @if ($penugasan->status === \App\Enums\PesananStatus::Ditugaskan)
+                    <x-ui.lipat judul="Tolak penugasan" class="mt-6" :terbuka="$errors->has('alasan')">
+                        <form method="POST" action="{{ route('sopir.pesanan.tolak', $penugasan) }}" class="space-y-3">
                             @csrf
                             <x-ui.area-teks nama="alasan" label="Alasan menolak" :wajib="true" />
                             <x-ui.tombol nada="bahaya" tipe="submit" :blok="true" konfirmasi="Penugasan dikembalikan ke Dinkes." data-judul="Tolak penugasan?" data-aksi="Tolak">Tolak</x-ui.tombol>
                         </form>
-                    @elseif ($penugasan->status === \App\Enums\PesananStatus::Diterima)
+                    </x-ui.lipat>
+                    <x-ui.bilah-aksi>
+                        <form method="POST" action="{{ route('sopir.pesanan.terima', $penugasan) }}">
+                            @csrf
+                            <x-ui.tombol tipe="submit" ukuran="lg" :blok="true">Terima</x-ui.tombol>
+                        </form>
+                    </x-ui.bilah-aksi>
+                @elseif ($penugasan->status === \App\Enums\PesananStatus::Diterima)
+                    <x-ui.bilah-aksi>
                         <form method="POST" action="{{ route('sopir.pesanan.berangkat', $penugasan) }}">
                             @csrf
                             <x-ui.tombol tipe="submit" ukuran="lg" :blok="true">Mulai perjalanan</x-ui.tombol>
                         </form>
-                    @else
+                    </x-ui.bilah-aksi>
+                @else
+                    <x-ui.bilah-aksi>
                         <form method="POST" action="{{ route('sopir.pesanan.selesai', $penugasan) }}">
                             @csrf
                             <x-ui.tombol tipe="submit" ukuran="lg" :blok="true" konfirmasi="Pastikan pasien sudah diserahkan di Faskes tujuan." data-judul="Selesaikan pesanan?" data-aksi="Selesai" data-nada="utama">Selesai</x-ui.tombol>
                         </form>
-                    @endif
-                </div>
+                    </x-ui.bilah-aksi>
+                @endif
             </x-ui.panel>
         @endif
     </div>

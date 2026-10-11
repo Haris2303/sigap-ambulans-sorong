@@ -63,3 +63,10 @@
     scrollbar-width: thin;
     scrollbar-color: var(--color-outline-variant) transparent;
 }
+
+/* Halaman dengan bilah aksi lekat (x-ui.bilah-aksi): di bawah lg snackbar naik di atas bilah supaya tidak menutup tombol aksi. */
+@media (max-width: 1023px) {
+    body:has([data-bilah-aksi]) [data-snackbar] {
+        bottom: 6.5rem;
+    }
+}

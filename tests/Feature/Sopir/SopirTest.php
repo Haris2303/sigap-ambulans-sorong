@@ -62,6 +62,64 @@ class SopirTest extends TestCase
         $this->get(route('sopir.dashboard'))->assertOk()->assertSee('Belum ada penugasan. Halaman ini diperbarui otomatis.');
     }
 
+    public function test_aksi_utama_sopir_berada_di_bilah_lekat_dan_tolak_tersembunyi_di_pengungkap(): void
+    {
+        $pesanan = $this->pesananDitugaskan();
+        $this->actingAs($this->sopir);
+
+        $html = $this->get(route('sopir.dashboard'))->assertOk()->getContent();
+
+        $lipat = strpos($html, '<details');
+        $bilah = strpos($html, 'data-bilah-aksi');
+        $this->assertNotFalse($lipat);
+        $this->assertNotFalse($bilah);
+        $this->assertLessThan($bilah, $lipat, 'Pengungkap Tolak di atas, bilah aksi utama paling bawah kartu.');
+        $this->assertMatchesRegularExpression('/<details\s+class="group[^"]*"\s*>\s*<summary[^>]*>\s*<span>Tolak penugasan<\/span>/', $html, 'Tolak tertutup secara bawaan.');
+        $this->assertGreaterThan($lipat, strpos($html, 'Alasan menolak'));
+        $this->assertLessThan($bilah, strpos($html, route('sopir.pesanan.tolak', $pesanan)));
+
+        // Terima ada di dalam bilah, dan bilah itu anak terakhir kartu: tidak ada tombol aksi lain sesudahnya.
+        $this->assertGreaterThan($bilah, strpos($html, route('sopir.pesanan.terima', $pesanan)));
+        $this->assertLessThan(strpos($html, 'Penugasan terakhir'), strpos($html, route('sopir.pesanan.terima', $pesanan)));
+        $this->assertStringContainsString('sticky bottom-0', $html);
+    }
+
+    public function test_pengungkap_tolak_terbuka_bila_alasan_gagal_divalidasi(): void
+    {
+        $pesanan = $this->pesananDitugaskan();
+        $this->actingAs($this->sopir);
+
+        $this->post(route('sopir.pesanan.tolak', $pesanan), ['alasan' => ''])->assertSessionHasErrors('alasan');
+
+        // Halaman sesudah redirect membawa galat isian; diberikan langsung karena klien tes tidak membawa cookie sesi antar permintaan.
+        // Sesi berformat JSON menyimpan galat sebagai larik (dipulihkan menjadi ViewErrorBag saat sesi dimuat).
+        $galat = ['default' => ['messages' => ['alasan' => ['Alasan wajib diisi.']], 'format' => ':message']];
+        $html = $this->withSession(['errors' => $galat])->get(route('sopir.dashboard'))->assertOk()->getContent();
+        $this->assertMatchesRegularExpression('/<details\s+open\s+class="group/', $html);
+        $this->assertStringContainsString('id="f-alasan-galat"', $html, 'Galat isian tampil di dalam pengungkap yang terbuka.');
+    }
+
+    public function test_bilah_aksi_memuat_tombol_utama_untuk_setiap_status_aktif(): void
+    {
+        $pesanan = $this->pesananDitugaskan();
+        $this->actingAs($this->sopir);
+
+        $this->post(route('sopir.pesanan.terima', $pesanan));
+        $html = $this->get(route('sopir.dashboard'))->assertOk()->getContent();
+        $this->assertStringContainsString('data-bilah-aksi', $html);
+        $this->assertStringNotContainsString('<details', $html);
+        $this->assertGreaterThan(strpos($html, 'data-bilah-aksi'), strpos($html, 'Mulai perjalanan'));
+
+        $this->post(route('sopir.pesanan.berangkat', $pesanan));
+        $html = $this->get(route('sopir.dashboard'))->assertOk()->getContent();
+        $this->assertGreaterThan(strpos($html, 'data-bilah-aksi'), strpos($html, route('sopir.pesanan.selesai', $pesanan)));
+    }
+
+    public function test_dasbor_tanpa_penugasan_tidak_punya_bilah_aksi(): void
+    {
+        $this->actingAs($this->sopir)->get(route('sopir.dashboard'))->assertOk()->assertDontSee('data-bilah-aksi', false);
+    }
+
     public function test_dasbor_menampilkan_penugasan_dan_tombol_sesuai_status(): void
     {
         $pesanan = $this->pesananDitugaskan();

@@ -110,6 +110,20 @@
         </x-ui.panel>
     </x-ui.bagian>
 
+    <x-ui.bagian judul="Pengungkap dan bilah aksi">
+        <x-ui.panel class="max-w-xl">
+            <x-ui.lipat judul="Tolak penugasan">
+                <x-ui.area-teks nama="alasan_contoh" label="Alasan menolak" />
+            </x-ui.lipat>
+            <x-ui.lipat judul="Pengungkap terbuka" :terbuka="true" class="mt-3">
+                <p class="text-body-m text-on-surface-variant">Isi pengungkap yang tampil terbuka, mis. karena ada galat isian di dalamnya.</p>
+            </x-ui.lipat>
+            <x-ui.bilah-aksi>
+                <x-ui.tombol ukuran="lg" :blok="true">Terima</x-ui.tombol>
+            </x-ui.bilah-aksi>
+        </x-ui.panel>
+    </x-ui.bagian>
+
     <x-ui.bagian judul="Tabel dan paginasi">
         <x-ui.tabel>
             <x-slot:kepala>

@@ -116,6 +116,40 @@ class KomponenUiTest extends TestCase
         $this->assertStringContainsString('data-konfirmasi="Batalkan pesanan ini?"', $konfirmasi);
     }
 
+    public function test_lipat_adalah_pengungkap_bawaan_dengan_ikon_dan_target_48px(): void
+    {
+        $tertutup = $this->render('<x-ui.lipat judul="Tolak penugasan"><p>Isi</p></x-ui.lipat>');
+
+        $this->assertMatchesRegularExpression('/<details\s+class="group rounded-md border border-outline-variant"\s*>/', $tertutup);
+        $this->assertDoesNotMatchRegularExpression('/<details[^>]*\sopen[\s>]/', $tertutup);
+        $this->assertMatchesRegularExpression('/<summary class="lapisan-keadaan flex min-h-12 cursor-pointer list-none[^"]*">\s*<span>Tolak penugasan<\/span>/', $tertutup);
+        $this->assertStringContainsString('group-open:rotate-180', $tertutup);
+        $this->assertStringContainsString('width="20"', $tertutup);
+        $this->assertStringContainsString('<div class="border-t border-outline-variant p-4"><p>Isi</p></div>', $tertutup);
+
+        $terbuka = $this->render('<x-ui.lipat judul="Tolak" :terbuka="true" class="mt-6">x</x-ui.lipat>');
+        $this->assertMatchesRegularExpression('/<details\s+open\s+class="group[^"]* mt-6"/', $terbuka);
+    }
+
+    public function test_bilah_aksi_lekat_di_ponsel_dan_menyatu_di_lg(): void
+    {
+        $html = $this->render('<x-ui.bilah-aksi><button>Terima</button></x-ui.bilah-aksi>');
+
+        $this->assertStringContainsString('data-bilah-aksi', $html);
+        foreach (['sticky bottom-0', 'z-30', '-mx-6 -mb-6', 'rounded-b-lg', 'border-t border-outline-variant', 'bg-surface-container-lowest', 'shadow-level-1',
+            'lg:static', 'lg:mx-0', 'lg:shadow-none', 'lg:bg-transparent'] as $kelas) {
+            $this->assertStringContainsString($kelas, $html, $kelas);
+        }
+        $this->assertStringContainsString('<button>Terima</button>', $html);
+    }
+
+    public function test_snackbar_naik_di_atas_bilah_aksi_di_bawah_lg(): void
+    {
+        $css = (string) file_get_contents(base_path('resources/css/tambahan.css'));
+
+        $this->assertMatchesRegularExpression('/@media \(max-width: 1023px\) \{\s*body:has\(\[data-bilah-aksi\]\) \[data-snackbar\] \{\s*bottom: 6\.5rem;/', $css);
+    }
+
     public function test_lencana_lima_nada_dan_lencana_status_dari_enum(): void
     {
         $peta = ['netral' => 'bg-surface-container-highest text-on-surface-variant',
