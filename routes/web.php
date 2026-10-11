@@ -1,5 +1,7 @@
 <?php
 
+use App\Http\Controllers\Admin\DashboardController as AdminDashboardController;
+use App\Http\Controllers\Admin\PesananController as AdminPesananController;
 use App\Http\Controllers\Auth\LoginController;
 use App\Http\Controllers\Auth\RegisterController;
 use App\Http\Controllers\Publik\BerandaController;
@@ -33,6 +35,20 @@ Route::middleware(['auth', 'role:warga'])->prefix('warga')->name('warga.')->grou
     Route::get('/pesanan/{pesanan}/status', [WargaPesananController::class, 'status'])->name('pesanan.status');
     Route::get('/pesanan/{pesanan}', [WargaPesananController::class, 'show'])->name('pesanan.show');
     Route::put('/pesanan/{pesanan}/batal', [WargaPesananController::class, 'batalkan'])->name('pesanan.batalkan');
+});
+
+// Dinkes
+Route::middleware(['auth', 'role:admin'])->prefix('admin')->name('admin.')->group(function () {
+    Route::get('/', AdminDashboardController::class)->name('dashboard');
+
+    Route::get('/pesanan', [AdminPesananController::class, 'index'])->name('pesanan.index');
+    Route::get('/pesanan/ringkasan', [AdminPesananController::class, 'ringkasan'])->name('pesanan.ringkasan');
+    Route::get('/pesanan/{pesanan}', [AdminPesananController::class, 'show'])->name('pesanan.show');
+    Route::put('/pesanan/{pesanan}/verifikasi', [AdminPesananController::class, 'verifikasi'])->name('pesanan.verifikasi');
+    Route::put('/pesanan/{pesanan}/tolak', [AdminPesananController::class, 'tolak'])->name('pesanan.tolak');
+    Route::put('/pesanan/{pesanan}/tugaskan', [AdminPesananController::class, 'tugaskan'])->name('pesanan.tugaskan');
+    Route::put('/pesanan/{pesanan}/lepas', [AdminPesananController::class, 'lepas'])->name('pesanan.lepas');
+    Route::put('/pesanan/{pesanan}/batalkan', [AdminPesananController::class, 'batalkan'])->name('pesanan.batalkan');
 });
 
 if (app()->environment('local', 'testing')) {

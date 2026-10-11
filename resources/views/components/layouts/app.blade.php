@@ -2,6 +2,7 @@
 @php
     $pengguna = auth()->user();
     $menu = config('sigap.menu.'.$pengguna->role->value, []);
+    $urlRingkasan = $pengguna->role === \App\Enums\Role::Admin ? route('admin.pesanan.ringkasan') : null;
 @endphp
 <x-layouts.dasar :judul="$judul" :peta="$peta">
     <div class="min-h-screen lg:flex">
@@ -11,7 +12,7 @@
             <x-ui.tombol nada="hantu" ukuran="sm" ikon="menu" aria-label="Buka menu" data-menu-buka />
         </header>
 
-        <aside data-menu-rel class="fixed inset-y-0 left-0 z-40 hidden w-full flex-col border-r border-line bg-surface lg:sticky lg:top-0 lg:flex lg:h-screen lg:w-rail lg:shrink-0">
+        <aside data-menu-rel @if ($urlRingkasan) data-ringkasan-url="{{ $urlRingkasan }}" data-detik="{{ config('sigap.polling.admin_detik') }}" @endif class="fixed inset-y-0 left-0 z-40 hidden w-full flex-col border-r border-line bg-surface lg:sticky lg:top-0 lg:flex lg:h-screen lg:w-rail lg:shrink-0">
             <div class="flex h-14 shrink-0 items-center justify-between px-4">
                 <a href="{{ route($pengguna->role->ruteBeranda()) }}" class="text-h3">SIGAP Ambulans</a>
                 <x-ui.tombol nada="hantu" ukuran="sm" ikon="x" aria-label="Tutup menu" class="lg:hidden" data-menu-tutup />

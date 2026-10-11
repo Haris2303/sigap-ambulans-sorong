@@ -1,4 +1,5 @@
 @props(['nama', 'label', 'opsi', 'nilai' => null, 'kosong' => null, 'bantuan' => null, 'wajib' => false, 'galat' => null])
+{{-- $opsi: nilai => label, atau judul kelompok => [nilai => label] (dirender sebagai optgroup). --}}
 @php
     $id = 'f-'.str_replace(['.', '[', ']'], '-', $nama);
     $galat = $galat ?? ($errors ?? new \Illuminate\Support\ViewErrorBag)->first($nama);
@@ -15,8 +16,16 @@
         @if ($kosong !== null)
             <option value="">{{ $kosong }}</option>
         @endif
-        @foreach ($opsi as $nilaiOpsi => $labelOpsi)
-            <option value="{{ $nilaiOpsi }}" @selected($terpilih !== '' && (string) $nilaiOpsi === $terpilih)>{{ $labelOpsi }}</option>
+        @foreach ($opsi as $kunci => $isi)
+            @if (is_array($isi))
+                <optgroup label="{{ $kunci }}">
+                    @foreach ($isi as $nilaiOpsi => $labelOpsi)
+                        <option value="{{ $nilaiOpsi }}" @selected($terpilih !== '' && (string) $nilaiOpsi === $terpilih)>{{ $labelOpsi }}</option>
+                    @endforeach
+                </optgroup>
+            @else
+                <option value="{{ $kunci }}" @selected($terpilih !== '' && (string) $kunci === $terpilih)>{{ $isi }}</option>
+            @endif
         @endforeach
     </select>
     @if ($bantuan)

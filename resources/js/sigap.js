@@ -77,6 +77,25 @@ const Sigap = {
 
 window.Sigap = Sigap;
 
+// Angka hidup Dinkes: JSON { data: { kunci: angka } } mengisi [data-ringkasan=kunci] dan [data-lencana=kunci].
+document.addEventListener('DOMContentLoaded', () => {
+    const sumber = document.querySelector('[data-ringkasan-url]');
+    if (!sumber) {
+        return;
+    }
+    Sigap.polling(sumber.dataset.ringkasanUrl, Number(sumber.dataset.detik || 10), (hasil) => {
+        Object.entries(hasil.data || {}).forEach(([kunci, angka]) => {
+            document.querySelectorAll(`[data-ringkasan="${kunci}"] [data-nilai]`).forEach((el) => {
+                el.textContent = angka;
+            });
+            document.querySelectorAll(`[data-lencana="${kunci}"]`).forEach((el) => {
+                el.textContent = angka;
+                el.classList.toggle('hidden', angka < 1);
+            });
+        });
+    });
+});
+
 // Dialog konfirmasi bersama untuk semua elemen [data-konfirmasi].
 document.addEventListener('click', (e) => {
     const pemicu = e.target.closest('[data-konfirmasi]');
