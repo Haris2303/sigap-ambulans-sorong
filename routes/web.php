@@ -4,6 +4,7 @@ use App\Http\Controllers\Admin\DashboardController as AdminDashboardController;
 use App\Http\Controllers\Admin\AmbulansController as AdminAmbulansController;
 use App\Http\Controllers\Admin\FaskesController as AdminFaskesController;
 use App\Http\Controllers\Admin\KetersediaanController as AdminKetersediaanController;
+use App\Http\Controllers\Admin\LaporanController as AdminLaporanController;
 use App\Http\Controllers\Admin\PesananController as AdminPesananController;
 use App\Http\Controllers\Admin\PetugasController as AdminPetugasController;
 use App\Http\Controllers\Admin\SopirController as AdminSopirController;
@@ -65,6 +66,10 @@ Route::middleware(['auth', 'role:admin'])->prefix('admin')->name('admin.')->grou
 
     Route::resource('petugas', AdminPetugasController::class)->except(['show', 'destroy'])->parameters(['petugas' => 'petugas']);
     Route::put('/petugas/{petugas}/aktif', [AdminPetugasController::class, 'aktif'])->name('petugas.aktif');
+
+    Route::get('/laporan', [AdminLaporanController::class, 'index'])->name('laporan.index');
+    Route::get('/laporan/pdf', [AdminLaporanController::class, 'pdf'])->name('laporan.pdf');
+    Route::get('/laporan/csv', [AdminLaporanController::class, 'csv'])->name('laporan.csv');
 
     Route::get('/ketersediaan', [AdminKetersediaanController::class, 'index'])->name('ketersediaan.index');
     Route::put('/ketersediaan/{faskes}', [AdminKetersediaanController::class, 'update'])->name('ketersediaan.update');
