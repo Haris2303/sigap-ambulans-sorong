@@ -1,9 +1,12 @@
 <?php
 
 use App\Http\Controllers\Admin\DashboardController as AdminDashboardController;
+use App\Http\Controllers\Admin\AmbulansController as AdminAmbulansController;
 use App\Http\Controllers\Admin\FaskesController as AdminFaskesController;
 use App\Http\Controllers\Admin\KetersediaanController as AdminKetersediaanController;
 use App\Http\Controllers\Admin\PesananController as AdminPesananController;
+use App\Http\Controllers\Admin\PetugasController as AdminPetugasController;
+use App\Http\Controllers\Admin\SopirController as AdminSopirController;
 use App\Http\Controllers\Auth\LoginController;
 use App\Http\Controllers\Auth\RegisterController;
 use App\Http\Controllers\Publik\BerandaController;
@@ -54,6 +57,14 @@ Route::middleware(['auth', 'role:admin'])->prefix('admin')->name('admin.')->grou
 
     Route::resource('faskes', AdminFaskesController::class)->except(['show', 'destroy'])->parameters(['faskes' => 'faskes']);
     Route::put('/faskes/{faskes}/aktif', [AdminFaskesController::class, 'aktif'])->name('faskes.aktif');
+
+    Route::resource('ambulans', AdminAmbulansController::class)->except(['show', 'destroy'])->parameters(['ambulans' => 'ambulans']);
+
+    Route::resource('sopir', AdminSopirController::class)->except(['show', 'destroy'])->parameters(['sopir' => 'sopir']);
+    Route::put('/sopir/{sopir}/aktif', [AdminSopirController::class, 'aktif'])->name('sopir.aktif');
+
+    Route::resource('petugas', AdminPetugasController::class)->except(['show', 'destroy'])->parameters(['petugas' => 'petugas']);
+    Route::put('/petugas/{petugas}/aktif', [AdminPetugasController::class, 'aktif'])->name('petugas.aktif');
 
     Route::get('/ketersediaan', [AdminKetersediaanController::class, 'index'])->name('ketersediaan.index');
     Route::put('/ketersediaan/{faskes}', [AdminKetersediaanController::class, 'update'])->name('ketersediaan.update');
