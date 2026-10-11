@@ -46,6 +46,24 @@ class PesananAdminTest extends TestCase
 
     // T5.2 daftar
 
+    public function test_lencana_gawat_tampil_di_sel_kode_agar_terlihat_di_ponsel(): void
+    {
+        $gawat = $this->pesanan(atribut: ['tingkat_darurat' => 'gawat', 'nama_pasien' => 'Pasien Gawat']);
+        $biasa = $this->pesanan(atribut: ['nama_pasien' => 'Pasien Biasa']);
+
+        $html = $this->actingAs($this->admin)->get(route('admin.pesanan.index'))->assertOk()->getContent();
+
+        // Sel kode memuat lencana Gawat yang hanya tampil di bawah md (kolom Layanan tersembunyi di sana).
+        $this->assertMatchesRegularExpression(
+            '/<td class="tabular-nums">\s*<a [^>]*>'.$gawat->kode.'<\/a>\s*<div class="mt-1 md:hidden"><span[^>]*>.*?Gawat\s*<\/span>\s*<\/div>/s',
+            $html,
+        );
+        $this->assertDoesNotMatchRegularExpression('/'.$biasa->kode.'<\/a>\s*<div class="mt-1 md:hidden">/', $html);
+        // Kolom Layanan tetap menampilkan lencana di md ke atas, dan kolomnya tersembunyi di ponsel.
+        $this->assertStringContainsString('<th class="hidden md:table-cell">Layanan</th>', $html);
+        $this->assertSame(2, preg_match_all('/Gawat\s*<\/span>/', $html), 'Satu di sel kode dan satu di kolom Layanan.');
+    }
+
     public function test_daftar_mengurutkan_gawat_dulu_lalu_terlama_dan_status_final_terakhir(): void
     {
         $biasaBaru = $this->pesanan(atribut: ['created_at' => now()->subMinutes(5)]);

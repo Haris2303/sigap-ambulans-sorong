@@ -31,7 +31,12 @@
                 </x-slot:kepala>
                 @foreach ($pesananAktif as $p)
                     <tr>
-                        <td class="tabular-nums"><a href="{{ route('petugas.pesanan.show', $p) }}" class="text-primary underline underline-offset-2 hover:text-on-primary-container">{{ $p->kode }}</a></td>
+                        <td class="tabular-nums">
+                            <a href="{{ route('petugas.pesanan.show', $p) }}" class="text-primary underline underline-offset-2 hover:text-on-primary-container">{{ $p->kode }}</a>
+                            @if ($p->tingkat_darurat === \App\Enums\TingkatDarurat::Gawat)
+                                <div class="mt-1"><x-ui.lencana nada="bahaya">{{ $p->tingkat_darurat->label() }}</x-ui.lencana></div>
+                            @endif
+                        </td>
                         <td>{{ $p->nama_pasien }}</td>
                         <td class="hidden md:table-cell">{{ $p->ambulans?->faskes_id === $faskes->id ? 'Asal ambulans' : 'Tujuan' }}</td>
                         <td><x-ui.lencana-status :status="$p->status" /></td>
