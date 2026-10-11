@@ -2,7 +2,7 @@
 
 > Pasangan `DESIGN.md` (identitas visual, token, larangan gaya). Dokumen ini menjawab "bagaimana dibangun di kode": tumpukan, kelas yang tersedia, komponen Blade, pola halaman. Tujuan: **semua halaman terasa satu aplikasi**. Halaman hanya merakit komponen; gaya tidak pernah ditulis per halaman. Sesi agen otonom tidak boleh mengubah dokumen ini; sesi interaktif boleh, bersama `DESIGN.md`.
 >
-> **Status migrasi ke Material 3.** Token, aturan konsistensi, dan dokumen ini sudah M3. Komponen Blade dan halaman yang belum diganti masih memakai nama kelas lama sampai langkah penggantiannya selesai (urutan dan centang di `docs/PROGRESS.md`; pemetaan nama lama ke baru di §10). Bagian §2 sampai §5 adalah kontrak target untuk komponen yang sedang diganti.
+> **Material 3.** Token, aturan konsistensi, komponen, layout, dan halaman sudah Material 3. Nama token atau kelas lama ditolak oleh aturan `token-lama` di `agent/konsistensi.json` (pesannya memuat padanan baru). Catatan keputusan dan langkah migrasi ada di `docs/MIGRASI_M3.md`.
 
 ## 1. Tumpukan dan aset
 
@@ -129,31 +129,4 @@ Ikon hanya di menu laci, tombol yang butuh penjelas visual (mis. lokasi), pering
 
 ## 9. Larangan di halaman (diperiksa otomatis oleh `agent/konsistensi.json`)
 
-Pada berkas di bawah `resources/views/` (kecuali `pdf/`): kelas warna/gaya di luar §1 (palet bawaan, white/black, `bg-[#…]`, gradien, blur, bayangan dan sudut di luar token M3 atau dengan nilai sembarang, `tracking-*`, `uppercase`, `italic`, `font-bold`, `text-sm|lg|…`, `animate-pulse|bounce|ping`, `hover:scale|translate`); sintaks Tailwind v3; emoji; tanda panah, titik tengah, dan em dash berspasi; tag `<script src>`/`<link href=http>`/CDN; URL ketikan tangan. Pada halaman di luar `components/`: elemen mentah `<button>`, `<table>`, `<select>`, `<textarea>`, `<input>` (kecuali `type="hidden"`); `<style>`, atribut `style=`, `<html>/<head>/<body>`; halaman yang tidak diawali `<x-layouts.*>` (fragmen `@include` diawali `_` dikecualikan). Pada `resources/css/tambahan.css`: warna hanya `var(--color-…)`, `color-mix()` hanya dengan `var(--color-…)`, `box-shadow` hanya `none` atau `var(--shadow-level-1..3)`, tanpa gradien, `@keyframes`, atau `animation`. Seluruh `pdf/` berdiri sendiri (dirender dompdf) dan dikecualikan.
-
-## 10. Pemetaan nama lama ke baru (sementara, selama migrasi)
-
-Dipakai untuk menyapu komponen dan halaman. Dihapus dari dokumen ini setelah tidak ada lagi nama lama di `resources/views` dan aturan pemindai nama lama diaktifkan.
-
-| Lama | Baru |
-|---|---|
-| `bg-canvas` | `bg-surface` |
-| `bg-surface` (putih) | `bg-surface-container-lowest` |
-| `text-on-surface-muted` | `text-on-surface-variant` |
-| `border-line`, `divide-line`, `bg-line` | `border-outline-variant`, `divide-outline-variant`, `bg-outline-variant` |
-| `border-control-border` | `border-outline` |
-| `bg-primary-soft text-primary` | info: `bg-primary-container text-on-primary-container`; aktif atau terpilih: `bg-secondary-container text-on-secondary-container` |
-| `hover:bg-primary-hover`, `hover:bg-canvas`, `hover:bg-primary-soft` | `lapisan-keadaan` |
-| `bg-danger text-on-primary`, `text-danger`, `border-danger` | `bg-error text-on-error`, `text-error`, `border-error` |
-| `bg-danger-soft text-danger` | `bg-error-container text-on-error-container` |
-| `bg-warning-soft text-warning` | `bg-warning-container text-on-warning-container` |
-| `bg-success-soft text-success` | `bg-success-container text-on-success-container` |
-| `bg-neutral-soft` | `bg-surface-container-highest` |
-| `text-h1`, `text-h2`, `text-h3` | `text-headline-s`, `text-title-l`, `text-title-m` |
-| `text-body`, `text-body-sm`, `text-label`, `text-caption`, `text-display` | `text-body-l`, `text-body-m`, `text-label-l`, `text-body-s`, `text-display-s` |
-| `font-semibold` | `font-medium` |
-| `rounded-sm`, `rounded-md`, `rounded-lg` (4, 6, 8px) | per komponen: lencana `rounded-sm`, tombol dan item menu `rounded-full`, isian `rounded-xs`, panel dan tabel `rounded-md` |
-| `shadow-overlay` | `shadow-level-3` |
-| `w-rail` | `w-drawer` |
-| `ukuran="sm"` pada `x-ui.tombol` | dihapus (semua tombol 40px) |
-| `min-h-touch` (44px) | `min-h-touch` (48px) |
+Pada berkas di bawah `resources/views/` (kecuali `pdf/`): kelas warna/gaya di luar §1 (palet bawaan, white/black, `bg-[#…]`, gradien, blur, bayangan dan sudut di luar token M3 atau dengan nilai sembarang, `tracking-*`, `uppercase`, `italic`, `font-bold`, `text-sm|lg|…`, `animate-pulse|bounce|ping`, `hover:scale|translate`); nama token dan kelas pra-Material 3 (aturan `token-lama`, juga pada `resources/js` dan `app/Support`); sintaks Tailwind v3; emoji; tanda panah, titik tengah, dan em dash berspasi; tag `<script src>`/`<link href=http>`/CDN; URL ketikan tangan. Pada halaman di luar `components/`: elemen mentah `<button>`, `<table>`, `<select>`, `<textarea>`, `<input>` (kecuali `type="hidden"`); `<style>`, atribut `style=`, `<html>/<head>/<body>`; halaman yang tidak diawali `<x-layouts.*>` (fragmen `@include` diawali `_` dikecualikan). Pada `resources/css/tambahan.css`: warna hanya `var(--color-…)`, `color-mix()` hanya dengan `var(--color-…)`, `box-shadow` hanya `none` atau `var(--shadow-level-1..3)`, tanpa gradien, `@keyframes`, atau `animation`. Seluruh `pdf/` berdiri sendiri (dirender dompdf) dan dikecualikan.
