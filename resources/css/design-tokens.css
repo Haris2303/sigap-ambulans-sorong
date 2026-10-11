@@ -1,5 +1,5 @@
 /* DIHASILKAN dari DESIGN.md oleh agent/tokens.mjs. Jangan diubah dengan tangan. */
-@theme {
+@theme static {
   /* Palet dan skala bawaan Tailwind dimatikan: hanya token DESIGN.md yang ada. */
   --color-*: initial;
   --font-*: initial;

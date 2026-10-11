@@ -53,12 +53,12 @@ class KatalogUiTest extends TestCase
         $this->get('/_ui')
             ->assertOk()
             ->assertSee('Pesanan 7 hari terakhir')
-            ->assertSee('M71.14 300V168a8 8 0 0 1 8-8h20a8 8 0 0 1 8 8v132Z', false)
-            ->assertSee('stroke-dasharray="172.93 178.93"', false)
-            ->assertSee('stroke-dashoffset="-316.67"', false)
+            ->assertSee('data-grafik=', false)
+            ->assertSee('&quot;tipe&quot;:&quot;batang&quot;', false)
+            ->assertSee('&quot;tipe&quot;:&quot;donat&quot;', false)
             ->assertSee('Diagram cincin status 10 pesanan terbaru: 5 selesai, 2 dibatalkan, 1 ditolak, 1 terverifikasi, 1 dalam perjalanan', false)
             ->assertSee('Dalam perjalanan')
-            ->assertSee('stroke-chart-sky', false)
+            ->assertSee('bg-chart-sky', false)
             ->assertSee('tidak ada data', false);
     }
 

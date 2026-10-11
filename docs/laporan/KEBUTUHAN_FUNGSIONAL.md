@@ -29,7 +29,7 @@ Kelas tes ada di `tests/`. Singkatan: PW = `Feature\Warga\PesananWargaTest`, PA 
 | FR-23 | Menerima, menolak (alasan wajib), berangkat, menyelesaikan | Sopir | `sopir.pesanan.terima`, `.tolak`, `.berangkat`, `.selesai` | `Sopir\SopirTest`, WF, AP |
 | FR-24 | Isolasi data per peran (middleware `role` dan `PesananPolicy`) | Semua | semua route terlindungi | `Arsitektur\OtorisasiMatriksTest`, `Auth\PeranDanPolicyTest` |
 | FR-25 | Setiap transisi status tercatat di `pesanan_log` | Sistem | — | WF `test_setiap_transisi_menulis_satu_baris_log` |
-| FR-26 | Dasbor Dinkes: kartu statistik (menunggu, terverifikasi, berjalan, selesai hari ini menurut zona waktu Asia/Jayapura), grafik batang 7 hari, donat status, ketersediaan, pesanan terbaru dengan tab | Dinkes | `admin.dashboard`, `admin.pesanan.ringkasan` | `Admin\RingkasanDasborTest`, `Admin\DashboardTest`, `Unit\Support\Chart\*` |
+| FR-26 | Dasbor Dinkes: kartu statistik (menunggu, terverifikasi, berjalan, selesai hari ini menurut zona waktu Asia/Jayapura), grafik batang 7 hari, donat status, ketersediaan, pesanan terbaru dengan tab | Dinkes | `admin.dashboard`, `admin.pesanan.ringkasan` | `Admin\RingkasanDasborTest`, `Admin\DashboardTest`, `Arsitektur\KomponenGrafikTest`, `Arsitektur\GrafikChartJsTest` |
 | FR-27 | Dasbor Faskes menampilkan jumlah tersedia per sumber daya; dasbor sopir menampilkan penugasan aktif dalam satu kartu | Petugas Faskes, Sopir | `petugas.dashboard`, `sopir.dashboard` | `Arsitektur\SapuanD6Test`, `Petugas\PetugasTest`, `Sopir\SopirTest` |
 
 ## Kebutuhan nonfungsional

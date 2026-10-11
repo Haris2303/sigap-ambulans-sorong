@@ -9,19 +9,18 @@ use PHPUnit\Framework\TestCase;
 
 class WarnaTest extends TestCase
 {
-    public function test_kelas_isi_dan_latar_dari_token_yang_diizinkan(): void
+    public function test_kelas_latar_dari_token_yang_diizinkan(): void
     {
         $peta = [
-            'primary' => ['stroke-primary', 'bg-primary'],
-            'success' => ['stroke-success', 'bg-success'],
-            'error' => ['stroke-error', 'bg-error'],
-            'warning' => ['stroke-warning', 'bg-warning'],
-            'outline' => ['stroke-outline', 'bg-outline'],
-            'chart-sky' => ['stroke-chart-sky', 'bg-chart-sky'],
+            'primary' => 'bg-primary',
+            'success' => 'bg-success',
+            'error' => 'bg-error',
+            'warning' => 'bg-warning',
+            'outline' => 'bg-outline',
+            'chart-sky' => 'bg-chart-sky',
         ];
 
-        foreach ($peta as $nama => [$stroke, $latar]) {
-            $this->assertSame($stroke, Warna::stroke($nama));
+        foreach ($peta as $nama => $latar) {
             $this->assertSame($latar, Warna::latar($nama));
         }
     }
@@ -30,7 +29,7 @@ class WarnaTest extends TestCase
     {
         $this->expectException(InvalidArgumentException::class);
 
-        Warna::stroke('ungu');
+        Warna::latar('ungu');
     }
 
     public function test_warna_tetap_per_status_pesanan(): void
@@ -49,7 +48,7 @@ class WarnaTest extends TestCase
         foreach (PesananStatus::cases() as $status) {
             $this->assertArrayHasKey($status->value, $diharapkan, 'Status baru perlu warna grafik: '.$status->value);
             $this->assertSame($diharapkan[$status->value], $status->warnaGrafik(), $status->value);
-            $this->assertNotSame('', Warna::stroke($status->warnaGrafik()), 'Warna status harus dikenal Warna.');
+            $this->assertNotSame('', Warna::latar($status->warnaGrafik()), 'Warna status harus dikenal Warna.');
         }
         $this->assertCount(count($diharapkan), PesananStatus::cases());
     }

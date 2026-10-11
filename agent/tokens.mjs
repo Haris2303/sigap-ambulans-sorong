@@ -85,7 +85,7 @@ const bayangan = (nama, b) => {
 
 const baris = [];
 baris.push('/* DIHASILKAN dari DESIGN.md oleh agent/tokens.mjs. Jangan diubah dengan tangan. */');
-baris.push('@theme {');
+baris.push('@theme static {');
 baris.push('  /* Palet dan skala bawaan Tailwind dimatikan: hanya token DESIGN.md yang ada. */');
 for (const ns of ['color', 'font', 'text', 'font-weight', 'tracking', 'radius', 'shadow', 'inset-shadow', 'drop-shadow', 'blur', 'ease']) {
   baris.push('  --' + ns + '-*: initial;');

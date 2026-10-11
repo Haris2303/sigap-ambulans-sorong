@@ -37,11 +37,11 @@ Domain `@sigap.test`. Sandi: nilai `SEED_PASSWORD` bila diisi; bila tidak, `pass
 
 ## Tampilan Material 3
 
-Antarmuka memakai Material Design 3 baseline (bukan Expressive), terang saja, dengan gaya dasbor Material pilihan pemilik proyek (`docs/DESAIN_DASBOR_MATERIAL.md`): kartu putih berbayang di atas latar `canvas`, kartu statistik dan chip ikon pembawa makna, grafik batang dan donat berupa SVG sisi server, tab, avatar, bilah atas kartu melayang, dan laci putih. Dasbor Dinkes (`/admin`) menjadi halaman acuan. Sumber kebenarannya `DESIGN.md`: skema tonal dari benih `#0B5C80`, 30 warna, skala tipe M3 (Roboto, lokal lewat npm), bentuk 4/8/12/16/28/penuh, elevasi level 0 sampai 3, dan lapisan keadaan. Kontrak kode ada di `docs/KIT_UI.md`; keputusan dan langkah migrasi di `docs/MIGRASI_M3.md`.
+Antarmuka memakai Material Design 3 baseline (bukan Expressive), terang saja, dengan gaya dasbor Material pilihan pemilik proyek (`docs/DESAIN_DASBOR_MATERIAL.md`): kartu putih berbayang di atas latar `canvas`, kartu statistik dan chip ikon pembawa makna, grafik batang dan donat digambar Chart.js (dimuat hanya di halaman yang punya grafik), tab, avatar, bilah atas kartu melayang, dan laci putih. Dasbor Dinkes (`/admin`) menjadi halaman acuan. Sumber kebenarannya `DESIGN.md`: skema tonal dari benih `#0B5C80`, 30 warna, skala tipe M3 (Roboto, lokal lewat npm), bentuk 4/8/12/16/28/penuh, elevasi level 0 sampai 3, dan lapisan keadaan. Kontrak kode ada di `docs/KIT_UI.md`; keputusan dan langkah migrasi di `docs/MIGRASI_M3.md`.
 
 - Mengubah tema: ubah front matter `DESIGN.md`, jalankan `node agent/tokens.mjs` (menghasilkan `resources/css/design-tokens.css`), lalu `npm run build`.
 - Pemeriksaan dokumen desain: `node node_modules/@google/design.md/dist/index.js lint DESIGN.md` (0 galat, 0 peringatan).
-- Penjaga otomatis: `agent/konsistensi.json` (termasuk aturan `token-lama` dan `komponen-lama`), `KonsistensiTest`, `TokenDesainTest` (css sinkron dengan DESIGN.md), `KomponenUiTest`, `LayoutTest`.
+- Penjaga otomatis: `agent/konsistensi.json` (termasuk aturan `token-lama`, `komponen-lama`, dan `warna-js`), `KonsistensiTest`, `TokenDesainTest` (css sinkron dengan DESIGN.md), `KomponenUiTest`, `LayoutTest`.
 - Mode gelap ditunda; seluruh warna memakai peran M3 sehingga dapat ditambahkan nanti.
 
 ## Keterbatasan

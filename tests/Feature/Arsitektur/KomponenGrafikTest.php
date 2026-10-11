@@ -6,14 +6,23 @@ use Illuminate\View\ViewException;
 use Tests\TestCase;
 
 /**
- * Tes render grafik SVG sisi server (docs/DESAIN_DASBOR_MATERIAL.md bagian 5.11 dan 5.12): x-ui.chart.bar dan x-ui.chart.donut,
- * dengan data pratinjau (docs/referensi): batang 1,0,0,0,0,0,1 dan donat 5,2,1,1,1.
+ * Tes render grafik Chart.js (docs/DESAIN_DASBOR_MATERIAL.md bagian 5.11 dan 5.12): x-ui.chart.bar dan x-ui.chart.donut,
+ * dengan data pratinjau (docs/referensi): batang 1,0,0,0,0,0,1 dan donat 5,2,1,1,1. Yang diuji adalah HTML dan data JSON yang
+ * dikirim ke resources/js/grafik.js; gambar kanvasnya sendiri tidak teruji tanpa browser.
  */
 class KomponenGrafikTest extends TestCase
 {
     private function html(string $blade, array $data = []): string
     {
         return (string) $this->blade($blade, $data);
+    }
+
+    /** Data JSON pada atribut data-grafik kanvas pertama. */
+    private function data(string $html): array
+    {
+        $this->assertSame(1, preg_match('/<canvas [^>]*data-grafik="([^"]*)"/', $html, $cocok), 'Kanvas dengan data-grafik tidak ditemukan.');
+
+        return json_decode(html_entity_decode($cocok[1], ENT_QUOTES | ENT_HTML5), true, 512, JSON_THROW_ON_ERROR);
     }
 
     /** @return array<string, mixed> */
@@ -45,70 +54,72 @@ class KomponenGrafikTest extends TestCase
         ];
     }
 
-    private function donat(array $segments, string $tambahan = ''): string
+    private function donat(array $segments): string
     {
         return $this->html(
-            '<x-ui.chart.donut :segments="$segments" center-label="pesanan" title="Diagram cincin status 10 pesanan terbaru" '.$tambahan.' />',
+            '<x-ui.chart.donut :segments="$segments" center-label="pesanan" title="Diagram cincin status 10 pesanan terbaru" />',
             ['segments' => $segments],
         );
     }
 
     // ---------- batang ----------
 
-    public function test_batang_menjadi_svg_dengan_geometri_pratinjau(): void
+    public function test_batang_menjadi_kanvas_dengan_data_pratinjau_dan_tanpa_svg(): void
     {
         $html = $this->batang();
 
-        $this->assertStringContainsString('viewBox="0 0 640 346"', $html);
-        $this->assertStringContainsString('role="img"', $html);
+        $this->assertStringContainsString('<canvas role="img"', $html);
+        $this->assertStringNotContainsString('<svg', $html);
 
-        // Wadah bergulir horizontal; SVG selebar penuh dengan lebar minimum 480px.
+        // Wadah bergulir horizontal; kanvas selebar penuh dengan lebar minimum 480px.
         $this->assertStringContainsString('overflow-x-auto', $html);
-        $this->assertStringContainsString('block h-auto w-full min-w-120', $html);
+        $this->assertStringContainsString('relative h-80 min-w-120', $html);
 
-        // Kisi: dua garis tipis dan garis dasar outline-variant; teks sumbu rata kanan di x = 38.
-        $this->assertMatchesRegularExpression('/<line x1="48" y1="20" x2="624" y2="20"[^>]*surface-container-high/', $html);
-        $this->assertMatchesRegularExpression('/<line x1="48" y1="160" x2="624" y2="160"[^>]*surface-container-high/', $html);
-        $this->assertMatchesRegularExpression('/<line x1="48" y1="300" x2="624" y2="300"[^>]*stroke-outline-variant/', $html);
-        foreach (['24' => '2', '164' => '1', '304' => '0'] as $y => $teks) {
-            $this->assertMatchesRegularExpression('/<text x="38" y="'.$y.'" text-anchor="end"[^>]*fill-on-surface-variant[^>]*text-body-s[^>]*>'.$teks.'<\/text>/', $html);
-        }
-
-        // Batang bernilai 1: jalur persis pratinjau; hari biasa chart-sky, hari ini primary.
-        $this->assertMatchesRegularExpression('~<path d="M71.14 300V168a8 8 0 0 1 8-8h20a8 8 0 0 1 8 8v132Z"[^>]*fill-chart-sky~', $html);
-        $this->assertMatchesRegularExpression('~<path d="M564.86 300V168a8 8 0 0 1 8-8h20a8 8 0 0 1 8 8v132Z"[^>]*fill-primary~', $html);
-        $this->assertSame(2, substr_count($html, '<path d="M'));
-
-        // Nilai nol: lima batang rintisan outline-variant setinggi 3 di y = 297.
-        $this->assertSame(5, substr_count($html, '<rect '));
-        foreach (['153.43', '235.71', '318', '400.29', '482.57'] as $x) {
-            $this->assertMatchesRegularExpression('/<rect x="'.preg_quote($x, '/').'" y="297" width="36" height="3" rx="1.5"[^>]*fill-outline-variant/', $html);
-        }
+        $this->assertSame([
+            'tipe' => 'batang',
+            'labels' => [['Sen', '05/10'], ['Sel', '06/10'], ['Rab', '07/10'], ['Kam', '08/10'], ['Jum', '09/10'], ['Sab', '10/10'], ['Min', '11/10']],
+            'values' => [1, 0, 0, 0, 0, 0, 1],
+            'highlight' => 6,
+            'max' => 2,
+            'unit' => 'pesanan',
+        ], $this->data($html));
     }
 
-    public function test_batang_menampilkan_nilai_dan_label_hari_dan_tanggal(): void
+    public function test_data_dikirim_lewat_atribut_json_bukan_skrip_sebaris(): void
     {
-        $html = $this->batang();
+        $this->assertStringNotContainsString('<script', $this->batang());
+        $this->assertStringNotContainsString('<script', $this->donat($this->segmenPratinjau()));
+    }
 
-        // Label nilai: 150 untuk nilai 1, 289 untuk nilai 0.
-        $this->assertMatchesRegularExpression('/<text x="89.14" y="150" text-anchor="middle"[^>]*fill-on-surface[^>]*text-label-l[^>]*>1<\/text>/', $html);
-        $this->assertMatchesRegularExpression('/<text x="582.86" y="150" text-anchor="middle"[^>]*>1<\/text>/', $html);
-        $this->assertSame(5, preg_match_all('/<text x="[\d.]+" y="289" text-anchor="middle"[^>]*>0<\/text>/', $html));
+    public function test_batang_sumbu_y_bilangan_genap_dari_dua(): void
+    {
+        foreach ([[[0, 0], 2], [[1, 0], 2], [[2], 2], [[3], 4], [[7, 1], 8], [[10], 10], [[11], 12], [[], 2]] as [$nilai, $diharapkan]) {
+            $html = $this->html(
+                '<x-ui.chart.bar :labels="$l" :values="$v" title="Uji" />',
+                ['l' => array_map(fn ($i) => 'H'.$i, array_keys($nilai)), 'v' => $nilai],
+            );
 
-        // Label hari di y = 320 dan tanggal di y = 336, dua baris per hari.
-        $this->assertMatchesRegularExpression('/<text x="89.14" y="320" text-anchor="middle"[^>]*fill-on-surface-variant[^>]*>Sen<\/text>/', $html);
-        $this->assertMatchesRegularExpression('/<text x="89.14" y="336" text-anchor="middle"[^>]*fill-on-surface-variant[^>]*>05\/10<\/text>/', $html);
-
-        // Hari ini berbobot 500 dan berwarna primary.
-        $this->assertMatchesRegularExpression('/<text x="582.86" y="320" text-anchor="middle"[^>]*font-medium[^>]*fill-primary[^>]*>Min<\/text>/', $html);
-        $this->assertMatchesRegularExpression('/<text x="582.86" y="336" text-anchor="middle"[^>]*font-medium[^>]*fill-primary[^>]*>11\/10<\/text>/', $html);
+            $this->assertSame($diharapkan, $this->data($html)['max'], 'Nilai '.json_encode($nilai));
+        }
     }
 
     public function test_batang_punya_keterangan_teks_yang_menyebut_semua_nilai(): void
     {
         $html = $this->batang();
 
-        $this->assertMatchesRegularExpression('/aria-label="Grafik batang pesanan per hari: Sen 05\/10 1 pesanan, Sel 06\/10 0 pesanan, Rab 07\/10 0 pesanan, Kam 08\/10 0 pesanan, Jum 09\/10 0 pesanan, Sab 10\/10 0 pesanan, Min 11\/10 1 pesanan"/', $html);
+        $this->assertStringContainsString('aria-label="Grafik batang pesanan per hari: Sen 05/10 1 pesanan, Sel 06/10 0 pesanan, Rab 07/10 0 pesanan, Kam 08/10 0 pesanan, Jum 09/10 0 pesanan, Sab 10/10 0 pesanan, Min 11/10 1 pesanan"', $html);
+    }
+
+    public function test_batang_punya_tabel_data_untuk_pembaca_layar(): void
+    {
+        $html = $this->batang();
+
+        $this->assertMatchesRegularExpression('/<table class="sr-only">\s*<caption>Grafik batang pesanan per hari<\/caption>/', $html);
+        $this->assertMatchesRegularExpression('/<th scope="col">Hari<\/th>\s*<th scope="col">Pesanan<\/th>/', $html);
+        $this->assertSame(7, substr_count($html, '<th scope="row">'));
+        $this->assertMatchesRegularExpression('/<th scope="row">Sen 05\/10<\/th>\s*<td>1<\/td>/', $html);
+        $this->assertMatchesRegularExpression('/<th scope="row">Sel 06\/10<\/th>\s*<td>0<\/td>/', $html);
+        $this->assertMatchesRegularExpression('/<th scope="row">Min 11\/10<\/th>\s*<td>1<\/td>/', $html);
     }
 
     public function test_batang_tanpa_gaya_sebaris_dan_tanpa_warna_mentah(): void
@@ -127,28 +138,23 @@ class KomponenGrafikTest extends TestCase
             ['l' => [['Sen', '05/10'], 'Hari'], 'v' => [3, 0]],
         );
 
-        $this->assertMatchesRegularExpression('/<text x="[\d.]+" y="320"[^>]*>Sen<\/text>/', $html);
-        $this->assertMatchesRegularExpression('/<text x="[\d.]+" y="336"[^>]*>05\/10<\/text>/', $html);
-        $this->assertMatchesRegularExpression('/<text x="[\d.]+" y="320"[^>]*>Hari<\/text>/', $html);
-        $this->assertSame(1, preg_match_all('/<text x="[\d.]+" y="336"/', $html), 'Label satu baris tidak punya baris tanggal.');
+        $data = $this->data($html);
+        $this->assertSame([['Sen', '05/10'], ['Hari']], $data['labels']);
+        $this->assertSame([3, 0], $data['values']);
+        $this->assertNull($data['highlight']);
+        $this->assertNull($data['unit']);
+        $this->assertSame(4, $data['max']);
         $this->assertStringContainsString('aria-label="Uji: Sen 05/10 3, Hari 0"', $html);
+        $this->assertMatchesRegularExpression('/<th scope="col">Nilai<\/th>/', $html);
     }
 
-    public function test_batang_tanpa_sorotan_semua_chart_sky(): void
-    {
-        $html = $this->html('<x-ui.chart.bar :labels="$labels" :values="$values" title="Uji" />', $this->dataBatang());
-
-        $this->assertStringNotContainsString('fill-primary', $html);
-        $this->assertSame(2, substr_count($html, 'fill-chart-sky'));
-    }
-
-    public function test_batang_kosong_hanya_menggambar_kisi(): void
+    public function test_batang_kosong_tetap_valid_dan_menyebut_tidak_ada_data(): void
     {
         $html = $this->html('<x-ui.chart.bar :labels="[]" :values="[]" title="Uji" />');
 
-        $this->assertStringContainsString('<line', $html);
-        $this->assertStringNotContainsString('<path', $html);
-        $this->assertStringNotContainsString('<rect', $html);
+        $this->assertSame(['tipe' => 'batang', 'labels' => [], 'values' => [], 'highlight' => null, 'max' => 2, 'unit' => null], $this->data($html));
+        $this->assertStringContainsString('aria-label="Uji: tidak ada data"', $html);
+        $this->assertStringNotContainsString('<th scope="row">', $html);
     }
 
     public function test_batang_menolak_jumlah_label_dan_nilai_yang_berbeda(): void
@@ -158,41 +164,41 @@ class KomponenGrafikTest extends TestCase
         $this->html('<x-ui.chart.bar :labels="[\'Sen\']" :values="[1, 2]" title="Uji" />');
     }
 
-    // ---------- donat ----------
-
-    public function test_donat_menggambar_segmen_dengan_dasharray_dan_dashoffset_pratinjau(): void
+    public function test_batang_menolak_nilai_negatif(): void
     {
-        $html = $this->donat($this->segmenPratinjau());
+        $this->expectException(ViewException::class);
 
-        $this->assertStringContainsString('viewBox="0 0 160 160"', $html);
-        $this->assertStringContainsString('role="img"', $html);
-        $this->assertStringContainsString('transform="rotate(-90 80 80)"', $html);
-        $this->assertStringContainsString('stroke-width="18"', $html);
-        $this->assertStringContainsString('fill="none"', $html);
-        $this->assertSame(5, substr_count($html, '<circle '));
-
-        $diharapkan = [
-            ['172.93 178.93', '0', 'stroke-success'],
-            ['67.37 284.49', '-175.93', 'stroke-outline'],
-            ['32.19 319.67', '-246.3', 'stroke-error'],
-            ['32.19 319.67', '-281.49', 'stroke-primary'],
-            ['32.19 319.67', '-316.67', 'stroke-chart-sky'],
-        ];
-        foreach ($diharapkan as [$array, $offset, $kelas]) {
-            $this->assertMatchesRegularExpression(
-                '/<circle cx="80" cy="80" r="56" class="[^"]*'.preg_quote($kelas, '/').'[^"]*" stroke-dasharray="'.preg_quote($array, '/').'" stroke-dashoffset="'.preg_quote($offset, '/').'"/',
-                $html,
-                $array.' '.$offset,
-            );
-        }
+        $this->html('<x-ui.chart.bar :labels="[\'Sen\']" :values="[-1]" title="Uji" />');
     }
 
-    public function test_donat_menampilkan_total_di_tengah(): void
+    // ---------- donat ----------
+
+    public function test_donat_menjadi_kanvas_dengan_segmen_berurutan_dan_persentase(): void
     {
         $html = $this->donat($this->segmenPratinjau());
 
-        $this->assertMatchesRegularExpression('/<text x="80" y="82" text-anchor="middle"[^>]*text-stat-l[^>]*fill-on-surface[^>]*>10<\/text>/', $html);
-        $this->assertMatchesRegularExpression('/<text x="80" y="100" text-anchor="middle"[^>]*text-body-s[^>]*fill-on-surface-variant[^>]*>pesanan<\/text>/', $html);
+        $this->assertStringContainsString('<canvas role="img"', $html);
+        $this->assertStringNotContainsString('<svg', $html);
+        $this->assertStringContainsString('relative mx-auto my-1 size-44', $html);
+
+        $this->assertSame([
+            'tipe' => 'donat',
+            'segments' => [
+                ['label' => 'Selesai', 'value' => 5, 'color' => 'success', 'percent' => 50],
+                ['label' => 'Dibatalkan', 'value' => 2, 'color' => 'outline', 'percent' => 20],
+                ['label' => 'Ditolak', 'value' => 1, 'color' => 'error', 'percent' => 10],
+                ['label' => 'Terverifikasi', 'value' => 1, 'color' => 'primary', 'percent' => 10],
+                ['label' => 'Dalam perjalanan', 'value' => 1, 'color' => 'chart-sky', 'percent' => 10],
+            ],
+            'unit' => 'pesanan',
+        ], $this->data($html));
+    }
+
+    public function test_donat_menampilkan_total_di_tengah_sebagai_html(): void
+    {
+        $html = $this->donat($this->segmenPratinjau());
+
+        $this->assertMatchesRegularExpression('/pointer-events-none absolute inset-0[^>]*aria-hidden="true">\s*<span class="text-stat-l tabular-nums text-on-surface">10<\/span>\s*<span class="text-body-s text-on-surface-variant">pesanan<\/span>/', $html);
     }
 
     public function test_donat_punya_legenda_teks_dengan_nilai_dan_persentase(): void
@@ -218,6 +224,17 @@ class KomponenGrafikTest extends TestCase
         $this->assertStringContainsString('aria-label="Diagram cincin status 10 pesanan terbaru: 5 selesai, 2 dibatalkan, 1 ditolak, 1 terverifikasi, 1 dalam perjalanan"', $html);
     }
 
+    public function test_donat_punya_tabel_data_untuk_pembaca_layar(): void
+    {
+        $html = $this->donat($this->segmenPratinjau());
+
+        $this->assertMatchesRegularExpression('/<table class="sr-only">\s*<caption>Diagram cincin status 10 pesanan terbaru<\/caption>/', $html);
+        $this->assertMatchesRegularExpression('/<th scope="col">Status<\/th>\s*<th scope="col">Pesanan<\/th>\s*<th scope="col">Persentase<\/th>/', $html);
+        $this->assertSame(5, substr_count($html, '<th scope="row">'));
+        $this->assertMatchesRegularExpression('/<th scope="row">Selesai<\/th>\s*<td>5<\/td>\s*<td>50%<\/td>/', $html);
+        $this->assertMatchesRegularExpression('/<th scope="row">Dalam perjalanan<\/th>\s*<td>1<\/td>\s*<td>10%<\/td>/', $html);
+    }
+
     public function test_donat_hanya_menampilkan_status_bernilai_lebih_dari_nol_dalam_urutan_terbesar_dulu(): void
     {
         $html = $this->donat([
@@ -227,39 +244,77 @@ class KomponenGrafikTest extends TestCase
         ]);
 
         $this->assertSame(2, substr_count($html, '<li '));
-        $this->assertSame(2, substr_count($html, '<circle '));
+        $this->assertSame(['Selesai', 'Terverifikasi'], array_column($this->data($html)['segments'], 'label'));
         $this->assertStringNotContainsString('>Ditolak<', $html);
         $this->assertLessThan(strpos($html, '>Terverifikasi<'), strpos($html, '>Selesai<'));
-        $this->assertStringNotContainsString('stroke-error', $html);
+        $this->assertStringNotContainsString('bg-error', $html);
     }
 
-    public function test_donat_kosong_menggambar_cincin_netral_dengan_angka_nol(): void
+    public function test_donat_seri_sama_mengikuti_urutan_masukan(): void
+    {
+        $html = $this->donat([
+            ['label' => 'Ditolak', 'value' => 2, 'color' => 'error'],
+            ['label' => 'Dibatalkan', 'value' => 2, 'color' => 'outline'],
+            ['label' => 'Selesai', 'value' => 2, 'color' => 'success'],
+        ]);
+
+        $this->assertSame(['Ditolak', 'Dibatalkan', 'Selesai'], array_column($this->data($html)['segments'], 'label'));
+    }
+
+    public function test_donat_kosong_mengirim_segmen_kosong_dengan_angka_nol(): void
     {
         $html = $this->donat([['label' => 'Selesai', 'value' => 0, 'color' => 'success']]);
 
-        $this->assertSame(1, substr_count($html, '<circle '));
-        $this->assertStringContainsString('stroke-surface-container-highest', $html);
-        $this->assertMatchesRegularExpression('/<text x="80" y="82"[^>]*>0<\/text>/', $html);
+        $this->assertSame([], $this->data($html)['segments']);
+        $this->assertMatchesRegularExpression('/<span class="text-stat-l tabular-nums text-on-surface">0<\/span>/', $html);
         $this->assertStringNotContainsString('<li ', $html);
+        $this->assertStringNotContainsString('<table', $html);
         $this->assertStringContainsString('tidak ada data', $html);
     }
 
-    public function test_donat_satu_segmen_penuh_tanpa_celah(): void
+    public function test_donat_satu_segmen_penuh_seratus_persen(): void
     {
         $html = $this->donat([['label' => 'Selesai', 'value' => 4, 'color' => 'success']]);
 
-        $this->assertStringContainsString('stroke-dasharray="351.86 0"', $html);
+        $this->assertSame([['label' => 'Selesai', 'value' => 4, 'color' => 'success', 'percent' => 100]], $this->data($html)['segments']);
         $this->assertStringContainsString('100%', $html);
     }
 
-    public function test_donat_tanpa_gaya_sebaris_dan_menolak_warna_di_luar_token(): void
+    public function test_donat_persentase_dibulatkan(): void
+    {
+        $html = $this->donat([
+            ['label' => 'A', 'value' => 1, 'color' => 'primary'],
+            ['label' => 'B', 'value' => 1, 'color' => 'success'],
+            ['label' => 'C', 'value' => 1, 'color' => 'error'],
+        ]);
+
+        $this->assertSame([33, 33, 33], array_column($this->data($html)['segments'], 'percent'));
+    }
+
+    public function test_donat_tanpa_gaya_sebaris_dan_tanpa_warna_mentah(): void
     {
         $html = $this->donat($this->segmenPratinjau());
 
         $this->assertStringNotContainsString('style=', $html);
         $this->assertDoesNotMatchRegularExpression('/#[0-9a-fA-F]{3,8}\b/', $html);
+    }
 
+    public function test_donat_menolak_warna_di_luar_token(): void
+    {
         $this->expectException(ViewException::class);
+
         $this->donat([['label' => 'Selesai', 'value' => 1, 'color' => 'ungu']]);
+    }
+
+    public function test_donat_menolak_nilai_negatif_dan_segmen_tanpa_kunci_wajib(): void
+    {
+        foreach ([[['label' => 'Selesai', 'value' => -1, 'color' => 'success']], [['label' => 'Selesai', 'color' => 'success']]] as $segmen) {
+            try {
+                $this->donat($segmen);
+                $this->fail('Segmen tidak sah harus ditolak.');
+            } catch (ViewException) {
+                $this->addToAssertionCount(1);
+            }
+        }
     }
 }

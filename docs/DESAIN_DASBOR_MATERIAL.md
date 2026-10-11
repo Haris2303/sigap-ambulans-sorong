@@ -11,9 +11,9 @@ Berkas referensi (baca semuanya sebelum mengerjakan langkah mana pun):
 
 ## Batasan (berlaku untuk semua langkah)
 
-- Tanpa paket baru, baik Composer maupun npm. Grafik dibuat sebagai SVG yang dirender di sisi server (Blade), tanpa pustaka grafik dan tanpa JavaScript tambahan.
+- Tanpa paket baru, baik Composer maupun npm, kecuali `chart.js` (keputusan pemilik proyek, langkah D3b): grafik dasbor memakai Chart.js, bukan SVG sisi server. Paket itu dimuat modular dan hanya di halaman yang punya grafik (5.13). Pembatasan ini tidak meluas ke paket lain.
 - Jangan menampilkan isi `.env` atau kredensial. Jangan menjalankan perintah DB yang merusak (`migrate:fresh`, `db:wipe`, `migrate:rollback` pada DB nyata). Tes memakai SQLite memori.
-- Warna di markup hanya lewat token. Tidak ada hex, tidak ada `bg-[#...]`, tidak ada gradien, tidak ada ilustrasi atau gambar dekoratif, tidak ada animasi masuk.
+- Warna di markup hanya lewat token. Tidak ada hex, tidak ada `bg-[#...]`, tidak ada gradien, tidak ada ilustrasi atau gambar dekoratif, tidak ada animasi masuk. JavaScript grafik juga tanpa hex: warna dibaca dari variabel CSS token di runtime (aturan `warna-js`).
 - Label status, peran, dan jenis diambil dari Enum (`->label()`), dalam huruf awal kapital hanya di awal kalimat ("Dalam perjalanan", bukan "Dalam Perjalanan").
 - Satu langkah per sesi. Setelah langkah selesai: jalankan gerbang (lihat bagian 9), commit di branch `material-design`, laporkan ringkas, lalu berhenti. Jangan mengerjakan langkah berikutnya sebelum diminta.
 - Jangan mengubah alur bisnis, rute, atau skema database. Parameter kueri baru (`?tab=`, `?q=`) pada rute yang sudah ada diizinkan.
@@ -198,29 +198,33 @@ Tambahkan varian `on-primary` (5.2). Varian lain tidak berubah.
 
 ### 5.11 Grafik batang: `x-ui.chart.bar`
 
-Props: `labels` (mis. `['Sen','05/10', ...]` dua baris per hari), `values` (integer), `highlight` (indeks yang diberi warna `primary`; lainnya `chart-sky`), `title` (untuk `aria-label`).
+Props: `labels` (mis. `['Sen','05/10', ...]` dua baris per hari), `values` (integer), `highlight` (indeks yang diberi warna `primary`; lainnya `chart-sky`), `title` (untuk `aria-label`), `unit?` (mis. "pesanan", dipakai di tooltip dan keterangan). Keluarannya: pembungkus `overflow-x-auto` berisi kotak `relative h-80 min-w-120` dengan `<canvas role="img" data-grafik="{JSON}">`, lalu tabel `sr-only`. Data lewat atribut JSON (`tipe`, `labels` berupa pasangan hari dan tanggal, `values`, `highlight`, `max`, `unit`), bukan skrip sebaris. Kanvas digambar Chart.js dari `resources/js/grafik-opsi.js`.
 
-Geometri (viewBox `0 0 640 346`; SVG lebar penuh dengan lebar minimum 480px di dalam pembungkus `overflow-x-auto`, sehingga di ponsel grafik bergulir dan label tetap terbaca. Pakai kelas skala Tailwind yang setara bila ada, jika tidak gaya khusus di `resources/css/app.css`):
-
-- `axisMax` = bilangan genap terkecil yang ≥ max(2, nilai maksimum). Kisi di y = 20 (axisMax), 160 (axisMax/2), 300 (0). Teks sumbu di x = 38, rata kanan, `body-s`. Garis dasar y = 300 berwarna `outline-variant`, dua garis lain `surface-container-high`.
-- 7 slot dari x = 48 sampai 624 (lebar slot 576/7 = 82,29), pusat slot = 48 + (i + 0,5) × 82,29. Batang selebar 36, sudut atas 8, tinggi = nilai / axisMax × 280. Nilai 0: batang rintisan setinggi 3 (`rect rx=1.5`, `outline-variant`) di y = 297.
-- Label nilai di atas batang (y = ujung atas − 10; untuk nilai 0 di y = 289), `label-l`, `on-surface`. Label hari di y = 320 (hari) dan 336 (tanggal), `body-s` `on-surface-variant`; hari ini (highlight) berbobot 500 berwarna `primary`.
-- `role="img"` dengan `aria-label` yang menyebut semua nilai ("Grafik batang pesanan per hari: Senin 5 Oktober 1 pesanan, ...").
+- Sumbu Y bilangan bulat mulai dari 0. `max` dihitung di Blade: bilangan genap terkecil yang ≥ max(2, nilai maksimum), jadi tepat tiga garis kisi (0, separuh, penuh) dengan langkah bulat. Kisi 1px `surface-container-high`, garis dasar (nilai 0) `outline-variant`, tanpa garis sumbu dan tanpa tanda sumbu. Label sumbu `body-s` `on-surface-variant`.
+- Batang selebar 36px, sudut atas 8px (`rounded.sm`), sudut bawah 0; Chart.js sendiri mengecilkan radius bila batang lebih pendek dari 8px. Hari `highlight` berwarna `primary`, lainnya `chart-sky`. Nilai 0: batang rintisan setinggi 3px (radius 1,5px, `outline-variant`).
+- Label nilai di atas batang (`label-l`, `on-surface`, 10px di atas ujung batang; untuk nilai 0, 11px di atas garis dasar) digambar plugin sebaris `labelNilai` di `grafik-opsi.js`, bukan paket tambahan. Plugin yang sama menggambar batang rintisan.
+- Label hari dua baris (hari, tanggal) `body-s` `on-surface-variant`; hari ini (highlight) berbobot 500 dan berwarna `primary`.
+- Tanpa judul dan legenda bawaan Chart.js. Tooltip bergaya Material: latar `inverse-surface`, teks `inverse-on-surface`, sudut 4px (`rounded.xs`), tanpa panah dan tanpa penanda warna, berbahasa Indonesia ("Sen 05/10" lalu "1 pesanan"); muncul bila kursor berada di kolom hari mana pun, termasuk hari bernilai 0.
+- Tanpa animasi: `animation: false` pada render awal dan seterusnya, sehingga `prefers-reduced-motion` otomatis terpenuhi.
+- Aksesibilitas: `role="img"` dengan `aria-label` yang menyebut semua nilai ("Grafik batang pesanan per hari: Sen 05/10 1 pesanan, ..."), ditambah tabel `sr-only` (caption = `title`, kolom Hari dan satuan) berisi data yang sama.
 
 ### 5.12 Grafik donat: `x-ui.chart.donut`
 
-Props: `segments` (daftar `label`, `value`, `color`), `centerLabel`, `title`. viewBox `0 0 160 160`, pusat (80, 80), jari-jari 56, tebal garis 18, diputar -90° agar mulai dari jam 12. Keliling C = 2π × 56 = 351,86.
+Props: `segments` (daftar `label`, `value`, `color`), `centerLabel`, `title`. Keluarannya: kotak `relative size-44` berisi `<canvas role="img" data-grafik="{JSON}">` dan lapisan HTML `aria-hidden` di tengah (total `stat-l`, di bawahnya `centerLabel` `body-s`), lalu legenda dan tabel `sr-only`. Data JSON: `tipe`, `segments` (`label`, `value`, `color`, `percent`), `unit`.
 
-- Tiap segmen berupa `<circle fill="none">` dengan `stroke-dasharray = "{panjang} {C - panjang}"` dan `stroke-dashoffset = -{jumlah panjang segmen sebelumnya}`. `bagian = nilai / total × C`; `panjang = bagian - 3` (celah 3px antar segmen); satu segmen penuh (100%) tanpa celah; segmen bernilai 0 tidak digambar. Contoh dari pratinjau: 5 dari 10 → panjang 172,93, offset 0; 2 dari 10 → panjang 67,37, offset -175,93.
-- Total 0: gambar cincin `surface-container-highest` dan angka 0.
-- Di tengah: total `stat-l`, di bawahnya "pesanan" `body-s`.
-- Legenda di bawah donat sebagai `<ul>`: titik 10px berwarna segmen, label, nilai (tebal), persentase (dibulatkan; total boleh 99 atau 101). Hanya status dengan nilai lebih dari 0.
-- Warna tetap per status Enum (bukan per urutan): selesai `success`; dibatalkan `outline`; ditolak `error`; menunggu verifikasi `warning`; terverifikasi `primary`; ditugaskan dan seterusnya sampai dalam perjalanan `chart-sky`. Jika Enum punya status lain, putuskan warnanya dengan prinsip yang sama dan catat di KIT_UI. Urutan segmen: nilai terbesar dulu, seri sama menurut urutan Enum.
-- `role="img"` dengan `aria-label` yang menyebut semua segmen.
+- Cincin dengan `radius: 81%` dan `cutout: 72%` (setara jari-jari 56 dan tebal 18 pada kanvas 160), mulai dari jam 12, tanpa garis tepi. Celah antar segmen 3px lewat opsi `spacing`; satu segmen penuh (100%) tanpa celah; segmen bernilai 0 tidak dikirim. Warna segmen = token bernama `color`, dibaca dari `--color-{color}`.
+- Total 0: satu cincin `surface-container-highest`, angka 0, tanpa tooltip dan tanpa interaksi, tanpa legenda dan tabel.
+- Legenda di bawah donat tetap berupa `<ul>` HTML: titik 10px berwarna segmen, label, nilai (tebal), persentase (dibulatkan; total boleh 99 atau 101). Hanya status dengan nilai lebih dari 0.
+- Warna tetap per status Enum (bukan per urutan): selesai `success`; dibatalkan `outline`; ditolak `error`; menunggu verifikasi `warning`; terverifikasi `primary`; ditugaskan dan seterusnya sampai dalam perjalanan `chart-sky`. Jika Enum punya status lain, putuskan warnanya dengan prinsip yang sama dan catat di KIT_UI. Urutan segmen: nilai terbesar dulu, seri sama menurut urutan Enum; urutan, penyaringan, dan persentase dihitung di Blade.
+- Tooltip, tanpa animasi, dan aksesibilitas sama dengan 5.11 ("Dibatalkan" lalu "2 pesanan, 20%"). `aria-label` menyebut semua segmen; tabel `sr-only` memuat status, jumlah, dan persentase.
 
-### 5.13 Logika geometri
+### 5.13 Pemuatan Chart.js dan token di runtime
 
-Hitungan di atas dipisah ke kelas PHP murni (mis. `App\Support\Chart\BarGeometry` dan `DonutGeometry`) yang diuji unit (nilai 0, semua nol, satu segmen, nilai besar, pembulatan persentase). Blade hanya mencetak hasilnya.
+- Paket `chart.js` (npm, 4.x). `resources/js/grafik.js` mengimpor dan mendaftarkan hanya `BarController`, `DoughnutController`, `BarElement`, `ArcElement`, `CategoryScale`, `LinearScale`, `Tooltip`, dan `Legend` (legenda bawaan dimatikan), bukan `chart.js/auto`. Bentuk konfigurasi ada di `resources/js/grafik-opsi.js` sebagai fungsi murni.
+- Bundel hanya dimuat di halaman yang punya grafik: `app.js` memanggil `import('./grafik')` hanya bila ada `canvas[data-grafik]`, sehingga Vite menghasilkan chunk tersendiri dan halaman lain tidak mengunduhnya.
+- Warna, huruf, dan sudut dibaca dari variabel CSS di runtime (`--color-*`, `--text-*` beserta `--line-height` dan `--font-weight`, `--radius-*`, `--font-sans`); tidak ada hex di JavaScript. Tailwind 4 hanya mengeluarkan variabel tema yang dipakai kelas utilitas, karena itu `design-tokens.css` dihasilkan dengan `@theme static`. Kanvas digambar setelah Roboto dimuat (`document.fonts.load`), karena kanvas tidak menggambar ulang saat huruf selesai dimuat.
+- Logika data tetap di PHP dan diuji (`KomponenGrafikTest`): `max` sumbu, urutan, penyaringan, dan persentase. Data harian dari `RingkasanDasbor` tetap diuji `RingkasanDasborTest`. `GrafikChartJsTest` menjaga impor modular, pemuatan dinamis, dan keberadaan setiap token yang dibaca JavaScript.
+- Kelas geometri SVG (`App\Support\Chart\BarGeometry`, `DonutGeometry`, `Angka`) dan tes unitnya sudah dihapus; `App\Support\Chart\Warna` tinggal pemetaan nama token ke kelas titik legenda.
 
 ## 6. Dasbor Dinkes (halaman acuan)
 
@@ -245,7 +249,7 @@ Data dihitung di satu kelas layanan (mis. `App\Services\RingkasanDasbor`) yang m
 - Tidak ada lebar halaman di atas viewport: uji tangkapan layar di 390px tanpa scroll horizontal pada halaman (hanya tabel dan grafik yang boleh bergulir di dalam kartunya).
 - Semua kontrol: area sentuh 48px, cincin fokus 2px `primary` dengan jarak 2px, lapisan keadaan.
 - Pasangan chip memenuhi kontras teks/ikon 4,5:1 (semua pasangan `container` dan `on-container` M3 sudah memenuhi); hitung dan catat bila Anda menambah pasangan.
-- Grafik: nilai terlihat sebagai teks, `role="img"` dengan keterangan lengkap; legenda berupa teks. `chart-sky` di atas putih kurang dari 3:1, karena itu nilai selalu tertulis, jangan mengandalkan warna.
+- Grafik: nilai terlihat sebagai teks (label di atas batang, legenda donat), kanvas `role="img"` dengan keterangan lengkap, dan tabel `sr-only` berisi data yang sama; legenda berupa teks. `chart-sky` di atas putih kurang dari 3:1, karena itu nilai selalu tertulis, jangan mengandalkan warna.
 - Hormati `prefers-reduced-motion`; tidak ada animasi masuk.
 
 ## 8. Menyapu peran dan halaman lain (D6)
@@ -274,6 +278,8 @@ Gagal di gerbang = langkah belum selesai. Laporkan nama tes yang gagal, jangan m
 **D2. Komponen dasar.** Bagian 5.1 sampai 5.7 dan 5.10, ditambah ikon `user-check`. Tes render untuk tiap komponen. Perbarui KIT_UI dari "rencana" menjadi dokumentasi sebenarnya. Selesai bila halaman yang memakai panel dan lencana masih tampil benar dan semua tes lulus.
 
 **D3. Grafik.** Bagian 5.11 sampai 5.13 dengan tes unit geometri dan tes render. Selesai bila contoh keluaran untuk data pratinjau (nilai 1,0,0,0,0,0,1 dan segmen 5,2,1,1,1) sama dengan pratinjau pada nilai geometri yang disebut di dokumen ini.
+
+**D3b. Grafik Chart.js.** Keputusan pemilik proyek: grafik memakai Chart.js dan menggantikan 5.11 sampai 5.13 yang semula SVG sisi server. Pasang `chart.js` lewat npm, ganti `x-ui.chart.bar` dan `x-ui.chart.donut` dengan API Blade yang sama, hapus kelas geometri SVG dan tesnya, tambah tes render dan penjaga pemuatan. Selesai bila gerbang lulus dan dasbor tidak berubah dari sisi halaman.
 
 **D4. Kerangka aplikasi.** Bagian 5.8 dan 5.9, latar `canvas`, jarak halaman. Terapkan ke layout semua peran. Selesai bila setiap halaman yang ada masih terbuka (`php artisan test` menyapu rute utama) dan tidak ada scroll horizontal di 390px.
 

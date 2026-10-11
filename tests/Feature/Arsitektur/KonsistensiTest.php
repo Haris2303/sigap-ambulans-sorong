@@ -113,6 +113,20 @@ class KonsistensiTest extends TestCase
         }
     }
 
+    public function test_warna_js_menolak_warna_mentah_dan_menerima_pembacaan_token(): void
+    {
+        $aturan = collect($this->muatAturan())->firstWhere('id', 'warna-js');
+        $this->assertNotNull($aturan, 'Aturan warna-js belum ada di konsistensi.json.');
+        $this->assertSame(['resources/js'], $aturan['folder']);
+
+        foreach (["const warna = '#216487';", "ctx.fillStyle = '#fff';", 'ctx.fillStyle = "rgb(0 0 0)";', 'color: rgba(0, 0, 0, 0.5),', "const c = 'oklch(0.5 0.1 200)';", 'x = hsl(10 20% 30%);'] as $dilarang) {
+            $this->assertSame(1, preg_match($this->regex($aturan), $dilarang), $dilarang.' harus ditolak');
+        }
+        foreach (["tema.warna('primary')", "getPropertyValue('--color-primary')", "querySelector('#peta')", 'label(nilai)', "kanvas.dataset.grafik"] as $boleh) {
+            $this->assertSame(0, preg_match($this->regex($aturan), $boleh), $boleh.' harus diterima');
+        }
+    }
+
     public function test_warna_css_menerima_hanya_var_token_dan_menolak_nilai_mentah(): void
     {
         $aturan = collect($this->muatAturan())->firstWhere('id', 'warna-css');

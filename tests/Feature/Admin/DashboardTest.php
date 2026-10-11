@@ -113,14 +113,17 @@ class DashboardTest extends TestCase
 
         $this->assertStringContainsString('<h2 class="text-card-title">Pesanan 7 hari terakhir</h2>', $html);
         $this->assertStringContainsString('5 sampai 11 Okt 2026', $html);
-        $this->assertStringContainsString('viewBox="0 0 640 346"', $html);
+        // Grafik batang berupa kanvas Chart.js: hari ini (indeks 6) disorot dan datanya dikirim lewat atribut JSON.
+        $this->assertStringContainsString('&quot;tipe&quot;:&quot;batang&quot;', $html);
+        $this->assertStringContainsString('&quot;highlight&quot;:6', $html);
+        $this->assertStringContainsString('&quot;unit&quot;:&quot;pesanan&quot;', $html);
         $this->assertStringContainsString('aria-label="Grafik batang pesanan per hari: Sen 05/10 0 pesanan', $html);
         $this->assertStringContainsString('Min 11/10 2 pesanan', $html);
-        $this->assertStringContainsString('fill-primary', $html);
+        $this->assertStringNotContainsString('<svg viewBox', $html);
 
         $this->assertStringContainsString('<h2 class="text-card-title">Status pesanan</h2>', $html);
         $this->assertStringContainsString('7 pesanan terbaru', $html);
-        $this->assertStringContainsString('viewBox="0 0 160 160"', $html);
+        $this->assertStringContainsString('&quot;tipe&quot;:&quot;donat&quot;', $html);
         $this->assertStringContainsString('Diagram cincin status 7 pesanan terbaru: ', $html);
         // Legenda hanya status bernilai lebih dari nol, dengan warna tetap per status.
         foreach (['Menunggu verifikasi', 'Terverifikasi', 'Ditugaskan', 'Diterima sopir', 'Dalam perjalanan', 'Selesai'] as $label) {

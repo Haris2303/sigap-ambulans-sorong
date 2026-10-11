@@ -293,6 +293,19 @@
       "pola": "#[0-9a-fA-F]{3,8}\\b|\\b(?:rgb|rgba|hsl|hsla|oklch|oklab|lab|lch)\\(|\\bcolor-mix\\((?![^;]*var\\(--color-)|-gradient\\(|\\bbox-shadow\\s*:(?!\\s*(?:none|var\\(--shadow-(?:level-[123]|card|card-raised|nav-active)\\))\\s*(?:;|!important|$))|@keyframes|\\banimation\\s*:"
     },
     {
+      "id": "warna-js",
+      "tipe": "larang",
+      "pesan": "JavaScript tidak boleh menulis warna: dilarang heksadesimal dan rgb()/hsl()/oklch(). Grafik membaca warna dari variabel CSS token (--color-*) di runtime.",
+      "folder": [
+        "resources/js"
+      ],
+      "ekstensi": [
+        ".js"
+      ],
+      "kecuali": [],
+      "pola": "#[0-9a-fA-F]{3,8}\\b|\\b(?:rgb|rgba|hsl|hsla|oklch|oklab|lab|lch)\\("
+    },
+    {
       "id": "tailwind-lama",
       "tipe": "larang",
       "pesan": "Sintaks Tailwind v3 yang sudah tidak berlaku di v4 (@tailwind, *-opacity-*, flex-shrink/grow, overflow-ellipsis, outline-none -> outline-hidden, tailwind.config).",
