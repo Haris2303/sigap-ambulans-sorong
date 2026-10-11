@@ -6,8 +6,8 @@
         </x-slot:aksi>
     </x-ui.judul-halaman>
 
-    <div class="grid gap-8 lg:grid-cols-3">
-        <div class="space-y-8 lg:col-span-2">
+    <div class="grid gap-5 lg:grid-cols-3">
+        <div class="space-y-5 lg:col-span-2">
             <x-ui.bagian judul="Rincian pesanan" :jarak="false">
                 <x-ui.rincian>
                     <x-ui.rincian-baris label="Nama pasien">{{ $pesanan->nama_pasien }}</x-ui.rincian-baris>

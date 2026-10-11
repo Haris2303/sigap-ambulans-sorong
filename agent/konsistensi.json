@@ -75,6 +75,22 @@
       "pola": "(?<![\\w-])(?:(?:bg|text|border|divide|ring|outline|placeholder|fill|stroke)-(?:line|control-border|primary-soft|primary-hover|danger|danger-soft|danger-hover|warning-soft|success-soft|neutral-soft|on-surface-muted)|text-(?:h[123]|body|body-sm|label|caption|display)|shadow-overlay|font-semibold|w-rail)(?![\\w-])|\\bukuran=\"sm\""
     },
     {
+      "id": "komponen-lama",
+      "tipe": "larang",
+      "pesan": "Komponen pra-dasbor Material tidak dipakai lagi di halaman. Pakai x-ui.stat (kartu statistik) alih-alih x-ui.ringkasan dan x-ui.ringkasan-sel, serta x-ui.chart.bar alih-alih x-ui.grafik-batang.",
+      "folder": [
+        "resources/views"
+      ],
+      "ekstensi": [
+        ".php"
+      ],
+      "kecuali": [
+        "^resources/views/components/",
+        "^resources/views/pdf/"
+      ],
+      "pola": "<x-ui\\.(?:ringkasan|ringkasan-sel|grafik-batang)(?![\\w-])"
+    },
+    {
       "id": "gaya-mentah",
       "tipe": "larang",
       "pesan": "Gaya/struktur dokumen mentah di halaman (<style>, style=, <html>, <head>, <body>). Gunakan layout & komponen.",

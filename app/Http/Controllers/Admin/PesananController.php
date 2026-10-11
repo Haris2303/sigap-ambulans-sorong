@@ -7,6 +7,7 @@ use App\Enums\JenisLayanan;
 use App\Enums\PesananStatus;
 use App\Enums\Role;
 use App\Enums\StatusAmbulans;
+use App\Enums\TabPesanan;
 use App\Exceptions\PenugasanTidakValidException;
 use App\Exceptions\TransisiTidakValidException;
 use App\Http\Controllers\Concerns\MembalasJson;
@@ -38,23 +39,23 @@ class PesananController extends Controller
             'jenis_layanan' => ['nullable', 'string'],
             'dari' => ['nullable', 'date'],
             'sampai' => ['nullable', 'date'],
-            'cari' => ['nullable', 'string', 'max:100'],
+            'q' => ['nullable', 'string', 'max:100'],
+            'tab' => ['nullable', 'string'],
         ]);
 
         $status = PesananStatus::tryFrom((string) ($filter['status'] ?? ''));
         $layanan = JenisLayanan::tryFrom((string) ($filter['jenis_layanan'] ?? ''));
-        $cari = trim((string) ($filter['cari'] ?? ''));
+        $kata = trim((string) ($filter['q'] ?? ''));
+        $tab = TabPesanan::tryFrom((string) ($filter['tab'] ?? '')) ?? TabPesanan::Semua;
+        $statusTab = array_map(fn (PesananStatus $s) => $s->value, array_filter(PesananStatus::cases(), fn (PesananStatus $s) => $tab->mencakup($s)));
 
         $query = Pesanan::with('pemohon')
             ->when($status, fn (Builder $q) => $q->where('status', $status->value))
             ->when($layanan, fn (Builder $q) => $q->where('jenis_layanan', $layanan->value))
             ->when($filter['dari'] ?? null, fn (Builder $q, string $d) => $q->where('created_at', '>=', \Illuminate\Support\Carbon::parse($d)->startOfDay()))
             ->when($filter['sampai'] ?? null, fn (Builder $q, string $d) => $q->where('created_at', '<=', \Illuminate\Support\Carbon::parse($d)->endOfDay()))
-            ->when($cari !== '', fn (Builder $q) => $q->where(function (Builder $w) use ($cari) {
-                $w->where('kode', 'like', '%'.$cari.'%')
-                    ->orWhere('nama_pasien', 'like', '%'.$cari.'%')
-                    ->orWhere('lokasi_jemput', 'like', '%'.$cari.'%');
-            }));
+            ->when($tab !== TabPesanan::Semua, fn (Builder $q) => $q->whereIn('status', $statusTab))
+            ->when($kata !== '', fn (Builder $q) => $q->cari($kata));
 
         // Pesanan yang masih berjalan lebih dulu: gawat dulu, lalu yang paling lama menunggu.
         $final = array_map(fn (PesananStatus $s) => $s->value, array_filter(PesananStatus::cases(), fn (PesananStatus $s) => $s->final()));
@@ -64,7 +65,10 @@ class PesananController extends Controller
         return view('admin.pesanan.index', [
             'daftar' => $query->paginate(config('sigap.per_halaman'))->withQueryString(),
             'filter' => $filter,
-            'adaFilter' => collect($filter)->filter(fn ($v) => $v !== null && $v !== '')->isNotEmpty(),
+            'tab' => $tab,
+            // Parameter yang dipertahankan saat berpindah tab (tab sendiri tidak).
+            'queryTab' => collect($filter)->except('tab')->filter(fn ($v) => $v !== null && $v !== '')->all(),
+            'adaFilter' => collect($filter)->except('tab')->filter(fn ($v) => $v !== null && $v !== '')->isNotEmpty(),
         ]);
     }
 

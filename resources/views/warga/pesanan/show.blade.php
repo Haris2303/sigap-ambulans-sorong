@@ -5,9 +5,9 @@
         </x-slot:aksi>
     </x-ui.judul-halaman>
 
-    <div class="grid gap-8 lg:grid-cols-3" data-lacak data-status="{{ $pesanan->status->value }}"
+    <div class="grid gap-5 lg:grid-cols-3" data-lacak data-status="{{ $pesanan->status->value }}"
         data-url="{{ route('warga.pesanan.status', $pesanan) }}" data-detik="{{ config('sigap.polling.warga_detik') }}">
-        <div class="space-y-8 lg:col-span-2">
+        <div class="space-y-5 lg:col-span-2">
             <x-ui.bagian judul="Rincian pesanan" :jarak="false">
                 <x-ui.rincian>
                     <x-ui.rincian-baris label="Jenis layanan">{{ $pesanan->jenis_layanan->label() }}</x-ui.rincian-baris>

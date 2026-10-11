@@ -8,12 +8,14 @@
         </div>
 
         <x-ui.bagian judul="Cara kerja">
-            <ol class="list-decimal space-y-2 pl-5 text-body-l">
-                <li>Masyarakat mengisi pesanan dan lokasi jemput.</li>
-                <li>Dinkes memverifikasi pesanan.</li>
-                <li>Dinkes menugaskan ambulans dan sopir.</li>
-                <li>Masyarakat memantau perjalanan ambulans sampai tiba.</li>
-            </ol>
+            <x-ui.panel>
+                <ol class="list-decimal space-y-2 pl-5 text-body-l">
+                    <li>Masyarakat mengisi pesanan dan lokasi jemput.</li>
+                    <li>Dinkes memverifikasi pesanan.</li>
+                    <li>Dinkes menugaskan ambulans dan sopir.</li>
+                    <li>Masyarakat memantau perjalanan ambulans sampai tiba.</li>
+                </ol>
+            </x-ui.panel>
         </x-ui.bagian>
     </div>
 </x-layouts.publik>

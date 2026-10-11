@@ -5,11 +5,18 @@
         </x-slot:aksi>
     </x-ui.judul-halaman>
 
-    <x-ui.bagian judul="Ketersediaan saat ini" :jarak="false">
-        <x-ui.panel>
-            <x-ui.ketersediaan :faskes="$faskes" />
-        </x-ui.panel>
-    </x-ui.bagian>
+    {{-- Ketersediaan sumber daya milik Faskes ini: kartu statistik (jumlah tersedia dari total). --}}
+    <div class="flex flex-wrap gap-5">
+        <x-ui.stat tone="primary" icon="ambulance" :value="$faskes->ambulans_tersedia_count" label="Ambulans tersedia"
+            :hint="'dari '.$ambulans->count().' ambulans'" class="min-w-0 flex-[1_1_14rem]" />
+        <x-ui.stat tone="error" icon="bed-double" :value="$faskes->bed_igd_tersedia" label="Bed IGD tersedia"
+            :hint="'dari '.$faskes->bed_igd_total" class="min-w-0 flex-[1_1_14rem]" />
+        <x-ui.stat tone="warning" icon="bed-double" :value="$faskes->bed_rawat_inap_tersedia" label="Bed rawat inap tersedia"
+            :hint="'dari '.$faskes->bed_rawat_inap_total" class="min-w-0 flex-[1_1_14rem]" />
+        <x-ui.stat tone="success" icon="stethoscope" :value="$faskes->dokter_umum_tersedia + $faskes->dokter_spesialis_tersedia" label="Dokter tersedia"
+            :hint="$faskes->dokter_umum_tersedia.' umum, '.$faskes->dokter_spesialis_tersedia.' spesialis'" class="min-w-0 flex-[1_1_14rem]" />
+    </div>
+    <x-ui.pembaruan :faskes="$faskes" class="mt-3" />
 
     <x-ui.bagian judul="Penugasan masuk dan aktif" deskripsi="Pesanan yang memakai ambulans Faskes ini atau menuju Faskes ini.">
         @if ($pesananAktif->isEmpty())
@@ -38,6 +45,11 @@
         @if ($ambulans->isEmpty())
             <x-ui.kosong pesan="Faskes ini belum memiliki ambulans." />
         @else
+            <div class="mb-5 grid gap-4 sm:grid-cols-3">
+                @foreach ([[\App\Enums\StatusAmbulans::Tersedia, 'success', 'circle-check'], [\App\Enums\StatusAmbulans::Bertugas, 'warning', 'ambulance'], [\App\Enums\StatusAmbulans::Servis, 'error', 'settings']] as [$status, $nada, $ikon])
+                    <x-ui.tile :tone="$nada" :icon="$ikon" :value="$ambulans->where('status', $status)->count()" :label="$status->label()" />
+                @endforeach
+            </div>
             <x-ui.tabel>
                 <x-slot:kepala>
                     <th>Plat nomor</th>

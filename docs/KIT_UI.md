@@ -2,7 +2,7 @@
 
 > Pasangan `DESIGN.md` (identitas visual, token, larangan gaya). Dokumen ini menjawab "bagaimana dibangun di kode": tumpukan, kelas yang tersedia, komponen Blade, pola halaman. Tujuan: **semua halaman terasa satu aplikasi**. Halaman hanya merakit komponen; gaya tidak pernah ditulis per halaman. Sesi agen otonom tidak boleh mengubah dokumen ini; sesi interaktif boleh, bersama `DESIGN.md`.
 >
-> **Arah dasbor Material (keputusan pemilik proyek, `docs/DESAIN_DASBOR_MATERIAL.md`) mengalahkan aturan Don't dan Layout lama.** Token dan aturan konsistensi (D1), komponen dasar (D2), grafik (D3), kerangka aplikasi (D4), dan Dasbor Dinkes (D5, §10) sudah dibangun. Sapuan peran dan halaman lain (daftar, detail, formulir, Faskes, sopir, publik) menyusul di D6; sampai itu halaman tersebut masih memakai `x-ui.tabel` berbingkai, `ringkasan`, dan `kosong` lama.
+> **Arah dasbor Material (keputusan pemilik proyek, `docs/DESAIN_DASBOR_MATERIAL.md`) mengalahkan aturan Don't dan Layout lama.** Token dan aturan (D1), komponen dasar (D2), grafik (D3), kerangka aplikasi (D4), Dasbor Dinkes (D5, §10), dan sapuan peran serta halaman lain (D6) sudah dibangun. Komponen pra-dasbor `ringkasan`, `ringkasan-sel`, dan `grafik-batang` tidak dipakai lagi (aturan `komponen-lama`) dan dihapus di D7.
 >
 > **Material 3.** Token, aturan konsistensi, komponen, layout, dan halaman sudah Material 3. Nama token atau kelas lama ditolak oleh aturan `token-lama` di `agent/konsistensi.json` (pesannya memuat padanan baru). Catatan keputusan dan langkah migrasi ada di `docs/MIGRASI_M3.md`.
 
@@ -98,15 +98,15 @@ Semua layout menerima `judul` dan menampilkan `<x-ui.flash />` di atas isi. Hala
 | `snackbar` | `tetap` (bawaan `true`; `false` hanya untuk katalog); slot pesan | pesan singkat hasil tindakan di dasar layar, dengan tombol Tutup (`data-snackbar-tutup`, ditangani `sigap.js`). Tanpa batas waktu otomatis |
 | `peringatan` | `nada` = `info\|peringatan\|sukses\|bahaya` | pesan sebaris di halaman (banner) |
 | `dialog` | `id`, `judul`, `pesan`, `aksi` (teks), `nada?` | elemen `<dialog>` bawaan; Level 3, latar `bg-scrim`; satu instance dipakai bersama oleh semua `data-konfirmasi`; dua tombol sejajar kanan (batal hantu; aksi hantu, atau bahaya bila merusak) |
-| `tabel` | `bingkai?` (bawaan `true`), `lebar-min?` (kelas `min-w-*` untuk `<table>`); slot `kepala`, slot isi | pembungkus tabel (resep §2). `bingkai="false"`: hanya pembungkus gulir tanpa batas dan latar sendiri, untuk tabel di dalam `panel flush` (kolom pertama dan terakhir sejajar padding kartu 24px); `lebar-min` membuat tabel bergulir horizontal di ponsel, bukan menyempit |
-| `kosong` | `pesan`; slot `aksi` | keadaan kosong: "Belum ada …", rata kiri, dengan satu aksi bila ada |
+| `tabel` | `bingkai?` (bawaan `true`), `lebar-min?` (kelas `min-w-*` untuk `<table>`); slot `kepala`, slot isi | tabel. `bingkai=true`: kartu berbayang (`Tampilan::KARTU`, tanpa batas). `bingkai=false`: hanya pembungkus gulir, untuk tabel di dalam `panel flush` (mis. bersama `tabs`); kolom pertama dan terakhir sejajar padding kartu 24px. `lebar-min` membuat tabel bergulir horizontal di ponsel, bukan menyempit |
+| `kosong` | `pesan`; slot `aksi` | keadaan kosong berupa kartu berbayang: "Belum ada …", rata kiri, dengan satu aksi bila ada. Di dalam `panel flush` pakai paragraf biasa (`px-6 py-8`), bukan komponen ini |
 | `isian` | `nama`, `label`, `tipe`, `nilai?`, `bantuan?`, `wajib?` | label di atas (tidak mengapung), pesan galat per kolom (`$errors`), `old()` otomatis |
 | `pilihan` | `nama`, `label`, `opsi` (nilai→label), `nilai?`, `kosong?` | pembungkus `<select>`; opsi dari `Enum::opsi()` |
 | `area-teks` | seperti `isian` + `baris` | |
 | `centang` | `nama`, `label`, `nilai?` | |
 | `opsi-baris` | `nama`, `nilai`, `judul`, `deskripsi?`, `terpilih?` | radio berbentuk baris besar berbingkai (jenis layanan, tingkat darurat); terpilih: `bg-secondary-container`; target sentuh penuh |
 | `ringkasan` + `ringkasan-sel` | `label`, `nilai`, `nada?`, `keterangan?` | satu wadah berbingkai dengan sel dipisah garis (2 kolom ponsel, 4 desktop); angka `text-display-s tabular-nums`. Menggantikan "kartu statistik" |
-| `rincian` | slot daftar `rincian-baris` (`label`, slot nilai) | daftar definisi `<dl>`: label `text-on-surface-variant` di kiri, nilai di kanan, garis antarbaris. Dipakai di semua halaman detail |
+| `rincian` | `bingkai?` (bawaan `true`); slot daftar `rincian-baris` (`label`, slot nilai) | daftar definisi `<dl>`: label `text-on-surface-variant` di kiri, nilai di kanan, garis antarbaris, baris `px-6`. `bingkai=true`: kartu berbayang; `false`: tanpa gaya kartu, untuk di dalam kartu lain (mis. kartu penugasan sopir, dengan `-mx-6`). Dipakai di semua halaman detail |
 | `waktu` | `nilai`, `relatif?`, `format?` (bawaan `d M Y H:i`) | zona Asia/Jayapura, `d M Y H:i`; `relatif` menambah "x menit lalu"; `tabular-nums` |
 | `grafik-batang` | `data` (label→angka), `nada?` | batang CSS murni; satu-satunya tempat boleh `style="width:…"`. Kolom label `w-24 shrink-0 whitespace-nowrap text-body-s text-on-surface-variant` (tidak pecah baris), jalur `bg-surface-container-highest`, nilai `w-10 shrink-0 text-right tabular-nums` |
 | `chart.bar` | `labels` (string "Sen 05/10" yang dipecah di spasi pertama menjadi baris hari dan tanggal, atau pasangan `['Sen', '05/10']`), `values` (bilangan bulat, jumlahnya sama dengan `labels`), `highlight?` (indeks batang berwarna `primary`; lainnya `chart-sky`), `title`, `unit?` | grafik batang SVG sisi server (`<x-ui.chart.bar>`), viewBox `0 0 640 346`, dibungkus `overflow-x-auto` dengan lebar minimum 480px. Sumbu maksimum bilangan genap terkecil minimal 2; nilai 0 digambar sebagai batang rintisan; setiap batang berlabel nilai; `role="img"` dengan `aria-label` "{title}: Sen 05/10 1 pesanan, ...". Geometri di `App\Support\Chart\BarGeometry`. Menggantikan `grafik-batang` (dihapus di D7) |
@@ -114,6 +114,7 @@ Semua layout menerima `judul` dan menampilkan `<x-ui.flash />` di atas isi. Hala
 | `paginasi` | `data` (paginator) | membuat markup sendiri dari `$data->linkCollection()` (tampilan paginasi bawaan Laravel memakai palet Tailwind lama dan **tidak boleh** dipakai); bahasa Indonesia ("Sebelumnya", "Berikutnya", "Menampilkan 1–20 dari 134"); halaman aktif `bg-secondary-container` |
 | `linimasa` | `log` (koleksi `PesananLog`) | sesuai `DESIGN.md` bagian Components: kolom waktu tetap, titik, label status, pelaku/peran, catatan; langkah terakhir `font-medium` |
 | `ketersediaan` | `faskes` | bed IGD x/y, bed rawat inap x/y, dokter umum, dokter spesialis, ambulans tersedia, "diperbarui …" / "Belum diperbarui" / "Data lama" (lencana `peringatan`) |
+| `pembaruan` | `faskes` | keterangan kesegaran data ketersediaan: "Belum diperbarui", atau "Diperbarui …" dengan lencana "Data lama" bila basi. Dipakai `ketersediaan` dan dasbor Faskes |
 | `peta.pemilih` | nama kolom lat/lng/alamat | peta Leaflet + tombol "Gunakan lokasi saya" + cari alamat (Nominatim) + klik peta |
 | `peta.pelacak` | `lat`, `lng`, `urlPosisi?` | penanda jemput + posisi sopir (polling) + rute |
 | `peta.faskes` | `daftar` | penanda Faskes berkoordinat |
@@ -122,7 +123,7 @@ Aturan komponen: dibangun dari resep §2; tidak ada kelas di luar §1; variasi b
 
 ## 5. Pola halaman
 
-- **Daftar**: `judul-halaman` → form filter satu baris (`isian`/`pilihan` + `tombol sekunder "Cari"` + tautan "Atur ulang"; di ponsel menumpuk) → `tabel` → `paginasi`. Tanpa data: `kosong`. Ponsel: kolom sekunder `hidden md:table-cell`; baris dapat diklik penuh lewat kolom pertama berupa tautan.
+- **Daftar**: `judul-halaman` → filter dalam `panel` (isian dan pilihan, tombol "Terapkan", tautan "Atur ulang"; kata kunci `?q=` datang dari kolom cari di bilah atas dan dipertahankan lewat input tersembunyi) → `panel flush` berisi `tabs` (`?tab=`, `TabPesanan`) dan `tabel :bingkai="false"` → `paginasi` di luar kartu. Tanpa data: paragraf keadaan kosong di dalam kartu ("Belum ada pesanan di tab ini."). Ponsel: kolom sekunder `hidden md:table-cell`, tabel bergulir di dalam kartunya (`lebar-min`); baris dapat diklik penuh lewat kolom pertama berupa tautan.
 - **Formulir**: satu `panel` lebar maksimum `max-w-xl`, kolom vertikal `space-y-5`; di dasar: `tombol utama "Simpan"` + `tombol hantu "Batal"`.
 - **Detail**: dua kolom pada `lg` (kiri: `rincian` + `linimasa`; kanan: `panel` aksi), satu kolom di ponsel. Aksi hanya yang valid untuk status dan peran saat ini (`PesananStatus::transisiTerbuka()` + peran).
 - **Aksi berbahaya** (tolak, batalkan, lepas): `tombol nada="bahaya"` dengan `konfirmasi`; alasan lewat `area-teks` pada form kecil bila aturan status menuntutnya.
@@ -216,3 +217,11 @@ Pemakaian warna chip menurut nada: primary = `primary-container` / `on-primary-c
 ```
 
 Geometri murni (`BarGeometry::buat($values, $highlight)`, `DonutGeometry::buat($segments)`) diuji unit terhadap nilai pratinjau di `docs/referensi/` (batang 1,0,0,0,0,0,1 dan donat 5,2,1,1,1). Penyimpangan yang disengaja dari teks dokumen arah: radius sudut batang mengecil bila batang lebih pendek dari 8px, dan celah donat mengecil menjadi separuh bagian bagi segmen yang lebih kecil dari 6px, supaya tidak ada koordinat terbalik dan segmen kecil tetap terlihat.
+
+### Peran dan halaman lain (D6)
+
+- **Daftar pesanan Dinkes** (`admin.pesanan.index`): tab `?tab=` (Semua, Perlu tindakan, Berjalan) menyaring seluruh pesanan menurut `TabPesanan::mencakup()`; `?q=` mencari kode dan nama pasien (`Pesanan::cari()`: LIKE dengan parameter terikat, `%`, `_`, dan `!` dalam kata kunci dianggap teks lewat `ESCAPE '!'`, maksimum 100 karakter). Tab dan filter lain (`status`, `jenis_layanan`, `dari`, `sampai`) dapat digabung; tautan tab mempertahankan filter. Parameter lama `cari` dihapus di daftar ini (daftar master lain tetap memakai `cari`).
+- **Dasbor Faskes**: empat `stat` putih (ambulans, bed IGD, bed rawat inap, dokter tersedia; keterangan "dari {total}"), `pembaruan`, dan tiga `tile` jumlah ambulans per status di atas tabel ambulans.
+- **Dasbor sopir**: penugasan aktif dalam satu `panel` besar bertanda `data-penugasan-aktif` (kode, lencana status dan Gawat, lokasi jemput `text-title-m`, `rincian` tanpa bingkai, kontak `tel:`, peta, tindakan `ukuran="lg"` selebar kartu). Tanpa grafik.
+- **Masyarakat dan Laporan**: `stat` putih menggantikan `ringkasan`. **Buat Pesanan**: tiap bagian formulir (`fieldset`) berada di dalam `panel`, tetap satu kolom `max-w-xl`. **Landing**: langkah "Cara kerja" di dalam `panel`. Jarak antar kartu `gap-5` / `space-y-5`.
+- Halaman Masyarakat (Buat Pesanan, lacak) tetap memakai laci navigasi; dokumen arah menyebut "tanpa laci" dan itu belum dilakukan (butuh keputusan pemilik proyek).

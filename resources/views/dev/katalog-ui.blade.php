@@ -110,15 +110,6 @@
         </x-ui.panel>
     </x-ui.bagian>
 
-    <x-ui.bagian judul="Ringkasan angka">
-        <x-ui.ringkasan>
-            <x-ui.ringkasan-sel label="Menunggu verifikasi" :nilai="3" nada="peringatan" keterangan="Perlu tindakan Dinkes" />
-            <x-ui.ringkasan-sel label="Sedang berjalan" :nilai="5" nada="info" />
-            <x-ui.ringkasan-sel label="Selesai hari ini" :nilai="12" nada="sukses" />
-            <x-ui.ringkasan-sel label="Ambulans tersedia" :nilai="18" />
-        </x-ui.ringkasan>
-    </x-ui.bagian>
-
     <x-ui.bagian judul="Tabel dan paginasi">
         <x-ui.tabel>
             <x-slot:kepala>
@@ -187,10 +178,6 @@
                 </div>
             @endforeach
         </div>
-    </x-ui.bagian>
-
-    <x-ui.bagian judul="Grafik batang">
-        <x-ui.grafik-batang :data="$grafik" class="max-w-xl" />
     </x-ui.bagian>
 
     <x-ui.bagian judul="Peta">

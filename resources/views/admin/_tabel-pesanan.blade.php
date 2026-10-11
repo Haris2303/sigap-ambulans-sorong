@@ -1,5 +1,5 @@
-{{-- Fragmen: tabel pesanan untuk Dinkes. Variabel: $daftar (koleksi Pesanan dengan pemohon). --}}
-<x-ui.tabel>
+{{-- Fragmen: tabel pesanan untuk Dinkes di dalam kartu tanpa padding. Variabel: $daftar (koleksi Pesanan dengan pemohon). --}}
+<x-ui.tabel :bingkai="false" lebar-min="min-w-136">
     <x-slot:kepala>
         <th>Kode</th>
         <th>Pasien</th>

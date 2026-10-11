@@ -226,7 +226,8 @@ class KomponenUiTest extends TestCase
         $kosong = $this->render('<x-ui.kosong pesan="Belum ada pesanan."><x-slot:aksi>BUAT</x-slot:aksi></x-ui.kosong>');
         $this->assertStringContainsString('Belum ada pesanan.', $kosong);
         $this->assertStringContainsString('BUAT', $kosong);
-        $this->assertStringContainsString('rounded-md border border-outline-variant bg-surface-container-lowest', $kosong);
+        $this->assertStringContainsString('bg-surface-container-lowest rounded-lg shadow-card', $kosong);
+        $this->assertStringNotContainsString('border-outline-variant', $kosong);
         $this->assertStringContainsString('text-body-l text-on-surface-variant', $kosong);
     }
 
@@ -238,7 +239,8 @@ class KomponenUiTest extends TestCase
         $this->assertStringContainsString('<th>Kode</th>', $html);
         $this->assertStringContainsString('SGP-000001', $html);
         $this->assertStringContainsString('divide-outline-variant', $html);
-        $this->assertStringContainsString('rounded-md border border-outline-variant bg-surface-container-lowest', $html);
+        $this->assertStringContainsString('bg-surface-container-lowest rounded-lg shadow-card', $html);
+        $this->assertStringNotContainsString('rounded-md border', $html);
         $this->assertStringContainsString('bg-surface-container-low', $html);
         $this->assertStringNotContainsString('min-w-', $html);
     }
@@ -249,8 +251,9 @@ class KomponenUiTest extends TestCase
 
         // Hanya pembungkus gulir: tanpa batas, sudut, dan latar sendiri; kolom pertama dan terakhir sejajar padding kartu 24px.
         $this->assertStringContainsString('overflow-x-auto', $html);
-        $this->assertStringNotContainsString('rounded-md', $html);
-        $this->assertStringNotContainsString('border-outline-variant bg-surface-container-lowest', $html);
+        $this->assertStringNotContainsString('rounded-', $html);
+        $this->assertStringNotContainsString('shadow-card', $html);
+        $this->assertStringNotContainsString('bg-surface-container-lowest', $html);
         $this->assertStringContainsString('min-w-136', $html);
         $this->assertStringContainsString('[&>th:first-child]:pl-6', $html);
         $this->assertStringContainsString('[&_td:first-child]:pl-6', $html);
@@ -354,9 +357,18 @@ class KomponenUiTest extends TestCase
         $rincian = $this->render('<x-ui.rincian><x-ui.rincian-baris label="Pasien">Budi</x-ui.rincian-baris></x-ui.rincian>');
         $this->assertStringContainsString('<dl', $rincian);
         $this->assertStringContainsString('<dt class="text-on-surface-variant">Pasien</dt>', $rincian);
-        foreach (['divide-outline-variant', 'rounded-md', 'border-outline-variant', 'bg-surface-container-lowest', 'text-body-m'] as $kelas) {
+        foreach (['divide-outline-variant', 'bg-surface-container-lowest rounded-lg shadow-card', 'overflow-hidden', 'px-6', 'text-body-m'] as $kelas) {
             $this->assertStringContainsString($kelas, $rincian);
         }
+        $this->assertStringNotContainsString('border-outline-variant bg', $rincian);
+
+        // Di dalam kartu lain (mis. kartu penugasan sopir): tanpa gaya kartu sendiri agar kartu berbayang tidak bersarang.
+        $polos = $this->render('<x-ui.rincian :bingkai="false"><x-ui.rincian-baris label="Pasien">Budi</x-ui.rincian-baris></x-ui.rincian>');
+        $this->assertStringContainsString('divide-outline-variant', $polos);
+        $this->assertStringNotContainsString('shadow-card', $polos);
+        $this->assertStringNotContainsString('rounded-lg', $polos);
+        $this->assertStringNotContainsString('bg-surface-container-lowest', $polos);
+        $this->assertStringContainsString('<dt class="text-on-surface-variant">Pasien</dt>', $polos);
 
         $waktu = $this->render('<x-ui.waktu nilai="2026-10-11 09:30:00" />');
         $this->assertStringContainsString('11 Okt 2026 09:30', $waktu);
@@ -449,5 +461,27 @@ class KomponenUiTest extends TestCase
         $this->assertStringContainsString('text-body-m', $htmlSegar);
         $this->assertStringContainsString('<dt class="text-on-surface-variant">Bed IGD</dt>', $htmlSegar);
         $this->assertStringContainsString('text-body-s text-on-surface-variant', $htmlSegar);
+    }
+
+    /** Keterangan kesegaran data ketersediaan dipakai bersama oleh x-ui.ketersediaan dan dasbor Faskes. */
+    public function test_pembaruan_menyebut_kesegaran_data_ketersediaan(): void
+    {
+        $belum = $this->render('<x-ui.pembaruan :faskes="$f" />', ['f' => Faskes::factory()->create()]);
+        $this->assertStringContainsString('Belum diperbarui', $belum);
+        $this->assertStringContainsString('bg-warning-container text-on-warning-container', $belum);
+        $this->assertStringContainsString('text-body-s text-on-surface-variant', $belum);
+
+        $lama = $this->render('<x-ui.pembaruan :faskes="$f" />', ['f' => Faskes::factory()->diperbarui()->create(['ketersediaan_diperbarui_pada' => now()->subHours(config('sigap.data_basi_jam') + 2)])]);
+        $this->assertStringContainsString('Data lama', $lama);
+        $this->assertStringContainsString('Diperbarui', $lama);
+
+        $segar = $this->render('<x-ui.pembaruan :faskes="$f" />', ['f' => Faskes::factory()->diperbarui(5, 10)->create()]);
+        $this->assertStringContainsString('Diperbarui', $segar);
+        $this->assertStringContainsString('<time', $segar);
+        $this->assertStringNotContainsString('Data lama', $segar);
+        $this->assertStringNotContainsString('Belum diperbarui', $segar);
+
+        // Komponen ketersediaan memakai keterangan yang sama.
+        $this->assertStringContainsString('Belum diperbarui', $this->render('<x-ui.ketersediaan :faskes="$f" />', ['f' => Faskes::factory()->create()]));
     }
 }

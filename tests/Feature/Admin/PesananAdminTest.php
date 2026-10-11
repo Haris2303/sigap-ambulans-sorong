@@ -70,16 +70,134 @@ class PesananAdminTest extends TestCase
         $this->assertSame([$a->id], $ids(['jenis_layanan' => 'persalinan']));
         $this->assertSame([$a->id], $ids(['dari' => now()->subDays(1)->toDateString()]));
         $this->assertSame([$b->id], $ids(['sampai' => now()->subDays(5)->toDateString()]));
-        $this->assertSame([$b->id], $ids(['cari' => 'Besar']));
-        $this->assertSame([$a->id], $ids(['cari' => $a->kode]));
+        $this->assertSame([$b->id], $ids(['q' => 'Besar']));
+        $this->assertSame([$a->id], $ids(['q' => $a->kode]));
         $this->assertEqualsCanonicalizing([$a->id, $b->id], $ids([]));
+    }
+
+    // D6: pencarian ?q= (kode pesanan atau nama pasien, LIKE dengan parameter terikat)
+
+    public function test_pencarian_q_mencari_kode_dan_nama_pasien_tetapi_tidak_lokasi(): void
+    {
+        $a = $this->pesanan(atribut: ['nama_pasien' => 'Budi Santoso', 'lokasi_jemput' => 'Jalan Melati Nomor 5']);
+        $b = $this->pesanan(atribut: ['nama_pasien' => 'Siti Aminah']);
+
+        $ids = fn (string $q) => $this->actingAs($this->admin)->get(route('admin.pesanan.index', ['q' => $q]))->viewData('daftar')->pluck('id')->all();
+
+        $this->assertSame([$a->id], $ids('santoso'));
+        $this->assertSame([$a->id], $ids('Budi S'));
+        $this->assertSame([$b->id], $ids($b->kode));
+        $this->assertSame([$b->id], $ids(substr($b->kode, -4)), 'Sebagian kode juga cocok.');
+        $this->assertSame([], $ids('Melati'), 'Lokasi jemput bukan bagian pencarian.');
+        $this->assertSame([$a->id], $ids('  Budi  '), 'Spasi di tepi dipangkas.');
+        $this->assertEqualsCanonicalizing([$a->id, $b->id], $ids(''));
+    }
+
+    public function test_pencarian_tidak_menganggap_wildcard_dan_tanda_kutip_sebagai_perintah(): void
+    {
+        $biasa = $this->pesanan(atribut: ['nama_pasien' => 'Pasien Biasa']);
+        $persen = $this->pesanan(atribut: ['nama_pasien' => 'Diskon 100% Lunas']);
+        $garis = $this->pesanan(atribut: ['nama_pasien' => 'Nama_Dengan_Garis']);
+
+        $ids = fn (string $q) => $this->actingAs($this->admin)->get(route('admin.pesanan.index', ['q' => $q]))->assertOk()->viewData('daftar')->pluck('id')->all();
+
+        $this->assertSame([$persen->id], $ids('100%'), '% bukan wildcard.');
+        $this->assertSame([$persen->id], $ids('%'), 'Hanya nama yang memuat tanda persen.');
+        $this->assertSame([$garis->id], $ids('Nama_Dengan'), '_ bukan wildcard satu huruf.');
+        $this->assertSame([], $ids('Nama1Dengan'));
+        $this->assertSame([], $ids("' OR 1=1 --"), 'Tanda kutip diperlakukan sebagai teks.');
+        $this->assertSame([], $ids('x\\'), 'Garis miring terbalik diperlakukan sebagai teks.');
+        $this->assertNotNull($biasa->id);
+    }
+
+    public function test_pencarian_menolak_kata_kunci_terlalu_panjang(): void
+    {
+        $this->actingAs($this->admin)->get(route('admin.pesanan.index', ['q' => str_repeat('a', 101)]))->assertSessionHasErrors('q');
+    }
+
+    public function test_kolom_cari_di_bilah_atas_mengisi_ulang_kata_kunci(): void
+    {
+        $this->pesanan(atribut: ['nama_pasien' => 'Siti Aminah']);
+
+        $html = $this->actingAs($this->admin)->get(route('admin.pesanan.index', ['q' => 'Siti']))->assertOk()->getContent();
+
+        $this->assertMatchesRegularExpression('/<input[^>]*type="search"[^>]*name="q"[^>]*value="Siti"/', $html);
+        $this->assertStringContainsString('Siti Aminah', $html);
+    }
+
+    // D6: tab penyaring status (?tab=)
+
+    public function test_tab_perlu_tindakan_dan_berjalan_menyaring_status(): void
+    {
+        $menunggu = $this->pesanan(PesananStatus::Menunggu);
+        $verif = $this->pesanan(PesananStatus::Terverifikasi);
+        $ditugaskan = $this->pesanan(PesananStatus::Ditugaskan);
+        $perjalanan = $this->pesanan(PesananStatus::DalamPerjalanan);
+        $selesai = $this->pesanan(PesananStatus::Selesai);
+        $ditolak = $this->pesanan(PesananStatus::Ditolak);
+
+        $ids = fn (array $q) => $this->actingAs($this->admin)->get(route('admin.pesanan.index', $q))->assertOk()->viewData('daftar')->pluck('id')->all();
+
+        $this->assertEqualsCanonicalizing([$menunggu->id, $verif->id], $ids(['tab' => 'perlu-tindakan']));
+        $this->assertEqualsCanonicalizing([$ditugaskan->id, $perjalanan->id], $ids(['tab' => 'berjalan']));
+        $this->assertCount(6, $ids(['tab' => 'semua']));
+        $this->assertCount(6, $ids([]), 'Tanpa tab sama dengan Semua.');
+        $this->assertCount(6, $ids(['tab' => 'ngawur']), 'Tab tidak dikenal kembali ke Semua.');
+        $this->assertNotNull($selesai->id.$ditolak->id);
+    }
+
+    public function test_tab_digabung_dengan_pencarian_dan_filter_lain(): void
+    {
+        $cocok = $this->pesanan(PesananStatus::Menunggu, ['nama_pasien' => 'Budi Menunggu']);
+        $this->pesanan(PesananStatus::Terverifikasi, ['nama_pasien' => 'Siti Verifikasi']);
+        $this->pesanan(PesananStatus::Selesai, ['nama_pasien' => 'Budi Selesai']);
+
+        $ids = fn (array $q) => $this->actingAs($this->admin)->get(route('admin.pesanan.index', $q))->viewData('daftar')->pluck('id')->all();
+
+        $this->assertSame([$cocok->id], $ids(['tab' => 'perlu-tindakan', 'q' => 'Budi']));
+        $this->assertSame([], $ids(['tab' => 'berjalan', 'q' => 'Budi']));
+        $this->assertSame([$cocok->id], $ids(['tab' => 'perlu-tindakan', 'status' => 'menunggu']));
+        $this->assertSame([], $ids(['tab' => 'perlu-tindakan', 'status' => 'selesai']));
+    }
+
+    public function test_daftar_menampilkan_tab_dan_tabel_di_dalam_kartu_tanpa_padding(): void
+    {
+        $this->pesanan(PesananStatus::Menunggu, ['nama_pasien' => 'Pasien Daftar']);
+
+        $html = $this->actingAs($this->admin)->get(route('admin.pesanan.index', ['tab' => 'perlu-tindakan', 'q' => 'Pasien']))->assertOk()->getContent();
+
+        // Tab berupa tautan yang mempertahankan kata kunci dan hanya mengganti tab; tab aktif bertanda halaman.
+        $this->assertStringContainsString('aria-label="Filter status pesanan"', $html);
+        foreach (['semua' => 'Semua', 'perlu-tindakan' => 'Perlu tindakan', 'berjalan' => 'Berjalan'] as $nilai => $label) {
+            $this->assertMatchesRegularExpression('~<a href="[^"]*tab='.$nilai.'[^"]*q=Pasien[^"]*"[^>]*>\s*'.$label.'\s*</a>|<a href="[^"]*q=Pasien[^"]*tab='.$nilai.'[^"]*"[^>]*>\s*'.$label.'\s*</a>~', $html, $label);
+        }
+        $this->assertMatchesRegularExpression('~<a href="[^"]*tab=perlu-tindakan[^"]*"[^>]*aria-current="page"~', $html);
+
+        // Tabel di dalam kartu tanpa padding: pembungkus kartu, bukan tabel berbayang sendiri.
+        $kartu = strpos($html, 'overflow-hidden');
+        $tab = strpos($html, 'aria-label="Filter status pesanan"');
+        $tabel = strpos($html, '<table');
+        $this->assertNotFalse($kartu);
+        $this->assertLessThan($tab, $kartu, 'Tab berada di dalam kartu.');
+        $this->assertLessThan($tabel, $tab, 'Tabel berada di bawah tab, di kartu yang sama.');
+        $this->assertStringContainsString('<div class="overflow-x-auto">', $html, 'Tabel tanpa bingkai ganda di dalam kartu.');
+        $this->assertStringContainsString('Pasien Daftar', $html);
+        $this->assertStringContainsString('rounded-full px-2.5', $html);
+    }
+
+    public function test_tab_tanpa_hasil_menampilkan_keadaan_kosong_per_tab(): void
+    {
+        $this->pesanan(PesananStatus::Selesai);
+
+        $this->actingAs($this->admin)->get(route('admin.pesanan.index', ['tab' => 'berjalan']))
+            ->assertOk()->assertSee('Belum ada pesanan di tab ini.')->assertDontSee('Atur ulang');
     }
 
     public function test_daftar_kosong_dan_tidak_cocok(): void
     {
         $this->actingAs($this->admin)->get(route('admin.pesanan.index'))->assertSee('Belum ada pesanan.');
         $this->pesanan();
-        $this->actingAs($this->admin)->get(route('admin.pesanan.index', ['cari' => 'zzzz']))
+        $this->actingAs($this->admin)->get(route('admin.pesanan.index', ['q' => 'zzzz']))
             ->assertSee('Tidak ada pesanan yang cocok dengan filter.')->assertSee('Atur ulang');
     }
 

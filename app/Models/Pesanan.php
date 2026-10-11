@@ -79,6 +79,18 @@ class Pesanan extends Model
         $query->whereIn('status', array_column($status, 'value'));
     }
 
+    /**
+     * Pencarian kata kunci pada kode dan nama pasien. LIKE dengan parameter terikat; %, _, dan ! dalam kata kunci
+     * dianggap teks biasa (ESCAPE '!', berlaku sama di SQLite dan MySQL).
+     */
+    public function scopeCari(Builder $query, string $kata): void
+    {
+        $pola = '%'.str_replace(['!', '%', '_'], ['!!', '!%', '!_'], $kata).'%';
+
+        $query->where(fn (Builder $q) => $q->whereRaw("kode LIKE ? ESCAPE '!'", [$pola])
+            ->orWhereRaw("nama_pasien LIKE ? ESCAPE '!'", [$pola]));
+    }
+
     /** Gawat dulu, lalu yang paling lama menunggu. */
     public function scopePrioritas(Builder $query): void
     {

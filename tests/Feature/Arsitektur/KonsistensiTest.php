@@ -99,6 +99,20 @@ class KonsistensiTest extends TestCase
         }
     }
 
+    public function test_komponen_lama_ditolak_di_halaman_dan_komponen_dasbor_diterima(): void
+    {
+        $aturan = collect($this->muatAturan())->firstWhere('id', 'komponen-lama');
+        $this->assertNotNull($aturan, 'Aturan komponen-lama belum ada di konsistensi.json.');
+        $this->assertContains('^resources/views/components/', $aturan['kecuali']);
+
+        foreach (['<x-ui.ringkasan>', '<x-ui.ringkasan class="x">', '<x-ui.ringkasan-sel label="A" />', '<x-ui.grafik-batang :data="$g" />'] as $lama) {
+            $this->assertSame(1, preg_match($this->regex($aturan), $lama), $lama.' harus ditolak');
+        }
+        foreach (['<x-ui.stat tone="primary" />', '<x-ui.chart.bar :labels="$l" />', '<x-ui.chart.donut />', '<x-ui.tile />', '<x-ui.ringkasanbaru />'] as $baru) {
+            $this->assertSame(0, preg_match($this->regex($aturan), $baru), $baru.' harus diterima');
+        }
+    }
+
     public function test_warna_css_menerima_hanya_var_token_dan_menolak_nilai_mentah(): void
     {
         $aturan = collect($this->muatAturan())->firstWhere('id', 'warna-css');

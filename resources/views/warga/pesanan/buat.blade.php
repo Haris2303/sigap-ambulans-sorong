@@ -3,56 +3,70 @@
 
     <form method="POST" action="{{ route('warga.pesanan.tinjau') }}" class="max-w-xl">
         @csrf
-        <div class="space-y-8">
-            <fieldset>
-                <legend class="mb-2 text-title-l">Jenis layanan</legend>
-                <div class="space-y-2">
-                    @foreach (\App\Enums\JenisLayanan::cases() as $layanan)
-                        <x-ui.opsi-baris nama="jenis_layanan" :nilai="$layanan->value" :judul="$layanan->label()" :deskripsi="$layanan->deskripsi()"
-                            :terpilih="($draf['jenis_layanan'] ?? \App\Enums\JenisLayanan::Darurat->value) === $layanan->value" />
-                    @endforeach
-                </div>
-                @error('jenis_layanan')<p class="mt-1 text-body-m text-error">{{ $message }}</p>@enderror
-            </fieldset>
+        <div class="space-y-5">
+            <x-ui.panel>
+                <fieldset>
+                    <legend class="mb-2 text-title-l">Jenis layanan</legend>
+                    <div class="space-y-2">
+                        @foreach (\App\Enums\JenisLayanan::cases() as $layanan)
+                            <x-ui.opsi-baris nama="jenis_layanan" :nilai="$layanan->value" :judul="$layanan->label()" :deskripsi="$layanan->deskripsi()"
+                                :terpilih="($draf['jenis_layanan'] ?? \App\Enums\JenisLayanan::Darurat->value) === $layanan->value" />
+                        @endforeach
+                    </div>
+                    @error('jenis_layanan')<p class="mt-1 text-body-m text-error">{{ $message }}</p>@enderror
+                </fieldset>
+            </x-ui.panel>
 
-            <fieldset>
-                <legend class="mb-2 text-title-l">Tingkat darurat</legend>
-                <div class="space-y-2">
-                    @foreach (\App\Enums\TingkatDarurat::cases() as $tingkat)
-                        <x-ui.opsi-baris nama="tingkat_darurat" :nilai="$tingkat->value" :judul="$tingkat->label()" :deskripsi="$tingkat->deskripsi()"
-                            :terpilih="($draf['tingkat_darurat'] ?? \App\Enums\TingkatDarurat::Biasa->value) === $tingkat->value" />
-                    @endforeach
-                </div>
-                @error('tingkat_darurat')<p class="mt-1 text-body-m text-error">{{ $message }}</p>@enderror
-            </fieldset>
+            <x-ui.panel>
 
-            <fieldset class="space-y-3">
-                <legend class="mb-2 text-title-l">Lokasi jemput</legend>
-                <x-peta.pemilih :nilai-lat="$draf['lat_jemput'] ?? null" :nilai-lng="$draf['lng_jemput'] ?? null" />
-                <x-ui.isian nama="lokasi_jemput" label="Alamat lokasi jemput" :nilai="$draf['lokasi_jemput'] ?? null" bantuan="Tulis nama jalan, patokan, atau kelurahan. Terisi otomatis bila Anda memilih titik di peta." :wajib="true" />
-            </fieldset>
+                <fieldset>
+                    <legend class="mb-2 text-title-l">Tingkat darurat</legend>
+                    <div class="space-y-2">
+                        @foreach (\App\Enums\TingkatDarurat::cases() as $tingkat)
+                            <x-ui.opsi-baris nama="tingkat_darurat" :nilai="$tingkat->value" :judul="$tingkat->label()" :deskripsi="$tingkat->deskripsi()"
+                                :terpilih="($draf['tingkat_darurat'] ?? \App\Enums\TingkatDarurat::Biasa->value) === $tingkat->value" />
+                        @endforeach
+                    </div>
+                    @error('tingkat_darurat')<p class="mt-1 text-body-m text-error">{{ $message }}</p>@enderror
+                </fieldset>
+            </x-ui.panel>
 
-            <fieldset>
-                <legend class="mb-2 text-title-l">Faskes tujuan</legend>
-                <x-ui.pilihan nama="faskes_tujuan_id" label="Faskes tujuan"
-                    :opsi="$faskes->mapWithKeys(fn ($f) => [$f->id => $f->nama.' ('.$f->jenis->label().')'])->all()"
-                    :nilai="$draf['faskes_tujuan_id'] ?? null" kosong="Belum ditentukan"
-                    bantuan="Wajib untuk rujukan. Untuk layanan lain boleh dikosongkan." />
-                <div class="mt-3">
-                    @foreach ($faskes as $f)
-                        <div hidden data-faskes="{{ $f->id }}" class="rounded-md border border-outline-variant bg-surface-container-lowest p-3">
-                            <x-ui.ketersediaan :faskes="$f" />
-                        </div>
-                    @endforeach
-                </div>
-            </fieldset>
+            <x-ui.panel>
 
-            <fieldset class="space-y-5">
-                <legend class="mb-2 text-title-l">Data pasien</legend>
-                <x-ui.isian nama="nama_pasien" label="Nama pasien" :nilai="$draf['nama_pasien'] ?? null" :wajib="true" autocomplete="off" />
-                <x-ui.isian nama="no_telepon_kontak" label="Nomor kontak yang bisa dihubungi" tipe="tel" :nilai="$noTeleponAwal" :wajib="true" inputmode="tel" />
-                <x-ui.area-teks nama="catatan" label="Catatan untuk petugas" :nilai="$draf['catatan'] ?? null" bantuan="Contoh: kondisi pasien, patokan rumah, atau pintu masuk." />
-            </fieldset>
+                <fieldset class="space-y-3">
+                    <legend class="mb-2 text-title-l">Lokasi jemput</legend>
+                    <x-peta.pemilih :nilai-lat="$draf['lat_jemput'] ?? null" :nilai-lng="$draf['lng_jemput'] ?? null" />
+                    <x-ui.isian nama="lokasi_jemput" label="Alamat lokasi jemput" :nilai="$draf['lokasi_jemput'] ?? null" bantuan="Tulis nama jalan, patokan, atau kelurahan. Terisi otomatis bila Anda memilih titik di peta." :wajib="true" />
+                </fieldset>
+            </x-ui.panel>
+
+            <x-ui.panel>
+
+                <fieldset>
+                    <legend class="mb-2 text-title-l">Faskes tujuan</legend>
+                    <x-ui.pilihan nama="faskes_tujuan_id" label="Faskes tujuan"
+                        :opsi="$faskes->mapWithKeys(fn ($f) => [$f->id => $f->nama.' ('.$f->jenis->label().')'])->all()"
+                        :nilai="$draf['faskes_tujuan_id'] ?? null" kosong="Belum ditentukan"
+                        bantuan="Wajib untuk rujukan. Untuk layanan lain boleh dikosongkan." />
+                    <div class="mt-3">
+                        @foreach ($faskes as $f)
+                            <div hidden data-faskes="{{ $f->id }}" class="rounded-md border border-outline-variant bg-surface-container-lowest p-3">
+                                <x-ui.ketersediaan :faskes="$f" />
+                            </div>
+                        @endforeach
+                    </div>
+                </fieldset>
+            </x-ui.panel>
+
+            <x-ui.panel>
+
+                <fieldset class="space-y-5">
+                    <legend class="mb-2 text-title-l">Data pasien</legend>
+                    <x-ui.isian nama="nama_pasien" label="Nama pasien" :nilai="$draf['nama_pasien'] ?? null" :wajib="true" autocomplete="off" />
+                    <x-ui.isian nama="no_telepon_kontak" label="Nomor kontak yang bisa dihubungi" tipe="tel" :nilai="$noTeleponAwal" :wajib="true" inputmode="tel" />
+                    <x-ui.area-teks nama="catatan" label="Catatan untuk petugas" :nilai="$draf['catatan'] ?? null" bantuan="Contoh: kondisi pasien, patokan rumah, atau pintu masuk." />
+                </fieldset>
+            </x-ui.panel>
         </div>
 
         <div class="sticky bottom-0 -mx-4 mt-8 bg-surface-container p-4 shadow-level-1 md:static md:mx-0 md:bg-transparent md:p-0 md:shadow-none">

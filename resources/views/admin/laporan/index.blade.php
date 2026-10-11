@@ -14,12 +14,12 @@
         </div>
     </form>
 
-    <x-ui.ringkasan>
-        <x-ui.ringkasan-sel label="Total pesanan" :nilai="$data['total']" />
-        <x-ui.ringkasan-sel label="Selesai" :nilai="$data['per_status'][\App\Enums\PesananStatus::Selesai->label()]" nada="sukses" />
-        <x-ui.ringkasan-sel label="Rata-rata waktu respons" :nilai="\App\Services\LaporanPesanan::formatDurasi($data['respons']['rata'])" :keterangan="$data['respons']['jumlah'].' pesanan ditugaskan'" />
-        <x-ui.ringkasan-sel label="Rata-rata durasi layanan" :nilai="\App\Services\LaporanPesanan::formatDurasi($data['durasi']['rata'])" :keterangan="$data['durasi']['jumlah'].' pesanan selesai'" />
-    </x-ui.ringkasan>
+    <div class="flex flex-wrap gap-5">
+        <x-ui.stat tone="primary" icon="clipboard-list" :value="$data['total']" label="Total pesanan" class="min-w-0 flex-[1_1_14rem]" />
+        <x-ui.stat tone="success" icon="circle-check" :value="$data['per_status'][\App\Enums\PesananStatus::Selesai->label()]" label="Selesai" class="min-w-0 flex-[1_1_14rem]" />
+        <x-ui.stat tone="warning" icon="clock" :value="\App\Services\LaporanPesanan::formatDurasi($data['respons']['rata'])" label="Rata-rata waktu respons" :hint="$data['respons']['jumlah'].' pesanan ditugaskan'" class="min-w-0 flex-[1_1_14rem]" />
+        <x-ui.stat tone="primary" icon="ambulance" :value="\App\Services\LaporanPesanan::formatDurasi($data['durasi']['rata'])" label="Rata-rata durasi layanan" :hint="$data['durasi']['jumlah'].' pesanan selesai'" class="min-w-0 flex-[1_1_14rem]" />
+    </div>
 
     <x-ui.bagian judul="Pesanan per status">
         <x-ui.tabel>

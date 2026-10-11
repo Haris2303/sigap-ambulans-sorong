@@ -5,10 +5,10 @@
         </x-slot:aksi>
     </x-ui.judul-halaman>
 
-    <x-ui.ringkasan>
-        <x-ui.ringkasan-sel label="Pesanan aktif" :nilai="$aktif->count()" nada="info" />
-        <x-ui.ringkasan-sel label="Pesanan selesai" :nilai="$jumlahSelesai" nada="sukses" keterangan="Dari {{ $jumlahSemua }} pesanan" />
-    </x-ui.ringkasan>
+    <div class="flex flex-wrap gap-5">
+        <x-ui.stat tone="primary" icon="clipboard-list" :value="$aktif->count()" label="Pesanan aktif" class="min-w-0 flex-[1_1_16rem]" />
+        <x-ui.stat tone="success" icon="circle-check" :value="$jumlahSelesai" label="Pesanan selesai" :hint="'Dari '.$jumlahSemua.' pesanan'" class="min-w-0 flex-[1_1_16rem]" />
+    </div>
 
     <x-ui.bagian judul="Pesanan aktif">
         <x-slot:aksi>

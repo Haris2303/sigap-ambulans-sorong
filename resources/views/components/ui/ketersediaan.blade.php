@@ -12,14 +12,5 @@
         <dt class="text-on-surface-variant">Ambulans tersedia</dt>
         <dd class="tabular-nums">{{ $faskes->ambulans_tersedia_count ?? '-' }}</dd>
     </dl>
-    <p class="mt-2 flex flex-wrap items-center gap-2 text-body-s text-on-surface-variant">
-        @if ($faskes->belumDiperbarui())
-            <x-ui.lencana nada="peringatan">Belum diperbarui</x-ui.lencana>
-        @else
-            <span>Diperbarui <x-ui.waktu :nilai="$faskes->ketersediaan_diperbarui_pada" :relatif="true" /></span>
-            @if ($faskes->dataLama())
-                <x-ui.lencana nada="peringatan">Data lama</x-ui.lencana>
-            @endif
-        @endif
-    </p>
+    <x-ui.pembaruan :faskes="$faskes" class="mt-2" />
 </div>
