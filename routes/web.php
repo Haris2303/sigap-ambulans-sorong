@@ -13,6 +13,9 @@ use App\Http\Controllers\Auth\RegisterController;
 use App\Http\Controllers\Publik\BerandaController;
 use App\Http\Controllers\Publik\FaskesController;
 use App\Http\Controllers\Publik\KatalogUiController;
+use App\Http\Controllers\Petugas\AmbulansController as PetugasAmbulansController;
+use App\Http\Controllers\Petugas\DashboardController as PetugasDashboardController;
+use App\Http\Controllers\Petugas\KetersediaanController as PetugasKetersediaanController;
 use App\Http\Controllers\Sopir\DashboardController as SopirDashboardController;
 use App\Http\Controllers\Warga\BerandaController as WargaBerandaController;
 use App\Http\Controllers\Warga\PesananController as WargaPesananController;
@@ -42,6 +45,15 @@ Route::middleware(['auth', 'role:warga'])->prefix('warga')->name('warga.')->grou
     Route::get('/pesanan/{pesanan}/status', [WargaPesananController::class, 'status'])->name('pesanan.status');
     Route::get('/pesanan/{pesanan}', [WargaPesananController::class, 'show'])->name('pesanan.show');
     Route::put('/pesanan/{pesanan}/batal', [WargaPesananController::class, 'batalkan'])->name('pesanan.batalkan');
+});
+
+// Petugas Faskes
+Route::middleware(['auth', 'role:petugas_faskes'])->prefix('petugas')->name('petugas.')->group(function () {
+    Route::get('/', [PetugasDashboardController::class, 'dashboard'])->name('dashboard');
+    Route::get('/pesanan/{pesanan}', [PetugasDashboardController::class, 'pesananShow'])->name('pesanan.show');
+    Route::get('/ketersediaan', [PetugasKetersediaanController::class, 'edit'])->name('ketersediaan.edit');
+    Route::put('/ketersediaan', [PetugasKetersediaanController::class, 'update'])->name('ketersediaan.update');
+    Route::put('/ambulans/{ambulans}/status', [PetugasAmbulansController::class, 'status'])->name('ambulans.status');
 });
 
 // Sopir
