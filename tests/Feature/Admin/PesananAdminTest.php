@@ -314,6 +314,44 @@ class PesananAdminTest extends TestCase
         $this->assertSame(PesananStatus::Menunggu, $pesanan->fresh()->status);
     }
 
+    public function test_panel_aksi_berada_setelah_lokasi_dan_sebelum_bagian_lain_agar_tidak_di_dasar_halaman_ponsel(): void
+    {
+        [, $ambulans, $sopir] = $this->sumberDaya();
+        $pesanan = $this->pesanan(PesananStatus::Ditugaskan, ['ambulans_id' => $ambulans->id, 'sopir_id' => $sopir->id]);
+
+        $html = $this->actingAs($this->admin)->get(route('admin.pesanan.show', $pesanan))->assertOk()->getContent();
+
+        // Urutan DOM = urutan visual di ponsel (fokus papan ketik mengikuti urutan yang sama).
+        $urutan = array_map(fn (string $teks) => strpos($html, $teks), [
+            '>Pemohon dan pasien<', '>Lokasi jemput<', 'id="aksi"', '>Faskes tujuan<', '>Ambulans dan sopir<', '>Riwayat status<',
+        ]);
+        $this->assertNotContains(false, $urutan);
+        $diurutkan = $urutan;
+        sort($diurutkan);
+        $this->assertSame($diurutkan, $urutan, 'Aksi harus muncul tepat setelah Lokasi jemput.');
+
+        // Panel aksi isinya berada di dalam #aksi, sebelum bagian Faskes tujuan.
+        $this->assertGreaterThan($urutan[2], strpos($html, '>Lepas penugasan<'));
+        $this->assertLessThan($urutan[3], strpos($html, '>Batalkan pesanan<'));
+
+        // Di lg ke atas: dua kolom, aksi di kolom kanan melintasi semua baris, bagian lain di dua kolom kiri.
+        $this->assertStringContainsString('lg:grid-cols-3 lg:grid-rows-[auto_auto_auto_auto_1fr]', $html);
+        $this->assertStringContainsString('id="aksi" class="space-y-6 lg:col-start-3 lg:row-span-5 lg:row-start-1 lg:self-start"', $html);
+        $this->assertSame(5, substr_count($html, 'lg:col-span-2 lg:col-start-1'), 'Pemohon, Lokasi, Faskes tujuan, Ambulans, dan Riwayat.');
+    }
+
+    public function test_aksi_verifikasi_dan_tolak_pesanan_menunggu_ada_di_dalam_panel_aksi(): void
+    {
+        $pesanan = $this->pesanan();
+
+        $html = $this->actingAs($this->admin)->get(route('admin.pesanan.show', $pesanan))->assertOk()->getContent();
+
+        $aksi = strpos($html, 'id="aksi"');
+        $this->assertGreaterThan($aksi, strpos($html, route('admin.pesanan.verifikasi', $pesanan)));
+        $this->assertGreaterThan($aksi, strpos($html, route('admin.pesanan.tolak', $pesanan)));
+        $this->assertLessThan(strpos($html, '>Faskes tujuan<'), strpos($html, route('admin.pesanan.tolak', $pesanan)));
+    }
+
     // T5.3 tugaskan dan lepas
 
     public function test_tugaskan_berhasil(): void
