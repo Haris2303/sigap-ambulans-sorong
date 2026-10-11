@@ -570,7 +570,7 @@ Semua dikerjakan di branch `material-design`, satu commit per temuan, dengan tes
 | T5 | Navigasi sopir | `83c05e2`, `cd332d2` | Komponen `navigasi`; skema `geo:` dengan cadangan OpenStreetMap. |
 | T6 | Gawat di kartu utama | `00973de` | Dihitung dalam query yang sama; ikut polling. |
 | T7 | Waktu tunggu | `751247a` | Komponen `waktu-tunggu`; dihitung maju di klien dari detik yang dikirim server. |
-| T8 | Nomor darurat | commit T8 | Komponen `kontak-darurat`; nomor dari `.env`. |
+| T8 | Nomor darurat | `864e203` | Komponen `kontak-darurat`; nomor dari `.env`. |
 
 Penyimpangan dari usulan semula:
 
