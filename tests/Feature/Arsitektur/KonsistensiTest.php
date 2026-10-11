@@ -59,6 +59,31 @@ class KonsistensiTest extends TestCase
         }
     }
 
+    public function test_token_lama_ditolak_dan_token_material_3_diterima(): void
+    {
+        $aturan = collect($this->muatAturan())->firstWhere('id', 'token-lama');
+        $this->assertNotNull($aturan, 'Aturan token-lama belum ada di konsistensi.json.');
+        $this->assertSame('larang', $aturan['tipe']);
+
+        $dilarang = ['bg-canvas', 'divide-line', 'border-line', 'border-control-border', 'text-on-surface-muted', 'hover:bg-primary-soft',
+            'hover:text-primary-hover', 'bg-danger', 'text-danger', 'border-danger', 'bg-danger-soft', 'bg-warning-soft',
+            'bg-success-soft', 'bg-neutral-soft', 'text-h1', 'text-h2', 'text-h3', 'text-body', 'text-body-sm', 'text-label', 'text-caption',
+            'text-display', 'font-semibold', 'shadow-overlay', 'w-rail', 'ukuran="sm"'];
+        foreach ($dilarang as $kelas) {
+            $this->assertSame(1, preg_match($this->regex($aturan), '<div class="flex '.$kelas.' gap-2">'), $kelas.' harus ditolak');
+        }
+
+        $diterima = ['bg-surface', 'bg-surface-container-lowest', 'bg-surface-container-high', 'text-body-l', 'text-body-m', 'text-body-s',
+            'text-label-l', 'text-label-m', 'text-display-s', 'text-headline-s', 'text-title-l', 'text-title-m', 'font-medium', 'font-normal',
+            'border-outline', 'border-outline-variant', 'border-error', 'bg-error', 'bg-error-container', 'text-on-error-container',
+            'bg-warning-container', 'bg-success-container', 'text-success', 'text-warning', 'text-on-surface-variant',
+            'hover:text-on-primary-container', 'bg-primary-container', 'bg-secondary-container', 'w-drawer', 'min-h-touch',
+            'shadow-level-3', 'bg-linear-to-r', 'text-primary', 'ukuran="lg"', 'ukuran="md"'];
+        foreach ($diterima as $kelas) {
+            $this->assertSame(0, preg_match($this->regex($aturan), '<div class="flex '.$kelas.' gap-2">'), $kelas.' harus diterima');
+        }
+    }
+
     public function test_warna_css_menerima_hanya_var_token_dan_menolak_nilai_mentah(): void
     {
         $aturan = collect($this->muatAturan())->firstWhere('id', 'warna-css');

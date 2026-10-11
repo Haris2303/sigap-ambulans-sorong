@@ -15,12 +15,11 @@ use Illuminate\Pagination\LengthAwarePaginator;
 use Illuminate\Support\Facades\Blade;
 use Illuminate\Support\ViewErrorBag;
 use Illuminate\View\ViewException;
-use Tests\Concerns\MemindaiNamaLama;
 use Tests\TestCase;
 
 class KomponenUiTest extends TestCase
 {
-    use MemindaiNamaLama, RefreshDatabase;
+    use RefreshDatabase;
 
     private function render(string $blade, array $data = []): string
     {
@@ -51,24 +50,6 @@ class KomponenUiTest extends TestCase
         } catch (ViewException $e) {
             $this->assertStringContainsString('Ikon "tidak-ada" tidak ada di daftar ikon', $e->getMessage());
         }
-    }
-
-    /**
-     * Komponen yang sudah dimigrasikan ke Material 3 tidak boleh memuat nama token atau kelas lama.
-     * Daftar bertambah tiap langkah migrasi (docs/MIGRASI_M3.md).
-     */
-    public function test_komponen_m3_tidak_memuat_nama_token_lama(): void
-    {
-        $sudahM3 = ['tombol', 'ikon', 'isian', 'pilihan', 'area-teks', 'centang', 'lencana', 'lencana-status', 'peringatan', 'flash',
-            'dialog', 'panel', 'tabel', 'opsi-baris', 'snackbar', 'judul-halaman', 'bagian', 'kosong', 'ringkasan', 'ringkasan-sel',
-            'rincian', 'rincian-baris', 'waktu', 'grafik-batang', 'paginasi', 'linimasa', 'ketersediaan'];
-        $temuan = $this->cariNamaLama(array_merge(
-            array_map(fn (string $nama) => 'resources/views/components/ui/'.$nama.'.blade.php', $sudahM3),
-            array_map(fn (string $nama) => 'resources/views/components/peta/'.$nama.'.blade.php', ['faskes', 'pelacak', 'pemilih']),
-            ['resources/js/peta.js'],
-        ));
-
-        $this->assertSame([], $temuan, "Nama lama masih ada:\n".implode("\n", $temuan));
     }
 
     public function test_setiap_ikon_dalam_daftar_kit_dapat_dirender(): void

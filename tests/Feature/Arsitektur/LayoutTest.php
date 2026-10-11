@@ -8,13 +8,12 @@ use Illuminate\Foundation\Testing\RefreshDatabase;
 use Illuminate\Support\Facades\Blade;
 use Illuminate\Support\Facades\Route;
 use Tests\Concerns\MembuatPengguna;
-use Tests\Concerns\MemindaiNamaLama;
 use Tests\Concerns\MenyediakanRuteSementara;
 use Tests\TestCase;
 
 class LayoutTest extends TestCase
 {
-    use MembuatPengguna, MemindaiNamaLama, MenyediakanRuteSementara, RefreshDatabase;
+    use MembuatPengguna, MenyediakanRuteSementara, RefreshDatabase;
 
     protected function setUp(): void
     {
@@ -150,16 +149,6 @@ class LayoutTest extends TestCase
         $html = Blade::render('<x-layouts.app judul="Dasbor">isi</x-layouts.app>');
 
         $this->assertMatchesRegularExpression('/data-lencana="pesanan_menunggu"[^>]*\shidden[\s>]/', $html);
-    }
-
-    public function test_layout_m3_tidak_memuat_nama_token_lama(): void
-    {
-        $temuan = $this->cariNamaLama(array_map(
-            fn (string $nama) => 'resources/views/components/layouts/'.$nama.'.blade.php',
-            ['dasar', 'app', 'publik', 'auth'],
-        ));
-
-        $this->assertSame([], $temuan, 'Nama lama masih ada: '.implode('; ', $temuan));
     }
 
     public function test_layout_menerima_peta_dan_menampilkan_flash_di_atas_isi(): void

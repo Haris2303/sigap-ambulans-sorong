@@ -57,6 +57,24 @@
       "pola": "(?<![\\w-])(?:bg-(?:linear|radial|conic|gradient)[\\w./-]*|(?:from|via|to)-(?:primary|surface|canvas|danger|error|warning|success|neutral|secondary|inverse|outline|on|line|control|scrim)[\\w./-]*|(?:backdrop-)?blur(?:-(?:xs|sm|md|lg|xl|2xl|3xl|none))?|drop-shadow[\\w-]*|shadow-(?:xs|sm|md|lg|xl|2xl|inner)|(?:rounded|shadow)(?:-[a-z]{1,2})?-\\[[^\\]]*\\]|rounded(?:-[a-z]{1,2})?-(?:2xl|3xl|4xl)|tracking-[a-z]+|uppercase|italic|font-(?:bold|extrabold|black|thin|extralight|light)|text-(?:xs|sm|base|lg|xl|[2-9]xl)|animate-(?:bounce|ping|pulse)|hover:-?(?:translate|scale)-[\\w./-]+)(?![\\w-])"
     },
     {
+      "id": "token-lama",
+      "tipe": "larang",
+      "pesan": "Nama token atau kelas pra-Material 3. Pakai padanan M3: bg-canvas -> bg-surface; border-line, divide-line -> border-outline-variant, divide-outline-variant; border-control-border -> border-outline; text-on-surface-muted -> text-on-surface-variant; *-primary-soft -> bg-primary-container atau bg-secondary-container; hover:*-primary-hover -> lapisan-keadaan; *-danger -> *-error; *-danger-soft, *-warning-soft, *-success-soft -> *-error-container, *-warning-container, *-success-container; *-neutral-soft -> bg-surface-container-highest; text-h1/h2/h3 -> text-headline-s/title-l/title-m; text-body, text-body-sm, text-label, text-caption, text-display -> text-body-l, text-body-m, text-label-l, text-body-s, text-display-s; font-semibold -> font-medium; shadow-overlay -> shadow-level-3; w-rail -> w-drawer; ukuran=\"sm\" pada tombol dihapus (DESIGN.md).",
+      "folder": [
+        "resources/views",
+        "resources/js",
+        "app/Support"
+      ],
+      "ekstensi": [
+        ".php",
+        ".js"
+      ],
+      "kecuali": [
+        "^resources/views/pdf/"
+      ],
+      "pola": "(?<![\\w-])(?:(?:bg|text|border|divide|ring|outline|placeholder|fill|stroke)-(?:canvas|line|control-border|primary-soft|primary-hover|danger|danger-soft|danger-hover|warning-soft|success-soft|neutral-soft|on-surface-muted)|text-(?:h[123]|body|body-sm|label|caption|display)|shadow-overlay|font-semibold|w-rail)(?![\\w-])|\\bukuran=\"sm\""
+    },
+    {
       "id": "gaya-mentah",
       "tipe": "larang",
       "pesan": "Gaya/struktur dokumen mentah di halaman (<style>, style=, <html>, <head>, <body>). Gunakan layout & komponen.",
