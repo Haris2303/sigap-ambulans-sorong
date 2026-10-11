@@ -1,5 +1,5 @@
 {
-  "versi": 2,
+  "versi": 3,
   "keterangan": "Dijalankan runner setelah tiap sesi dan oleh KonsistensiTest. Tipe larang: pola tidak boleh cocok pada baris mana pun. Tipe awal: baris non-kosong pertama (komentar Blade satu baris diabaikan) harus cocok. Kecuali = regex terhadap path relatif berformat /. pola = sintaks .NET (runner); pola_php (opsional) = padanan sintaks PCRE untuk KonsistensiTest, bila tidak ada dipakai pola.",
   "aturan": [
     {
@@ -44,7 +44,7 @@
     {
       "id": "gaya-dilarang",
       "tipe": "larang",
-      "pesan": "Gaya yang dilarang DESIGN.md (gradien, blur, bayangan dan sudut di luar token M3, nilai sembarang, teks di luar skala, tracking, uppercase, italic, bold, animasi atau efek angkat). Bayangan yang diizinkan hanya token: shadow-none, shadow-level-1..3, shadow-card, shadow-card-raised, shadow-nav-active. Lihat DESIGN.md bagian Do's and Don'ts.",
+      "pesan": "Gaya yang dilarang DESIGN.md (gradien, blur, bayangan dan sudut di luar token, nilai sembarang, tracking, uppercase, italic, kelas bobot, animasi atau efek angkat). Bayangan hanya token: shadow-none, shadow-card, shadow-control, shadow-chip, shadow-overlay (arah B), serta shadow-level-1..3, shadow-card-raised, shadow-nav-active (lama, dihapus di R9); tanpa pengubah warna atau opasitas. Sudut hanya rounded-sm|md|lg|xl|2xl|full (dan xs lama). Bobot hanya dari gaya teks token (text-<gaya>): font-thin, font-extralight, font-light, font-semibold, font-bold, font-extrabold, font-black, font-<angka>, dan font-[...] dilarang; font-normal dan font-medium sementara diizinkan karena masih dipakai komponen lama, dan ikut dilarang setelah pemakaiannya dialihkan (paling lambat R9). Lihat DESIGN.md bagian Do's and Don'ts dan docs/RETEMA_B.md 4.10.",
       "folder": [
         "resources/views"
       ],
@@ -54,12 +54,12 @@
       "kecuali": [
         "^resources/views/pdf/"
       ],
-      "pola": "(?<![\\w-])(?:bg-(?:linear|radial|conic|gradient)[\\w./-]*|(?:from|via|to)-(?:primary|surface|canvas|danger|error|warning|success|neutral|secondary|inverse|outline|on|line|control|scrim)[\\w./-]*|(?:backdrop-)?blur(?:-(?:xs|sm|md|lg|xl|2xl|3xl|none))?|drop-shadow[\\w-]*|shadow-(?:xs|sm|md|lg|xl|2xl|inner)|(?:rounded|shadow)(?:-[a-z]{1,2})?-\\[[^\\]]*\\]|rounded(?:-[a-z]{1,2})?-(?:2xl|3xl|4xl)|tracking-[a-z]+|uppercase|italic|font-(?:bold|extrabold|black|thin|extralight|light)|text-(?:xs|sm|base|lg|xl|[2-9]xl)|animate-(?:bounce|ping|pulse)|hover:-?(?:translate|scale)-[\\w./-]+)(?![\\w-])"
+      "pola": "(?<![\\w-])(?:bg-(?:linear|radial|conic|gradient)[\\w./-]*|(?:from|via|to)-(?:primary|surface|canvas|danger|error|warning|success|neutral|secondary|tertiary|selected|chart|inverse|outline|on|line|control|scrim)[\\w./-]*|(?:backdrop-)?blur(?:-(?:xs|sm|md|lg|xl|2xl|3xl|none))?|drop-shadow[\\w-]*|shadow-(?!(?:none|card|control|chip|overlay|level-[123]|card-raised|nav-active)(?![\\w./-]))[\\w./\\[\\]-]+|rounded(?:-[a-z]{1,2})?-\\[[^\\]]*\\]|rounded(?:-[a-z]{1,2})?-(?:3xl|4xl)|tracking-[a-z]+|uppercase|italic|font-(?:thin|extralight|light|semibold|bold|extrabold|black|\\d+|\\[[^\\]]*\\])|animate-(?:bounce|ping|pulse)|hover:-?(?:translate|scale)-[\\w./-]+)(?![\\w-])"
     },
     {
-      "id": "token-lama",
+      "id": "teks-mentah",
       "tipe": "larang",
-      "pesan": "Nama token atau kelas pra-Material 3. Pakai padanan M3: border-line, divide-line -> border-outline-variant, divide-outline-variant; border-control-border -> border-outline; text-on-surface-muted -> text-on-surface-variant; *-primary-soft -> bg-primary-container atau bg-secondary-container; hover:*-primary-hover -> lapisan-keadaan; *-danger -> *-error; *-danger-soft, *-warning-soft, *-success-soft -> *-error-container, *-warning-container, *-success-container; *-neutral-soft -> bg-surface-container-highest; text-h1/h2/h3 -> text-headline-s/title-l/title-m; text-body, text-body-sm, text-label, text-caption, text-display -> text-body-l, text-body-m, text-label-l, text-body-s, text-display-s; font-semibold -> font-medium; shadow-overlay -> shadow-level-3; w-rail -> w-drawer; ukuran=\"sm\" pada tombol dihapus (DESIGN.md).",
+      "pesan": "Ukuran teks mentah (text-xs, text-sm, text-base, text-lg, text-xl sampai text-9xl, atau nilai sembarang seperti text-[13px]). Pakai gaya token text-<gaya> (DESIGN.md bagian Typography), yang sekaligus mengatur tinggi baris, bobot, dan jarak huruf.",
       "folder": [
         "resources/views",
         "resources/js",
@@ -72,7 +72,25 @@
       "kecuali": [
         "^resources/views/pdf/"
       ],
-      "pola": "(?<![\\w-])(?:(?:bg|text|border|divide|ring|outline|placeholder|fill|stroke)-(?:line|control-border|primary-soft|primary-hover|danger|danger-soft|danger-hover|warning-soft|success-soft|neutral-soft|on-surface-muted)|text-(?:h[123]|body|body-sm|label|caption|display)|shadow-overlay|font-semibold|w-rail)(?![\\w-])|\\bukuran=\"sm\""
+      "pola": "(?<![\\w-])text-(?:(?:xs|sm|base|lg|xl|[2-9]xl)(?![\\w-])|\\[(?:length:|-?[\\d.]|(?:clamp|calc|min|max)\\())"
+    },
+    {
+      "id": "token-lama",
+      "tipe": "larang",
+      "pesan": "Nama token atau kelas pra-Material 3. Pakai padanan M3: border-line, divide-line -> border-outline-variant, divide-outline-variant; border-control-border -> border-outline; text-on-surface-muted -> text-on-surface-variant; *-primary-soft -> bg-primary-container atau bg-secondary-container; hover:*-primary-hover -> lapisan-keadaan; *-danger -> *-error; *-danger-soft, *-warning-soft, *-success-soft -> *-error-container, *-warning-container, *-success-container; *-neutral-soft -> bg-surface-container-highest; text-h1/h2/h3 -> text-headline-s/title-l/title-m; text-body, text-body-sm, text-label, text-caption, text-display -> text-body-l, text-body-m, text-label-l, text-body-s, text-display-s; w-rail -> w-drawer; ukuran=\"sm\" pada tombol dihapus (DESIGN.md). (shadow-overlay kini token arah B; font-semibold dilarang lewat aturan gaya-dilarang.)",
+      "folder": [
+        "resources/views",
+        "resources/js",
+        "app/Support"
+      ],
+      "ekstensi": [
+        ".php",
+        ".js"
+      ],
+      "kecuali": [
+        "^resources/views/pdf/"
+      ],
+      "pola": "(?<![\\w-])(?:(?:bg|text|border|divide|ring|outline|placeholder|fill|stroke)-(?:line|control-border|primary-soft|primary-hover|danger|danger-soft|danger-hover|warning-soft|success-soft|neutral-soft|on-surface-muted)|text-(?:h[123]|body|body-sm|label|caption|display)|w-rail)(?![\\w-])|\\bukuran=\"sm\""
     },
     {
       "id": "komponen-lama",
@@ -280,7 +298,7 @@
     {
       "id": "warna-css",
       "tipe": "larang",
-      "pesan": "tambahan.css: warna hanya lewat var(--color-...). Dilarang heksadesimal, rgb()/hsl()/oklch(), gradien, @keyframes, animation. color-mix() hanya bila memakai var(--color-...); box-shadow hanya none atau var(--shadow-level-1..3), var(--shadow-card), var(--shadow-card-raised), var(--shadow-nav-active).",
+      "pesan": "tambahan.css: warna hanya lewat var(--color-...). Dilarang heksadesimal, rgb()/hsl()/oklch(), gradien, @keyframes, animation. color-mix() hanya bila memakai var(--color-...); box-shadow hanya none atau var(--shadow-card), var(--shadow-control), var(--shadow-chip), var(--shadow-overlay) (arah B), serta var(--shadow-level-1..3), var(--shadow-card-raised), var(--shadow-nav-active) (lama, dihapus di R9).",
       "folder": [
         "resources/css"
       ],
@@ -290,7 +308,7 @@
       "kecuali": [
         "/(?:app|design-tokens)\\.css$"
       ],
-      "pola": "#[0-9a-fA-F]{3,8}\\b|\\b(?:rgb|rgba|hsl|hsla|oklch|oklab|lab|lch)\\(|\\bcolor-mix\\((?![^;]*var\\(--color-)|-gradient\\(|\\bbox-shadow\\s*:(?!\\s*(?:none|var\\(--shadow-(?:level-[123]|card|card-raised|nav-active)\\))\\s*(?:;|!important|$))|@keyframes|\\banimation\\s*:"
+      "pola": "#[0-9a-fA-F]{3,8}\\b|\\b(?:rgb|rgba|hsl|hsla|oklch|oklab|lab|lch)\\(|\\bcolor-mix\\((?![^;]*var\\(--color-)|-gradient\\(|\\bbox-shadow\\s*:(?!\\s*(?:none|var\\(--shadow-(?:level-[123]|card|card-raised|nav-active|control|chip|overlay)\\))\\s*(?:;|!important|$))|@keyframes|\\banimation\\s*:"
     },
     {
       "id": "warna-js",
