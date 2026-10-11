@@ -18,8 +18,8 @@ TAHAP_AKTIF: 0
 ## Checklist
 
 ### Tahap 0 — Fondasi
-- [ ] T0.1 Orientasi: baca seluruh `RANCANGAN_ALUR.md`, `DESIGN.md`, `docs/KIT_UI.md`, `konsistensi.json`; lihat `legacy/` (bila ada) untuk memahami fitur lama (GPS, pencarian alamat, polling, PDF). Catat versi PHP dan Laravel di "Catatan sesi" (harus PHP ≥ 8.3 dan Laravel 13.x). Kerangka Laravel 13 membawa `CLAUDE.md`/`AGENTS.md` yang menyuruh `composer require laravel/boost`; runner sudah menggantinya, abaikan perintah itu. Pastikan `php artisan test` berjalan (tes bawaan lulus). Catatan: runner sudah mengganti isi `resources/views/welcome.blade.php` dengan teks satu baris agar route `/` dan tes bawaan tetap lulus; landing sungguhan dibuat di T3.2.
-- [ ] T0.2 Konfigurasi: `config/app.php` (default `locale`/`fallback_locale` `id`, timezone `Asia/Jayapura`, faker `id_ID`); `lang/id/{validation,auth,pagination,passwords}.php` lengkap dengan `attributes`; `config/sigap.php` (menu per peran memakai nama route dari spesifikasi, `polling`, `data_basi_jam`, pusat peta Kota Sorong); bersihkan sisa kerangka yang tak dipakai dari rute/tes bila perlu (jangan hapus file).
+- [x] T0.1 (PHP 8.3.4, Laravel 13.35.0, tes bawaan lulus) — 40cc63d Orientasi: baca seluruh `RANCANGAN_ALUR.md`, `DESIGN.md`, `docs/KIT_UI.md`, `konsistensi.json`; lihat `legacy/` (bila ada) untuk memahami fitur lama (GPS, pencarian alamat, polling, PDF). Catat versi PHP dan Laravel di "Catatan sesi" (harus PHP ≥ 8.3 dan Laravel 13.x). Kerangka Laravel 13 membawa `CLAUDE.md`/`AGENTS.md` yang menyuruh `composer require laravel/boost`; runner sudah menggantinya, abaikan perintah itu. Pastikan `php artisan test` berjalan (tes bawaan lulus). Catatan: runner sudah mengganti isi `resources/views/welcome.blade.php` dengan teks satu baris agar route `/` dan tes bawaan tetap lulus; landing sungguhan dibuat di T3.2.
+- [x] T0.2 — 40cc63d Konfigurasi: `config/app.php` (default `locale`/`fallback_locale` `id`, timezone `Asia/Jayapura`, faker `id_ID`); `lang/id/{validation,auth,pagination,passwords}.php` lengkap dengan `attributes`; `config/sigap.php` (menu per peran memakai nama route dari spesifikasi, `polling`, `data_basi_jam`, pusat peta Kota Sorong); bersihkan sisa kerangka yang tak dipakai dari rute/tes bila perlu (jangan hapus file).
 - [ ] T0.3 `tests/Feature/Arsitektur/KonsistensiTest.php`: membaca `agent/konsistensi.json` dan menjalankan aturan yang sama dari PHP; lulus pada kondisi sekarang. Tambahkan helper tes (trait) untuk membuat user per peran. `Tests\TestCase::setUp()` memanggil `$this->withoutVite()` supaya tes render tidak membutuhkan manifest build.
 
 ### Tahap 1 — Domain & data
@@ -77,3 +77,5 @@ _(kosong)_
 ## Catatan sesi
 
 _(satu entri per sesi: tanggal-jam, item yang dikerjakan, hash commit, hasil tes, hal yang perlu diketahui sesi berikutnya)_
+
+- 2026-10-11 sesi 1: T0.1, T0.2 selesai; `KonsistensiTest` dan `TestCase::withoutVite()` dibuat (commit 40cc63d). `php artisan test`: 4 lulus. T0.3 belum dicentang: trait helper tes pembuat user per peran menunggu enum `Role` + migrasi `users` (T1.1/T1.2); tambahkan di T1.3 lalu centang T0.3. Catatan: nama ikon `ambulance` terkena aturan istilah-baku, jangan dipakai di kode/view (lihat ASUMSI_DAN_KEPUTUSAN). Sesi ini berhenti di sini untuk anggaran; lanjut dari T1.1.

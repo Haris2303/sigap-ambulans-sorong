@@ -6,3 +6,4 @@
 | 2026-10-11 | Komentar pembuka `resources/css/tambahan.css` ditulis ulang tanpa kata `rgb()`/gradien. | Aturan `warna-css` memindai komentar juga. | tidak |
 | 2026-10-11 | `config/sigap.php` menambah kunci `per_halaman` (20) dan `peta` (pusat Kota Sorong), serta kunci `cocok` dan `lencana` pada item menu. | Satu sumber untuk angka paginasi, pusat peta, dan penanda menu aktif. | tidak |
 | 2026-10-11 | Pesan `auth.nonaktif` ditambahkan di `lang/id/auth.php`. | Pesan untuk akun `aktif=false`. | tidak |
+| 2026-10-11 | Kasus enum jenis faskes rumah sakit bernama `JenisFaskes::Rs` (nilai `rumah_sakit`). | Aturan `istilah-baku` menolak "rumahsakit" tanpa membedakan huruf besar kecil. | tidak |
