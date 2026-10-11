@@ -23,7 +23,7 @@ TAHAP_AKTIF: 0
 - [ ] T0.3 `tests/Feature/Arsitektur/KonsistensiTest.php`: membaca `agent/konsistensi.json` dan menjalankan aturan yang sama dari PHP; lulus pada kondisi sekarang. Tambahkan helper tes (trait) untuk membuat user per peran. `Tests\TestCase::setUp()` memanggil `$this->withoutVite()` supaya tes render tidak membutuhkan manifest build.
 
 ### Tahap 1 — Domain & data
-- [ ] T1.1 Enum (`Role`, `PesananStatus`, `JenisLayanan`, `TingkatDarurat`, `JenisFaskes`, `JenisAmbulans`, `StatusAmbulans`, `Kepemilikan`) dengan `label()`, `opsi()`, dan method khusus (§4). Tes unit tiap enum (termasuk `transisiTerbuka()` & `final()`).
+- [x] T1.1 (21 tes lulus) — 59f110f Enum (`Role`, `PesananStatus`, `JenisLayanan`, `TingkatDarurat`, `JenisFaskes`, `JenisAmbulans`, `StatusAmbulans`, `Kepemilikan`) dengan `label()`, `opsi()`, dan method khusus (§4). Tes unit tiap enum (termasuk `transisiTerbuka()` & `final()`).
 - [ ] T1.2 Migrasi bersih sesuai §4: `users` (modifikasi bawaan), `faskes`, `ambulans`, `pesanan`, `pesanan_log` (+ indeks & FK). Bukti: `php artisan migrate:fresh` sukses di DB v2 dan di SQLite memori (lewat tes).
 - [ ] T1.3 Model (gaya Laravel 13 persis `User` bawaan: `#[Table(name: '...')]`, `#[Fillable([...])]`, `#[Hidden([...])]`, method `casts()` untuk cast enum; relasi, scope mis. `Faskes::aktif()`, `User::sopir()`, `Pesanan::aktif()`), accessor/helper, factory untuk semuanya. Tes model + relasi.
 - [ ] T1.4 `App\Services\PesananWorkflow` + `PesananStatus::transisiTerbuka()` + exception domain + `PesananPolicy` + middleware `role` (alias `role` lewat `$middleware->alias([...])` di `bootstrap/app.php`) + route-model binding `{sopir}`/`{petugas}` berfilter peran. Tes lengkap workflow (§9.6).
@@ -78,4 +78,4 @@ _(kosong)_
 
 _(satu entri per sesi: tanggal-jam, item yang dikerjakan, hash commit, hasil tes, hal yang perlu diketahui sesi berikutnya)_
 
-- 2026-10-11 sesi 1: T0.1, T0.2 selesai; `KonsistensiTest` dan `TestCase::withoutVite()` dibuat (commit 40cc63d). `php artisan test`: 4 lulus. T0.3 belum dicentang: trait helper tes pembuat user per peran menunggu enum `Role` + migrasi `users` (T1.1/T1.2); tambahkan di T1.3 lalu centang T0.3. Catatan: nama ikon `ambulance` terkena aturan istilah-baku, jangan dipakai di kode/view (lihat ASUMSI_DAN_KEPUTUSAN). Sesi ini berhenti di sini untuk anggaran; lanjut dari T1.1.
+- 2026-10-11 sesi 1: T0.1, T0.2 selesai; `KonsistensiTest` dan `TestCase::withoutVite()` dibuat (commit 40cc63d). `php artisan test`: 4 lulus. T0.3 belum dicentang: trait helper tes pembuat user per peran menunggu enum `Role` + migrasi `users` (T1.1/T1.2); tambahkan di T1.3 lalu centang T0.3. Catatan: nama ikon `ambulance` terkena aturan istilah-baku, jangan dipakai di kode/view (lihat ASUMSI_DAN_KEPUTUSAN). T1.1 selesai (59f110f); `JenisFaskes::Rs` (bukan RumahSakit, kena aturan istilah). Lanjut dari T1.2.
