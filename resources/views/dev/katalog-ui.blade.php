@@ -37,6 +37,12 @@
                 <x-ui.lencana-status :status="$status" />
             @endforeach
         </div>
+        <p class="mb-2 mt-5 text-label-m text-on-surface-variant">size="sm" dan dot=false (chip keterangan/delta)</p>
+        <div class="flex flex-wrap items-center gap-2">
+            <x-ui.lencana nada="success" size="sm">Sukses kecil</x-ui.lencana>
+            <x-ui.lencana nada="success" :dot="false" size="sm">+5 dari 7 hari sebelumnya</x-ui.lencana>
+            <x-ui.lencana nada="error" :dot="false" size="sm">-2 dari kemarin</x-ui.lencana>
+        </div>
     </x-ui.bagian>
 
     <x-ui.bagian judul="Waktu tunggu" deskripsi="Lama pesanan menunggu penugasan; nada naik menurut ambang di config. Status lain tidak menampilkan apa pun.">
@@ -98,6 +104,17 @@
                 <x-ui.tab :href="route('ui.katalog', ['tab' => 'berjalan'])">Berjalan</x-ui.tab>
             </x-ui.tabs>
         </x-ui.panel>
+        <p class="mb-2 mt-5 text-label-m text-on-surface-variant">Tab variant="floating" (filter periode)</p>
+        <x-ui.tabs label="Contoh filter periode" variant="floating" class="inline-flex">
+            <x-ui.tab :href="route('ui.katalog', ['periode' => 'hari'])" variant="floating">Hari ini</x-ui.tab>
+            <x-ui.tab :href="route('ui.katalog', ['periode' => '7'])" variant="floating" :aktif="true">7 hari</x-ui.tab>
+            <x-ui.tab :href="route('ui.katalog', ['periode' => '30'])" variant="floating">30 hari</x-ui.tab>
+        </x-ui.tabs>
+        <p class="mb-2 mt-5 text-label-m text-on-surface-variant">Segmented (radio dalam formulir)</p>
+        <x-ui.segmented label="Contoh tingkat darurat" class="inline-flex">
+            <x-ui.segmen nama="tingkat_darurat_contoh" nilai="biasa" :terpilih="true">Biasa</x-ui.segmen>
+            <x-ui.segmen nama="tingkat_darurat_contoh" nilai="gawat">Gawat</x-ui.segmen>
+        </x-ui.segmented>
     </x-ui.bagian>
 
     <x-ui.bagian judul="Grafik">
@@ -177,10 +194,21 @@
                 <x-ui.pilihan nama="jenis" label="Jenis Faskes" :opsi="\App\Enums\JenisFaskes::opsi()" :nilai="\App\Enums\JenisFaskes::Puskesmas" kosong="Semua jenis" />
                 <x-ui.area-teks nama="catatan" label="Catatan" nilai="Pasien sesak napas." />
                 <x-ui.centang nama="aktif" label="Akun aktif" :nilai="true" />
-                <div class="space-y-2">
-                    @foreach (\App\Enums\JenisLayanan::cases() as $layanan)
-                        <x-ui.opsi-baris nama="jenis_layanan" :nilai="$layanan->value" :judul="$layanan->label()" deskripsi="Contoh deskripsi layanan." :terpilih="$loop->first" />
-                    @endforeach
+                <div>
+                    <p class="mb-2 text-label-l text-on-surface-variant">Jenis layanan (kartu pilihan, lama tanpa ikon)</p>
+                    <div class="space-y-2">
+                        @foreach (\App\Enums\JenisLayanan::cases() as $layanan)
+                            <x-ui.opsi-baris nama="jenis_layanan" :nilai="$layanan->value" :judul="$layanan->label()" deskripsi="Contoh deskripsi layanan." :terpilih="$loop->first" />
+                        @endforeach
+                    </div>
+                </div>
+                <div>
+                    <p class="mb-2 text-label-l text-on-surface-variant">x-ui.choice-group: kisi 3 kolom dengan ikon (DESIGN.md 6.4)</p>
+                    <x-ui.opsi-kisi>
+                        <x-ui.opsi-baris nama="jenis_layanan_kisi" nilai="darurat" judul="Darurat" ikon="ambulance" :terpilih="true" />
+                        <x-ui.opsi-baris nama="jenis_layanan_kisi" nilai="persalinan" judul="Persalinan" ikon="users" />
+                        <x-ui.opsi-baris nama="jenis_layanan_kisi" nilai="rujukan" judul="Rujukan" ikon="building-2" />
+                    </x-ui.opsi-kisi>
                 </div>
             </div>
             <x-slot:kaki>

@@ -18,6 +18,13 @@ class KatalogUiTest extends TestCase
         $this->sediakanRuteSementara();
     }
 
+    public function test_404_di_lingkungan_selain_local_dan_testing(): void
+    {
+        $this->app->detectEnvironment(fn () => 'production');
+
+        $this->get('/_ui')->assertNotFound();
+    }
+
     public function test_katalog_ui_menampilkan_semua_komponen(): void
     {
         $this->get('/_ui')
@@ -76,6 +83,29 @@ class KatalogUiTest extends TestCase
             ->assertSee('aria-current="page"', false)
             ->assertSee('>AD<', false)
             ->assertSee('Bed IGD tersedia');
+    }
+
+    public function test_katalog_ui_memuat_komponen_retema_b_baru(): void
+    {
+        $html = $this->get('/_ui')->assertOk()->getContent();
+
+        // Badge size="sm" dan dot=false (chip keterangan/delta).
+        $this->assertStringContainsString('+5 dari 7 hari sebelumnya', $html);
+        $this->assertStringContainsString('min-h-6.5', $html);
+
+        // Tab variant="floating" (filter periode) dan segmented.
+        $this->assertStringContainsString('shadow-control', $html);
+        $this->assertStringContainsString('role="radiogroup"', $html);
+        $this->assertStringContainsString('Biasa', $html);
+        $this->assertStringContainsString('Gawat', $html);
+
+        // x-ui.choice-group (opsi-kisi): kisi 3 kolom dengan ikon.
+        $this->assertStringContainsString('grid grid-cols-3', $html);
+        $this->assertStringContainsString('size-7.5', $html);
+        $this->assertStringContainsString('Persalinan', $html);
+
+        // x-ui.empty (kosong) dengan judul dan ikon.
+        $this->assertStringContainsString('border-dashed', $html);
     }
 
     public function test_katalog_ui_memuat_grafik_dengan_data_pratinjau(): void
