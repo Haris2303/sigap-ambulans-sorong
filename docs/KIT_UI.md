@@ -235,26 +235,44 @@ Grafik digambar Chart.js (D3b), bukan SVG. Paket `chart.js` didaftarkan modular 
 - **Masyarakat dan Laporan**: `stat` putih menggantikan `ringkasan`. **Buat Pesanan**: tiap bagian formulir (`fieldset`) berada di dalam `panel`, tetap satu kolom `max-w-xl`. **Landing**: langkah "Cara kerja" di dalam `panel`. Jarak antar kartu `gap-5` / `space-y-5`.
 - Halaman Masyarakat (Buat Pesanan, lacak) tetap memakai laci navigasi; dokumen arah menyebut "tanpa laci" dan itu belum dilakukan (butuh keputusan pemilik proyek).
 
-## 11. Retema B (rencana)
+## 11. Retema B
 
-Daftar komponen arah B dari `docs/RETEMA_B.md` bagian 6. Semuanya **belum diimplementasikan**: halaman masih memakai komponen di §4. Nama mengikuti dokumen arah; bila padanannya sudah ada di repo, komponen itu yang diubah (variasi menjadi prop baru), bukan komponen kedua. Bagian ini menjadi dokumentasi sebenarnya di R2 (6.1 sampai 6.7, 6.9, 6.11 sampai 6.13) dan R4 (6.8, 6.10, bagian 7), lengkap dengan tes render dan entri katalog `/_ui`.
+Daftar komponen arah B dari `docs/RETEMA_B.md` bagian 6. Nama mengikuti dokumen arah; bila padanannya sudah ada di repo, komponen itu yang diubah (variasi menjadi prop baru), bukan komponen kedua, jadi kolom "Komponen repo" di bawah adalah nama **sebenarnya** dipanggil di Blade. Selesai di R2 punya tes render (`KomponenUiTest`, `KomponenDasborTest`) dan entri `/_ui`. Kerangka halaman (laci, kepala halaman, filter periode sungguhan), kartu statistik, cincin, dan grafik Chart.js belum disentuh (R3 sampai R5, R8).
 
-| Bagian | Komponen arah B | Padanan di repo sekarang | Langkah | Status |
+| Bagian | Komponen arah B | Komponen repo | Langkah | Status |
 |---|---|---|---|---|
-| 6.1 | `x-ui.panel` (prop `flush`, `as`; slot `header`) | `panel` | R2 | belum diimplementasikan |
-| 6.2 | `x-ui.button` (varian `primary`, `secondary`, `ghost`, `danger`, `on-secondary`; ukuran kecil) | `tombol` | R2 | belum diimplementasikan |
-| 6.3 | `x-ui.field`, `x-ui.select`, `x-ui.textarea` | `isian`, `pilihan`, `area-teks` | R2 | belum diimplementasikan |
-| 6.4 | `x-ui.choice-group`, `x-ui.choice` | `opsi-baris` | R2 | belum diimplementasikan |
-| 6.5 | `x-ui.tabs` (varian `track` dan `floating`), `x-ui.segmented` | `tabs` dan `tab` (garis bawah) | R2 | belum diimplementasikan |
-| 6.6 | `x-ui.badge` (`tone`, `dot`, `size`), `x-ui.icon-chip` (nada `tertiary` dan `neutral`, 40 dan 44px) | `lencana`, `lencana-status`, `icon-chip` | R2 | belum diimplementasikan |
-| 6.7 | `x-ui.avatar` (`md` 40px, `sm` 36px, warna dari hash nama) | `avatar` | R2 | belum diimplementasikan |
+| 6.1 | `x-ui.panel` (prop `flush`, `as`; slot `header`) | `panel` | R2 | **selesai** |
+| 6.2 | `x-ui.button` (varian `primary`, `secondary`, `ghost`, `danger`, `on-secondary`; ukuran `sm`) | `tombol` | R2 | **selesai** |
+| 6.3 | `x-ui.field`, `x-ui.select`, `x-ui.textarea` | `isian`, `pilihan`, `area-teks` | R2 | **selesai** |
+| 6.4 | `x-ui.choice-group`, `x-ui.choice` | `opsi-kisi`, `opsi-baris` | R2 | **selesai** |
+| 6.5 | `x-ui.tabs` (varian `track` dan `floating`), `x-ui.segmented` | `tabs`/`tab`, `segmented`/`segmen` | R2 | **selesai** |
+| 6.6 | `x-ui.badge` (`tone`, `dot`, `size`) | `lencana`, `lencana-status` | R2 | **selesai** |
+| 6.6 | `x-ui.icon-chip` (nada `tertiary` dan `neutral`; ukuran 40/44px dan warna polos primary/warning) | `icon-chip` | R2 (tone) / R4 (ukuran, warna) | **sebagian**: tone lengkap enam, ukuran dan warna primary/warning masih nilai lama (lihat catatan) |
+| 6.7 | `x-ui.avatar` (`md` 40px, `sm` 36px, warna dari hash nama) | `avatar` | R2 | **selesai** |
 | 6.8 | `x-ui.stat`, `x-ui.hero-stat` | `stat` (putih dan `featured`) | R4 | belum diimplementasikan |
-| 6.9 | `x-ui.table` (baris bulat, daftar baris di bawah `md`) | `tabel` | R2 | belum diimplementasikan |
+| 6.9 | `x-ui.table` (baris bulat, daftar baris di bawah `md`) | `tabel` | R2 | **selesai** (daftar baris di bawah `md` menunggu R6 bersama halaman Pesanan) |
 | 6.10 | `x-ui.ring-tile` | `tile` | R4 | belum diimplementasikan |
-| 6.11 | `x-ui.empty`, `x-ui.note`, snackbar, dialog | `kosong`, `peringatan`, `snackbar`, `dialog` | R2 | belum diimplementasikan |
-| 6.12 | `x-ui.timeline`, daftar info (`<dl>`) | `linimasa`, `rincian` | R2 | belum diimplementasikan |
-| 6.13 | ikon (21px di menu, chip, dan tombol ikon; garis 2,25 untuk tanda merek; ikon baru di `agent/icons.txt`) | `ikon` | R2 | belum diimplementasikan |
+| 6.11 | `x-ui.empty`, `x-ui.note`, snackbar, dialog | `kosong`, `peringatan`, `snackbar`, `dialog` | R2 | **selesai** |
+| 6.12 | `x-ui.timeline`, daftar info (`<dl>`) | `linimasa`, `rincian`/`rincian-baris` | R2 | **sebagian**: titik dan judul selesai; kolom waktu (format dan lebar 56px) menunggu perubahan format jam lintas halaman (bagian 3), belum di R2 |
+| 6.13 | ikon (21px di menu, chip, dan tombol ikon; garis 2,25 untuk tanda merek; ikon baru di `agent/icons.txt`) | `ikon` | R2 (parsial) / R3 (sisanya) | **sebagian**: `agent/icons.txt` lengkap; ukuran 21 dan pemakaian di menu/kerangka menunggu R3 |
 | 7 | `x-ui.chart` (Chart.js garis dan donat), `App\Support\Chart\Sparkline`, `App\Support\Chart\Ring` | `chart.bar`, `chart.donut` (dihapus di R9) | R4 | belum diimplementasikan |
+
+### Komponen selesai R2: props dan kelas sebenarnya
+
+- **`x-ui.panel`** (`judul`, `flush`, `as`; slot `header`, `kaki`): `bg-surface-container-lowest rounded-xl shadow-card p-5 lg:p-6` (flush: tanpa padding). Judul lewat prop `judul` (judul saja) atau slot `header` (konten bebas, mis. judul + aksi), gaya `text-title-l`, jarak bawah 12px. `as` mengganti tag akar (mis. `as="section"`). **Catatan Blade:** saat memakai slot `header` bersama konten `$slot` lain, tulis `$slot` lebih dulu lalu `<x-slot:header>` (bukan sebaliknya) — `Blade::render()` ad-hoc salah menghitung output buffer bila slot bernama ditulis sebelum konten default berikutnya; urutan ini sudah dipakai `kaki` sejak awal dan terbukti aman.
+- **`x-ui.tombol`** (prop tidak berubah): nada `utama`/`sekunder`/`tonal` (keduanya kini sama: `bg-surface-container text-on-surface border border-outline-variant`)/`hantu`/`bahaya` (kini tonal: `bg-error-container text-on-error-container`)/`on-primary`/`on-secondary` (baru, `bg-surface-container-lowest text-secondary`)/`terbalik`. Sudut `md`, tinggi `min-h-12 lg:min-h-11` bawaan (`ukuran="lg"` lama kini setara), `ukuran="sm"` baru `min-h-10 lg:min-h-9`. Padding `px-5` (`px-3` untuk hantu/terbalik). Tombol ikon: `aspect-square px-0` (bukan `size-N` tetap).
+- **`x-ui.isian` / `x-ui.pilihan` / `x-ui.area-teks`**: tinggi 48px (`min-h-12`), sudut `md`, padding `px-3.5`, fokus `border-primary` + `ring-3 ring-primary/20` (galat: `ring-error/20`). Label menambahkan "(wajib)" bila `:wajib="true"`. Bantuan dan galat kini `text-label-m` (bukan `text-body-s`). `pilihan` menambahkan ikon `chevron-down` 18px (`appearance-none`). `area-teks` punya `min-h-21` (84px).
+- **`x-ui.opsi-baris`** (+ prop `ikon` baru, opsional) dan **`x-ui.opsi-kisi`** (pembungkus kisi 3 kolom, jarak 10px, baru): terpilih kini `border-primary bg-selected ring-1 ring-inset ring-primary` (bukan `secondary-container`); petak ikon 30px (`size-7.5`) hanya tampil bila `ikon` diberi. Tanpa `ikon`, komponen tetap berfungsi seperti sebelumnya (dipakai `warga/pesanan/buat.blade.php` sampai R8 memperbaruinya).
+- **`x-ui.tabs` / `x-ui.tab`** (+ prop `variant` baru, `track` bawaan atau `floating`) dan **`x-ui.segmented` / `x-ui.segmen`** (baru): `track` trek `bg-surface-container rounded-md p-1`, item 36px `rounded-sm`, aktif `bg-surface-container-lowest text-on-surface shadow-chip` (bukan garis bawah lagi). `floating` trek putih `rounded-lg shadow-control`, item `min-h-10 lg:min-h-9.5` `rounded-md`, aktif `bg-primary text-on-primary`. `tab` dan `tombol tabs` pembungkusnya harus memakai `variant` yang sama. `segmented`/`segmen` memakai tampilan `track` yang sama lewat radio tersembunyi.
+- **`x-ui.lencana`** (+ prop `dot` dan `size` baru) dan **`x-ui.lencana-status`** (kini `:nada="$status->tone()"`, bukan `nada()`): tinggi `min-h-6.5` (`size="sm"`: `min-h-6`), padding `px-2.75`, gaya `text-chip`. `nada` menerima kata Indonesia lama DAN tone arah B sebagai sinonim (lihat `Tampilan::kelasLembut()`); `netral`/`neutral` kini `secondary-container`/`on-secondary-container` (bukan `surface-container-highest`, kontras naik dari 4,48:1 ke 7,12:1).
+- **`x-ui.avatar`** (+ prop `size`, baru): `md` 40px (bawaan) atau `sm` 36px, gaya `text-chip`, warna dari `Tampilan::warnaAvatar()` (`crc32(nama) % 5`, lima pasangan container), bukan selalu `primary-container`.
+- **`x-ui.tabel`**: baris bulat lewat `border-separate border-spacing-y-1` dan `rounded-l-lg`/`rounded-r-lg` pada sel pertama/terakhir, **tanpa** `divide-outline-variant` lagi. `bingkai=true` memberi padding pada pembungkus (`p-3`), bukan pada sel, supaya baris bulat tidak terpotong kartu.
+- **`x-ui.kosong`** (+ prop `judul` dan `ikon`, keduanya opsional, baru): batas putus-putus `border-dashed border-outline-variant`, pusat (`text-center`), padding `p-5.5` (22px); petak ikon 44px muncul bila `ikon` diberi. `pesan` tetap wajib dan selalu tampil (`text-body-s`).
+- **`x-ui.peringatan`**: padding `px-3.5 py-3`, ikon 18px (bukan 24px), teks `text-label-l` (bukan `text-body-m`, memberi bobot 600 lewat gaya).
+- **`x-ui.snackbar`**: sudut `rounded-md` (bukan `rounded-xs`), bayangan `shadow-overlay` (bukan `shadow-level-3`).
+- **`x-ui.dialog`**: latar putih `bg-surface-container-lowest` (bukan `surface-container-high`), sudut `rounded-2xl`, bayangan `shadow-overlay`, lebar `max-w-md`, judul `text-title-l` (bukan `text-headline-s`), backdrop `backdrop:bg-scrim/45`.
+- **`x-ui.linimasa`**: garis `w-0.5` (bukan `w-px`), titik 12px (`size-3`) biner: langkah sekarang `bg-primary` polos, langkah lampau `border-2 border-outline-variant bg-surface-container-lowest`— **tidak lagi mengikuti warna status**. Judul langkah sekarang `text-label-l` (bukan `font-medium`; token tidak punya gaya body berbobot 700, lihat Do's and Don'ts).
+- **`x-ui.rincian-baris`**: label kini `text-label-m` (bukan ukuran body-m yang sama dengan nilai).
 
 Sudah ada sejak R1 sebagai dasar komponen di atas: token arah B (§1), font Plus Jakarta Sans, aturan pemindai (§9), pasangan kontras `agent/kontras.json` yang dijaga `KontrasTokenTest`, dan `PesananStatus::tone()`, satu tabel status untuk lencana, chip, dan grafik:
 
@@ -271,10 +289,10 @@ Keputusan untuk status yang tidak disebut namanya di dokumen arah: **Diterima so
 
 Catatan untuk langkah berikutnya:
 
-- Warna avatar: `crc32(nama) % 5` memilih pasangan container `primary`, `error`, `success`, `tertiary`, atau `warning` (6.7).
-- Aturan `token-lama` masih menolak `ukuran="sm"` (sisa tombol pra-M3). Bila R2 memberi tombol ukuran kecil lewat prop `ukuran`, aturan itu dan kasus tesnya diubah bersama.
-- `x-ui.ikon` sekarang hanya menerima ukuran 18, 20, 22, 24, dan 26; arah B butuh 21 serta 16 sampai 18 di tombol. Dari daftar ikon 6.13 hanya `chevron-left` yang belum ada di `agent/icons.txt`.
-- `font-normal` dan `font-medium` masih dipakai `linimasa`, `tabel`, `kontak-darurat`, dan `chart.donut`. Setelah dialihkan ke gaya token, keduanya ditambahkan ke aturan `gaya-dilarang`.
-- Dokumen arah menyebut bobot di luar gaya token (keterangan cincin "menipis" 13px bobot 600, langkah linimasa sekarang bobot 700). Karena kelas bobot dilarang di markup, R2 dan R4 memilih gaya token yang ada atau menambah gaya di `DESIGN.md`.
-- Sampai dialog (R2) dan laci ponsel (R3) memakai `bg-scrim/45`, `backdrop:bg-scrim` dan `bg-scrim` lama tampil pekat, tidak tembus pandang, karena token `scrim` kini tanpa alfa.
-- Lencana netral lama (`bg-surface-container-highest text-on-surface-variant`) kini berkontras 4,48:1, sedikit di bawah 4,5:1; lencana arah B memakai `secondary-container` / `on-secondary-container` (7,12:1).
+- **icon-chip** (6.6): ukuran (40/44px, bukan 40/52px) dan warna ikon polos `primary`/`warning` (bukan `on-primary-container`/`on-warning-container`) belum diterapkan karena `x-ui.stat` dan `x-ui.tile` memakai `size="lg"` icon-chip yang sama; ketiganya pindah sekali bersama di R4 agar kartu statistik tidak pecah di tengah jalan. `Tampilan::kelasChip()` sudah mendukung enam tone (primary, warning, success, error, tertiary, neutral).
+- **Kolom waktu linimasa** (6.12, 56px, format "21.12"): dokumen arah mengubah format jam lintas halaman (bagian 3, "Jam"); linimasa tidak mengubah format sendirian, menunggu R5/R8 saat halaman lain juga pindah ke format itu.
+- **Ikon 21px** (6.13, item menu, tombol ikon, chip): `x-ui.ikon` masih menerima 18, 20, 22, 24, 26 saja (belum menambah 21) karena belum ada pemakai sampai R3 (kerangka halaman) dan R4 (icon-chip) selesai; `chevron-left` juga masih belum ada di `agent/icons.txt`.
+- `font-normal` dan `font-medium` masih dipakai `linimasa` (dua baris keterangan), `kontak-darurat`, dan `chart.donut`. Setelah dialihkan ke gaya token, keduanya ditambahkan ke aturan `gaya-dilarang`.
+- Dokumen arah menyebut bobot di luar gaya token (keterangan cincin "menipis" 13px bobot 600; langkah linimasa sekarang jadi `text-label-l`/600, bukan literal 700, karena token tidak punya gaya body berbobot 700). Karena kelas bobot dilarang di markup, R2 dan R4 memilih gaya token yang ada atau menambah gaya di `DESIGN.md`.
+- Semua pemakaian `bg-scrim` sudah `/45` sejak R2 (`data-menu-scrim` di `app.blade.php` dan `backdrop:bg-scrim` di `x-ui.dialog`); kriteria selesai R2 ini sudah tercapai, hanya kelasnya yang diganti, perilaku laci sendiri menunggu R3.
+- Formulir nyata (`warga/pesanan/buat.blade.php`) belum memakai `x-ui.opsi-kisi` atau `ikon` pada `opsi-baris` (R8); tetap tampil benar karena `ikon` opsional, hanya mewarisi gaya terpilih baru (`selected`/`primary`, bukan `secondary-container`).
