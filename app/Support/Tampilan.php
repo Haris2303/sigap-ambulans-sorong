@@ -5,7 +5,7 @@ namespace App\Support;
 use InvalidArgumentException;
 
 /**
- * Pemetaan nada dan bentuk ke kelas token (DESIGN.md, Material 3): satu sumber untuk lencana, peringatan, titik, angka, dan isian.
+ * Pemetaan nada dan bentuk ke kelas token (DESIGN.md, Material 3): satu sumber untuk lencana, peringatan, titik, chip, dan isian.
  */
 class Tampilan
 {
@@ -32,19 +32,7 @@ class Tampilan
         };
     }
 
-    /** Warna teks saja (angka ringkasan). */
-    public static function kelasTeks(?string $nada): string
-    {
-        return match ($nada) {
-            'info' => 'text-primary',
-            'peringatan' => 'text-warning',
-            'sukses' => 'text-success',
-            'bahaya' => 'text-error',
-            default => 'text-on-surface',
-        };
-    }
-
-    /** Warna isi (titik linimasa, batang grafik). */
+    /** Warna isi (titik linimasa). */
     public static function kelasLatar(?string $nada): string
     {
         return match ($nada) {

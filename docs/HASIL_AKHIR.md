@@ -37,11 +37,11 @@ Domain `@sigap.test`. Sandi: nilai `SEED_PASSWORD` bila diisi; bila tidak, `pass
 
 ## Tampilan Material 3
 
-Antarmuka memakai Material Design 3 baseline (bukan Expressive), terang saja. Sumber kebenarannya `DESIGN.md`: skema tonal dari benih `#0B5C80`, 30 warna, skala tipe M3 (Roboto, lokal lewat npm), bentuk 4/8/12/16/28/penuh, elevasi level 0 sampai 3, dan lapisan keadaan. Kontrak kode ada di `docs/KIT_UI.md`; keputusan dan langkah migrasi di `docs/MIGRASI_M3.md`.
+Antarmuka memakai Material Design 3 baseline (bukan Expressive), terang saja, dengan gaya dasbor Material pilihan pemilik proyek (`docs/DESAIN_DASBOR_MATERIAL.md`): kartu putih berbayang di atas latar `canvas`, kartu statistik dan chip ikon pembawa makna, grafik batang dan donat berupa SVG sisi server, tab, avatar, bilah atas kartu melayang, dan laci putih. Dasbor Dinkes (`/admin`) menjadi halaman acuan. Sumber kebenarannya `DESIGN.md`: skema tonal dari benih `#0B5C80`, 30 warna, skala tipe M3 (Roboto, lokal lewat npm), bentuk 4/8/12/16/28/penuh, elevasi level 0 sampai 3, dan lapisan keadaan. Kontrak kode ada di `docs/KIT_UI.md`; keputusan dan langkah migrasi di `docs/MIGRASI_M3.md`.
 
 - Mengubah tema: ubah front matter `DESIGN.md`, jalankan `node agent/tokens.mjs` (menghasilkan `resources/css/design-tokens.css`), lalu `npm run build`.
 - Pemeriksaan dokumen desain: `node node_modules/@google/design.md/dist/index.js lint DESIGN.md` (0 galat, 0 peringatan).
-- Penjaga otomatis: `agent/konsistensi.json` (termasuk aturan `token-lama`), `KonsistensiTest`, `TokenDesainTest` (css sinkron dengan DESIGN.md), `KomponenUiTest`, `LayoutTest`.
+- Penjaga otomatis: `agent/konsistensi.json` (termasuk aturan `token-lama` dan `komponen-lama`), `KonsistensiTest`, `TokenDesainTest` (css sinkron dengan DESIGN.md), `KomponenUiTest`, `LayoutTest`.
 - Mode gelap ditunda; seluruh warna memakai peran M3 sehingga dapat ditambahkan nanti.
 
 ## Keterbatasan
@@ -60,7 +60,7 @@ Khusus tampilan Material 3, yang belum pernah dilihat dan perlu diperiksa manual
 Jalankan `npm run build` lalu buka aplikasi di browser desktop dan ponsel (atau mode perangkat di devtools).
 - Lebar 1280px: laci navigasi tetap di kiri (lebar 280px), item aktif berbentuk pil `secondary-container`, tanpa bilah atas. Menu panjang bergulir dengan bilah tipis.
 - Lebar 390px: bilah atas 64px berisi tombol menu dan judul halaman; tombol menu membuka laci modal dengan scrim; laci menutup lewat tombol Tutup, klik scrim, dan Escape.
-- Dasbor Dinkes: judul 24px lebih besar dari keterangan; angka ringkasan (36px) di bawah label kecil; sel dipisah garis tipis; label tanggal grafik tidak pecah baris; lencana "Gawat" sejajar vertikal dengan teks layanan.
+- Dasbor Dinkes (`/admin`): judul 28px dengan subjudul 16px dan tombol tonal di kanan; empat kartu statistik (utama biru, tiga putih dengan chip ikon) turun satu kolom di ponsel; grafik batang bergulir horizontal di ponsel dengan label hari dan tanggal dua baris; donat dengan legenda; empat petak ketersediaan; tab Semua, Perlu tindakan, Berjalan memuat ulang halaman ke kartu Pesanan terbaru; tabel bergulir di dalam kartunya (kepala kartu dan tab tidak ikut bergulir); lencana "Gawat" sejajar vertikal dengan teks layanan.
 - Tombol berbentuk pil setinggi 40px; hover, fokus papan ketik (Tab), dan tekan menampilkan lapisan tipis; tombol nonaktif tampak redup dan tidak bereaksi.
 - Isian: batas Outline, label di atas kolom, fokus menebalkan batas jadi biru 2px, galat menampilkan batas dan teks merah.
 - Aksi dengan konfirmasi (mis. Tolak): dialog berlatar scrim dengan sudut 28px; tombol aksi merusak berwarna merah.
@@ -111,4 +111,4 @@ Lihat `docs/laporan/ASUMSI_DAN_KEPUTUSAN.md` (kolom "Perlu konfirmasi Dinkes").
 
 ## Jumlah tes
 
-`php artisan test` pada 2026-10-11 (setelah migrasi Material 3): 298 lulus (2523 assertion). `npm run build` sukses; `designmd lint DESIGN.md` 0 galat 0 peringatan; `node agent/tokens.mjs` tidak mengubah `design-tokens.css`. Sebelum migrasi (tahap 7 awal): 279 lulus, `composer validate` valid, `migrate:fresh --seed` sukses di DB v2; skema basis data tidak diubah oleh migrasi tampilan.
+`php artisan test` pada 2026-10-11 (setelah migrasi Material 3): 440 lulus (3456 assertion), termasuk langkah D1 sampai D7 dasbor Material. `npm run build` sukses; `designmd lint DESIGN.md` 0 galat 0 peringatan; `node agent/tokens.mjs` tidak mengubah `design-tokens.css`. Sebelum migrasi (tahap 7 awal): 279 lulus, `composer validate` valid, `migrate:fresh --seed` sukses di DB v2; skema basis data tidak diubah oleh migrasi tampilan.

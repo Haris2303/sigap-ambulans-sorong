@@ -36,4 +36,37 @@ Setelah M1 sampai M7, pemilik proyek memilih gaya dasbor Material yang lebih kay
 - [x] D4 Kerangka aplikasi: `layouts.app` (bilah atas kartu melayang dengan pencarian, lonceng pesanan menunggu, dan avatar; laci putih dengan label grup, item pil 48px, item aktif `primary` + `shadow-nav-active`, blok pengguna dan keluar sebagai form POST; satu bilah gulir vertikal), `layouts.publik` (bilah atas kartu), latar `canvas` di `app.css`, padding halaman `px-4 lg:px-7`, komponen baru `x-ui.cari`, prop `ikon-ukuran` pada tombol, konfigurasi `sigap.bilah_atas` dan `grup` menu. Pencarian `?q=` belum menyaring daftar (D6); kolom cari hanya muncul untuk Dinkes sampai saat itu.
 - [x] D5 Dasbor Dinkes: `admin.dashboard` sesuai bagian 6 (statistik, grafik batang dan donat, ketersediaan, pesanan terbaru dengan tab), `App\Services\RingkasanDasbor`, `App\Enums\TabPesanan`, `RingkasanDinkes` dipangkas menjadi 4 query (statistik 2, ketersediaan 2), `pesanan.ringkasan` ikut memuat ketersediaan, `judul-halaman` memakai `text-page-title`, prop `bingkai`/`lebar-min` pada `tabel` dan `format` pada `waktu`. Seluruh halaman memakai 7 query. Tab dan `?q=` pada daftar pesanan menyusul di D6.
 - [x] D6 Peran lain dan sapuan halaman: `tabel`, `kosong`, dan `rincian` menjadi kartu berbayang (`rincian` punya `bingkai`), komponen `pembaruan`, daftar pesanan Dinkes dengan tab `?tab=` dan pencarian `?q=` (`Pesanan::cari()`), dasbor Faskes (`stat` dan `tile`), kartu penugasan sopir, beranda Masyarakat dan Laporan dengan `stat`, Buat Pesanan dengan `panel`, landing dengan `panel`, aturan `komponen-lama`. Belum: laci pada halaman Masyarakat ("tanpa laci" di dokumen arah) menunggu keputusan.
-- [ ] D7 Penutupan.
+- [x] D7 Penutupan: gerbang penuh hijau; kontras pasangan chip dan teks dihitung (tabel di bawah); komponen `ringkasan`, `ringkasan-sel`, `grafik-batang` dan `Tampilan::kelasTeks` dihapus beserta tesnya; `KIT_UI`, `PROGRESS`, `HASIL_AKHIR`, dan ringkasan perubahan diperbarui. Token `level-*` dan skala tipe M3 lengkap sengaja dipertahankan.
+
+### Kontras pasangan warna (dihitung dari `design-tokens.css`, WCAG 2.x)
+
+| Pasangan (teks di latar) | Kontras | Minimum | Pemakaian |
+|---|---|---|---|
+| on-primary-container di primary-container | 7,23:1 | 4,5 | chip biru, lencana info, avatar |
+| on-warning-container di warning-container | 13,26:1 | 4,5 | chip kuning, lencana peringatan |
+| on-success-container di success-container | 13,26:1 | 4,5 | chip hijau, lencana sukses |
+| on-error-container di error-container | 7,24:1 | 4,5 | chip merah, lencana bahaya |
+| on-surface-variant di surface-container-highest | 7,21:1 | 4,5 | lencana netral |
+| on-primary di primary | 6,49:1 | 4,5 | kartu statistik utama, item menu aktif, tombol utama |
+| primary-container di primary | 5,03:1 | 4,5 | keterangan di kartu statistik utama |
+| primary di on-primary | 6,49:1 | 4,5 | tombol `on-primary` di atas kartu utama |
+| on-error di error | 6,46:1 | 4,5 | tombol bahaya, hitungan menu dan lonceng |
+| on-surface di surface-container-lowest | 17,13:1 | 4,5 | teks di kartu putih |
+| on-surface-variant di surface-container-lowest / low / canvas | 9,30 / 8,42 / 8,17:1 | 4,5 | teks sekunder, petak, kepala tabel |
+| primary di surface-container-lowest / canvas | 6,49 / 5,70:1 | 4,5 | tautan dan tab aktif |
+| error, success, warning di surface-container-lowest | 6,46 / 6,42 / 6,47:1 | 4,5 | teks galat dan angka bernada |
+| inverse-primary dan inverse-on-surface di inverse-surface | 7,72 / 11,58:1 | 4,5 | snackbar |
+| ikon on-primary di chip on-primary 18% pada primary | 4,33:1 | 3 | chip ikon kartu utama |
+| outline di surface-container-lowest / canvas | 4,48 / 3,93:1 | 3 | batas isian dan tombol outlined |
+| primary di surface-container-lowest | 6,49:1 | 3 | batang hari ini |
+| **chart-sky di surface-container-lowest** | **2,13:1** | 3 | batang dan segmen grafik: di bawah minimum |
+
+Satu-satunya pasangan di bawah minimum adalah `chart-sky`, yang sudah diketahui di dokumen arah: nilai grafik selalu tertulis sebagai teks dan legenda berupa teks, jadi informasi tidak bergantung pada warnanya.
+
+## Ringkasan perubahan dasbor Material (D1 sampai D7)
+
+- **Token** (D1): `canvas`, `chart-sky`, bayangan `card`, `card-raised`, `nav-active` (warna `on-surface`), lima gaya tipe dasbor, token komponen baru.
+- **Komponen** (D2 sampai D4, D6): `panel` kartu, `stat`, `icon-chip`, `tile`, `tabs` dan `tab`, `avatar`, `cari`, `pembaruan`, lencana pil, tombol `on-primary`, `chart.bar` dan `chart.donut` (SVG sisi server dengan geometri PHP murni), kerangka aplikasi baru (bilah atas kartu, laci putih), `tabel`, `kosong`, dan `rincian` sebagai kartu.
+- **Halaman** (D5, D6): Dasbor Dinkes sesuai referensi dengan `RingkasanDasbor` (7 query), daftar pesanan Dinkes dengan tab dan `?q=`, dasbor Faskes, kartu penugasan sopir, beranda Masyarakat, Laporan, Buat Pesanan, landing.
+- **Aturan**: `istilah-baku` (pengecualian ikon `ambulance`), `token-lama` (`canvas` sah), `warna-css` (tiga bayangan baru), `komponen-lama`; semua dengan kasus lolos dan gagal.
+- **Dihapus** (D7): `ringkasan`, `ringkasan-sel`, `grafik-batang`, `Tampilan::kelasTeks`.

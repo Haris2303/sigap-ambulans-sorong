@@ -337,23 +337,8 @@ class KomponenUiTest extends TestCase
         $this->assertStringNotContainsString('checked', str_replace('has-[:checked]', '', $tidak));
     }
 
-    public function test_ringkasan_rincian_dan_waktu(): void
+    public function test_rincian_dan_waktu(): void
     {
-        $ringkasan = $this->render('<x-ui.ringkasan><x-ui.ringkasan-sel label="Menunggu verifikasi" :nilai="3" nada="peringatan" keterangan="Sekarang" /><x-ui.ringkasan-sel label="Selesai" :nilai="12" /></x-ui.ringkasan>');
-        $this->assertStringContainsString('text-display-s tabular-nums', $ringkasan);
-        $this->assertStringContainsString('text-warning', $ringkasan);
-        $this->assertStringContainsString('Menunggu verifikasi', $ringkasan);
-
-        // Wadah: sel dipisah garis 1px outline-variant (2 kolom ponsel, 4 kolom desktop).
-        foreach (['gap-px', 'bg-outline-variant', 'border-outline-variant', 'rounded-md', 'grid-cols-2', 'lg:grid-cols-4'] as $kelas) {
-            $this->assertStringContainsString($kelas, $ringkasan);
-        }
-        // Sel: label di atas angka, label lebih kecil dari angka.
-        $this->assertStringContainsString('bg-surface-container-lowest', $ringkasan);
-        $this->assertStringContainsString('<p class="text-label-l text-on-surface-variant">Menunggu verifikasi</p>', $ringkasan);
-        $this->assertLessThan(strpos($ringkasan, 'text-display-s'), strpos($ringkasan, 'Menunggu verifikasi'));
-        $this->assertStringContainsString('text-body-s text-on-surface-variant', $ringkasan);
-
         $rincian = $this->render('<x-ui.rincian><x-ui.rincian-baris label="Pasien">Budi</x-ui.rincian-baris></x-ui.rincian>');
         $this->assertStringContainsString('<dl', $rincian);
         $this->assertStringContainsString('<dt class="text-on-surface-variant">Pasien</dt>', $rincian);
@@ -378,26 +363,6 @@ class KomponenUiTest extends TestCase
 
         // Format dapat diganti (dasbor memakai pemisah koma antara tanggal dan jam).
         $this->assertStringContainsString('>11 Okt 2026, 09:30<', $this->render('<x-ui.waktu nilai="2026-10-11 09:30:00" format="d M Y, H:i" />'));
-    }
-
-    public function test_grafik_batang(): void
-    {
-        $html = $this->render('<x-ui.grafik-batang :data="$d" />', ['d' => ['Sen' => 2, 'Sel' => 4, 'Rab' => 0]]);
-
-        $this->assertStringContainsString('width: 50%', $html);
-        $this->assertStringContainsString('width: 100%', $html);
-        $this->assertStringContainsString('width: 0%', $html);
-
-        // Kolom label berlebar tetap tanpa pemecahan baris; nilai rata kanan dengan angka tabular.
-        $labelPanjang = $this->render('<x-ui.grafik-batang :data="$d" />', ['d' => ['Sen 05/10' => 7]]);
-        $this->assertStringContainsString('w-24 shrink-0 whitespace-nowrap text-body-s text-on-surface-variant', $labelPanjang);
-        $this->assertStringContainsString('w-10 shrink-0 text-right tabular-nums', $labelPanjang);
-        $this->assertStringContainsString('bg-surface-container-highest', $labelPanjang);
-        $this->assertStringContainsString('bg-primary', $labelPanjang);
-        $this->assertStringContainsString('bg-success', $this->render('<x-ui.grafik-batang :data="$d" nada="sukses" />', ['d' => ['Sen' => 1]]));
-
-        $kosong = $this->render('<x-ui.grafik-batang :data="[]" />');
-        $this->assertStringContainsString('<ul', $kosong);
     }
 
     public function test_paginasi_berbahasa_indonesia(): void
