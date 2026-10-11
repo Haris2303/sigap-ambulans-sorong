@@ -43,7 +43,9 @@ class KonsistensiTest extends TestCase
         $aturan = collect($this->muatAturan())->firstWhere('id', 'gaya-dilarang');
         $this->assertNotNull($aturan);
 
-        $dilarang = ['shadow-md', 'shadow-xl', 'rounded-2xl', 'rounded-t-3xl', 'uppercase', 'italic', 'font-bold', 'tracking-wide',
+        // Bayangan Tailwind bawaan dan bayangan sembarang tetap dilarang meski token dasbor kini diizinkan.
+        $dilarang = ['shadow-sm', 'shadow-md', 'shadow-lg', 'shadow-xl', 'shadow-2xl', 'shadow-inner', 'shadow-[0_4px_8px_red]',
+            'rounded-2xl', 'rounded-t-3xl', 'uppercase', 'italic', 'font-bold', 'tracking-wide',
             'text-lg', 'text-2xl', 'backdrop-blur-sm', 'blur-md', 'drop-shadow-lg', 'bg-linear-to-r', 'bg-gradient-to-r',
             'from-primary', 'hover:scale-105', 'hover:-translate-y-1', 'animate-pulse', 'rounded-[10px]', 'shadow-[0_2px_4px_black]'];
         foreach ($dilarang as $kelas) {
@@ -53,7 +55,10 @@ class KonsistensiTest extends TestCase
         $diterima = ['shadow-level-1', 'shadow-level-3', 'shadow-none', 'rounded-xs', 'rounded-sm', 'rounded-md', 'rounded-lg',
             'rounded-xl', 'rounded-t-xl', 'rounded-full', 'text-display-s', 'text-headline-s', 'text-title-m', 'text-body-l',
             'text-label-l', 'font-medium', 'font-normal', 'bg-surface-container-high', 'border-outline-variant',
-            'bg-secondary-container', 'text-on-secondary-container', 'hover:bg-primary', 'transition-colors', 'min-h-touch', 'w-drawer'];
+            'bg-secondary-container', 'text-on-secondary-container', 'hover:bg-primary', 'transition-colors', 'min-h-touch', 'w-drawer',
+            // Token dasbor (docs/DESAIN_DASBOR_MATERIAL.md bagian 2): bayangan, latar, warna grafik, dan gaya tipe.
+            'shadow-card', 'shadow-card-raised', 'shadow-nav-active', 'bg-canvas', 'bg-chart-sky', 'fill-chart-sky',
+            'text-page-title', 'text-card-title', 'text-stat-hero', 'text-stat-l', 'text-stat-m', 'rounded-lg', 'rounded-full'];
         foreach ($diterima as $kelas) {
             $this->assertSame(0, preg_match($this->regex($aturan), '<div class="flex '.$kelas.' gap-2">'), $kelas.' harus diterima');
         }
@@ -65,7 +70,8 @@ class KonsistensiTest extends TestCase
         $this->assertNotNull($aturan, 'Aturan token-lama belum ada di konsistensi.json.');
         $this->assertSame('larang', $aturan['tipe']);
 
-        $dilarang = ['bg-canvas', 'divide-line', 'border-line', 'border-control-border', 'text-on-surface-muted', 'hover:bg-primary-soft',
+        // bg-canvas bukan lagi nama lama: canvas adalah token latar halaman dasbor.
+        $dilarang = ['divide-line', 'border-line', 'border-control-border', 'text-on-surface-muted', 'hover:bg-primary-soft',
             'hover:text-primary-hover', 'bg-danger', 'text-danger', 'border-danger', 'bg-danger-soft', 'bg-warning-soft',
             'bg-success-soft', 'bg-neutral-soft', 'text-h1', 'text-h2', 'text-h3', 'text-body', 'text-body-sm', 'text-label', 'text-caption',
             'text-display', 'font-semibold', 'shadow-overlay', 'w-rail', 'ukuran="sm"'];
@@ -78,7 +84,8 @@ class KonsistensiTest extends TestCase
             'border-outline', 'border-outline-variant', 'border-error', 'bg-error', 'bg-error-container', 'text-on-error-container',
             'bg-warning-container', 'bg-success-container', 'text-success', 'text-warning', 'text-on-surface-variant',
             'hover:text-on-primary-container', 'bg-primary-container', 'bg-secondary-container', 'w-drawer', 'min-h-touch',
-            'shadow-level-3', 'bg-linear-to-r', 'text-primary', 'ukuran="lg"', 'ukuran="md"'];
+            'shadow-level-3', 'bg-linear-to-r', 'text-primary', 'ukuran="lg"', 'ukuran="md"',
+            'bg-canvas', 'bg-chart-sky', 'shadow-card', 'text-page-title', 'text-stat-hero', 'text-stat-l', 'text-stat-m'];
         foreach ($diterima as $kelas) {
             $this->assertSame(0, preg_match($this->regex($aturan), '<div class="flex '.$kelas.' gap-2">'), $kelas.' harus diterima');
         }
@@ -91,14 +98,18 @@ class KonsistensiTest extends TestCase
 
         $dilarang = ['color: #fff;', 'color: #0b5c80;', 'color: rgb(0 0 0);', 'color: oklch(0.5 0.1 200);',
             'background: linear-gradient(red, blue);', 'box-shadow: 0 1px 2px black;', 'box-shadow: 0 0 4px var(--shadow-level-1);',
-            'box-shadow: var(--shadow-level-4);', 'background: color-mix(in srgb, red 50%, white);',
+            'box-shadow: var(--shadow-level-4);', 'box-shadow: var(--shadow-card-tinggi);', 'box-shadow: 0 1px 3px var(--shadow-card);',
+            'box-shadow: var(--shadow-card), 0 2px 4px black;', 'box-shadow: var(--shadow-nav);',
+            'background: color-mix(in srgb, red 50%, white);',
             '@keyframes geser {', 'animation: geser 1s;'];
         foreach ($dilarang as $baris) {
             $this->assertSame(1, preg_match($this->regex($aturan), $baris), $baris.' harus ditolak');
         }
 
         $diterima = ['background-color: var(--color-surface);', 'box-shadow: none;', 'box-shadow: var(--shadow-level-2);',
-            'box-shadow: var(--shadow-level-3) !important;', 'opacity: var(--state-hover);',
+            'box-shadow: var(--shadow-level-3) !important;', 'box-shadow: var(--shadow-card);', 'box-shadow: var(--shadow-card-raised);',
+            'box-shadow: var(--shadow-nav-active);', 'box-shadow: var(--shadow-card) !important;',
+            'background-color: var(--color-canvas);', 'opacity: var(--state-hover);',
             'background: color-mix(in oklab, var(--color-primary) 8%, transparent);', 'transition: opacity 150ms;'];
         foreach ($diterima as $baris) {
             $this->assertSame(0, preg_match($this->regex($aturan), $baris), $baris.' harus diterima');

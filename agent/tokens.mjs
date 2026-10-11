@@ -22,8 +22,11 @@ const elevasi = t.elevation ?? {};
 const keadaan = t.state ?? {};
 const gerak = t.motion ?? {};
 
+// Level 1 sampai 3: bayangan melayang M3 (warna dari elevation.shadow-color). Tingkat dasbor: warna per tingkat (`color`), lapisan ambient opsional.
 const TINGKAT_ELEVASI = ['level-1', 'level-2', 'level-3'];
+const TINGKAT_DASBOR = ['card', 'card-raised', 'nav-active'];
 const BAGIAN_ELEVASI = ['key', 'key-opacity', 'ambient', 'ambient-opacity'];
+const BAGIAN_DASBOR = ['color', 'key', 'key-opacity'];
 const KEADAAN = ['hover', 'focus', 'pressed', 'dragged', 'disabled-content', 'disabled-container'];
 
 const wajibAda = (nama, peta, daftar) => {
@@ -33,6 +36,7 @@ const wajibAda = (nama, peta, daftar) => {
 };
 
 wajibAda('warna', warna, [
+  'canvas', 'chart-sky',
   'primary', 'on-primary', 'primary-container', 'on-primary-container',
   'secondary-container', 'on-secondary-container',
   'error', 'on-error', 'error-container', 'on-error-container',
@@ -45,11 +49,13 @@ wajibAda('warna', warna, [
 wajibAda('tipografi', huruf, [
   'display-l', 'display-m', 'display-s', 'headline-l', 'headline-m', 'headline-s',
   'title-l', 'title-m', 'title-s', 'body-l', 'body-m', 'body-s', 'label-l', 'label-m', 'label-s',
+  'page-title', 'card-title', 'stat-hero', 'stat-l', 'stat-m',
 ]);
 wajibAda('rounded', sudut, ['xs', 'sm', 'md', 'lg', 'xl', 'full']);
 wajibAda('spacing', jarak, ['touch', 'drawer', 'content-max']);
-wajibAda('elevation', elevasi, ['shadow-color', ...TINGKAT_ELEVASI]);
+wajibAda('elevation', elevasi, ['shadow-color', ...TINGKAT_ELEVASI, ...TINGKAT_DASBOR]);
 for (const tingkat of TINGKAT_ELEVASI) wajibAda('elevation.' + tingkat, elevasi[tingkat], BAGIAN_ELEVASI);
+for (const tingkat of TINGKAT_DASBOR) wajibAda('elevation.' + tingkat, elevasi[tingkat], BAGIAN_DASBOR);
 wajibAda('state', keadaan, KEADAAN);
 wajibAda('motion', gerak, ['duration-short-ms', 'duration-medium-ms', 'easing-standard']);
 
@@ -62,12 +68,20 @@ for (const [k, v] of Object.entries(keadaan)) {
 }
 
 // Warna bayangan diambil dari token warna yang dirujuk (hanya komponen RGB-nya).
-const rujukan = String(elevasi['shadow-color']).match(/^\{colors\.([\w-]+)\}$/);
-if (!rujukan || !(rujukan[1] in warna)) galat('elevation.shadow-color harus rujukan {colors.<token>} yang ada: ' + elevasi['shadow-color']);
-const rgbBayangan = [0, 2, 4].map((i) => parseInt(String(warna[rujukan[1]]).slice(1).slice(i, i + 2), 16)).join(' ');
+const rgbDari = (nama, nilai) => {
+  const rujukan = String(nilai).match(/^\{colors\.([\w-]+)\}$/);
+  if (!rujukan || !(rujukan[1] in warna)) galat(nama + ' harus rujukan {colors.<token>} yang ada: ' + nilai);
+  return [0, 2, 4].map((i) => parseInt(String(warna[rujukan[1]]).slice(1).slice(i, i + 2), 16)).join(' ');
+};
+const rgbBayangan = rgbDari('elevation.shadow-color', elevasi['shadow-color']);
 
-const bayangan = (b) =>
-  b.key + ' rgb(' + rgbBayangan + ' / ' + b['key-opacity'] + '), ' + b.ambient + ' rgb(' + rgbBayangan + ' / ' + b['ambient-opacity'] + ')';
+// Dua lapis (kunci dan sekitar) atau satu lapis bila `ambient` tidak ada; warna per tingkat bila `color` ada.
+const bayangan = (nama, b) => {
+  const rgb = b.color === undefined ? rgbBayangan : rgbDari('elevation.' + nama + '.color', b.color);
+  const lapis = [b.key + ' rgb(' + rgb + ' / ' + b['key-opacity'] + ')'];
+  if (b.ambient !== undefined) lapis.push(b.ambient + ' rgb(' + rgb + ' / ' + b['ambient-opacity'] + ')');
+  return lapis.join(', ');
+};
 
 const baris = [];
 baris.push('/* DIHASILKAN dari DESIGN.md oleh agent/tokens.mjs. Jangan diubah dengan tangan. */');
@@ -88,7 +102,7 @@ for (const [k, v] of Object.entries(huruf)) {
   if (v.letterSpacing !== undefined) baris.push('  --text-' + k + '--letter-spacing: ' + v.letterSpacing + ';');
   if (v.fontWeight !== undefined) baris.push('  --text-' + k + '--font-weight: ' + v.fontWeight + ';');
 }
-for (const tingkat of TINGKAT_ELEVASI) baris.push('  --shadow-' + tingkat + ': ' + bayangan(elevasi[tingkat]) + ';');
+for (const tingkat of [...TINGKAT_ELEVASI, ...TINGKAT_DASBOR]) baris.push('  --shadow-' + tingkat + ': ' + bayangan(tingkat, elevasi[tingkat]) + ';');
 baris.push('  --spacing-touch: ' + jarak.touch + ';');
 baris.push('  --spacing-drawer: ' + jarak.drawer + ';');
 baris.push('  --container-content: ' + jarak['content-max'] + ';');
@@ -106,4 +120,4 @@ baris.push('}');
 const tujuan = resolve(root, 'resources/css/design-tokens.css');
 mkdirSync(dirname(tujuan), { recursive: true });
 writeFileSync(tujuan, baris.join('\n') + '\n', 'utf8');
-console.log('design-tokens.css dihasilkan: ' + Object.keys(warna).length + ' warna, ' + Object.keys(huruf).length + ' gaya teks, ' + TINGKAT_ELEVASI.length + ' tingkat bayangan.');
+console.log('design-tokens.css dihasilkan: ' + Object.keys(warna).length + ' warna, ' + Object.keys(huruf).length + ' gaya teks, ' + (TINGKAT_ELEVASI.length + TINGKAT_DASBOR.length) + ' tingkat bayangan.');

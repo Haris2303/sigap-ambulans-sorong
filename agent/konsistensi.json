@@ -44,7 +44,7 @@
     {
       "id": "gaya-dilarang",
       "tipe": "larang",
-      "pesan": "Gaya yang dilarang DESIGN.md (gradien, blur, bayangan dan sudut di luar token M3, nilai sembarang, teks di luar skala, tracking, uppercase, italic, bold, animasi atau efek angkat). Lihat DESIGN.md bagian Do's and Don'ts.",
+      "pesan": "Gaya yang dilarang DESIGN.md (gradien, blur, bayangan dan sudut di luar token M3, nilai sembarang, teks di luar skala, tracking, uppercase, italic, bold, animasi atau efek angkat). Bayangan yang diizinkan hanya token: shadow-none, shadow-level-1..3, shadow-card, shadow-card-raised, shadow-nav-active. Lihat DESIGN.md bagian Do's and Don'ts.",
       "folder": [
         "resources/views"
       ],
@@ -59,7 +59,7 @@
     {
       "id": "token-lama",
       "tipe": "larang",
-      "pesan": "Nama token atau kelas pra-Material 3. Pakai padanan M3: bg-canvas -> bg-surface; border-line, divide-line -> border-outline-variant, divide-outline-variant; border-control-border -> border-outline; text-on-surface-muted -> text-on-surface-variant; *-primary-soft -> bg-primary-container atau bg-secondary-container; hover:*-primary-hover -> lapisan-keadaan; *-danger -> *-error; *-danger-soft, *-warning-soft, *-success-soft -> *-error-container, *-warning-container, *-success-container; *-neutral-soft -> bg-surface-container-highest; text-h1/h2/h3 -> text-headline-s/title-l/title-m; text-body, text-body-sm, text-label, text-caption, text-display -> text-body-l, text-body-m, text-label-l, text-body-s, text-display-s; font-semibold -> font-medium; shadow-overlay -> shadow-level-3; w-rail -> w-drawer; ukuran=\"sm\" pada tombol dihapus (DESIGN.md).",
+      "pesan": "Nama token atau kelas pra-Material 3. Pakai padanan M3: border-line, divide-line -> border-outline-variant, divide-outline-variant; border-control-border -> border-outline; text-on-surface-muted -> text-on-surface-variant; *-primary-soft -> bg-primary-container atau bg-secondary-container; hover:*-primary-hover -> lapisan-keadaan; *-danger -> *-error; *-danger-soft, *-warning-soft, *-success-soft -> *-error-container, *-warning-container, *-success-container; *-neutral-soft -> bg-surface-container-highest; text-h1/h2/h3 -> text-headline-s/title-l/title-m; text-body, text-body-sm, text-label, text-caption, text-display -> text-body-l, text-body-m, text-label-l, text-body-s, text-display-s; font-semibold -> font-medium; shadow-overlay -> shadow-level-3; w-rail -> w-drawer; ukuran=\"sm\" pada tombol dihapus (DESIGN.md).",
       "folder": [
         "resources/views",
         "resources/js",
@@ -72,7 +72,7 @@
       "kecuali": [
         "^resources/views/pdf/"
       ],
-      "pola": "(?<![\\w-])(?:(?:bg|text|border|divide|ring|outline|placeholder|fill|stroke)-(?:canvas|line|control-border|primary-soft|primary-hover|danger|danger-soft|danger-hover|warning-soft|success-soft|neutral-soft|on-surface-muted)|text-(?:h[123]|body|body-sm|label|caption|display)|shadow-overlay|font-semibold|w-rail)(?![\\w-])|\\bukuran=\"sm\""
+      "pola": "(?<![\\w-])(?:(?:bg|text|border|divide|ring|outline|placeholder|fill|stroke)-(?:line|control-border|primary-soft|primary-hover|danger|danger-soft|danger-hover|warning-soft|success-soft|neutral-soft|on-surface-muted)|text-(?:h[123]|body|body-sm|label|caption|display)|shadow-overlay|font-semibold|w-rail)(?![\\w-])|\\bukuran=\"sm\""
     },
     {
       "id": "gaya-mentah",
@@ -264,7 +264,7 @@
     {
       "id": "warna-css",
       "tipe": "larang",
-      "pesan": "tambahan.css: warna hanya lewat var(--color-...). Dilarang heksadesimal, rgb()/hsl()/oklch(), gradien, @keyframes, animation. color-mix() hanya bila memakai var(--color-...); box-shadow hanya none atau var(--shadow-level-1..3).",
+      "pesan": "tambahan.css: warna hanya lewat var(--color-...). Dilarang heksadesimal, rgb()/hsl()/oklch(), gradien, @keyframes, animation. color-mix() hanya bila memakai var(--color-...); box-shadow hanya none atau var(--shadow-level-1..3), var(--shadow-card), var(--shadow-card-raised), var(--shadow-nav-active).",
       "folder": [
         "resources/css"
       ],
@@ -274,7 +274,7 @@
       "kecuali": [
         "/(?:app|design-tokens)\\.css$"
       ],
-      "pola": "#[0-9a-fA-F]{3,8}\\b|\\b(?:rgb|rgba|hsl|hsla|oklch|oklab|lab|lch)\\(|\\bcolor-mix\\((?![^;]*var\\(--color-)|-gradient\\(|\\bbox-shadow\\s*:(?!\\s*(?:none|var\\(--shadow-level-[123]\\))\\s*(?:;|!important|$))|@keyframes|\\banimation\\s*:"
+      "pola": "#[0-9a-fA-F]{3,8}\\b|\\b(?:rgb|rgba|hsl|hsla|oklch|oklab|lab|lch)\\(|\\bcolor-mix\\((?![^;]*var\\(--color-)|-gradient\\(|\\bbox-shadow\\s*:(?!\\s*(?:none|var\\(--shadow-(?:level-[123]|card|card-raised|nav-active)\\))\\s*(?:;|!important|$))|@keyframes|\\banimation\\s*:"
     },
     {
       "id": "tailwind-lama",

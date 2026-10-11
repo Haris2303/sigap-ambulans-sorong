@@ -25,3 +25,15 @@ Catatan kemajuan untuk pergantian gaya dari "buku catatan dispatch" ke Material 
 ## Kondisi sekarang
 
 Setelah M5, tidak ada nama token lama di `resources/views` (kecuali `pdf/`, yang berdiri sendiri) dan komponen, layout, serta halaman semuanya Material 3. Yang tersisa adalah M6 (aturan pemindai umum) dan M7 (verifikasi penutup, termasuk pemeriksaan visual di browser oleh pengguna; sesi ini tidak punya browser).
+
+## Lanjutan: dasbor Material (D1 sampai D7)
+
+Setelah M1 sampai M7, pemilik proyek memilih gaya dasbor Material yang lebih kaya. Keputusannya ada di `docs/DESAIN_DASBOR_MATERIAL.md` dan mengalahkan aturan Don't dan Layout lama di `DESIGN.md`, `docs/KIT_UI.md`, dan `agent/konsistensi.json`. Satu langkah per sesi.
+
+- [x] D1 Aturan dan token: `DESIGN.md` (warna `canvas` dan `chart-sky`, lima gaya tipe dasbor, bayangan `card`, `card-raised`, `nav-active`, token komponen baru dan yang berubah, prosa dan Do's and Don'ts), `agent/tokens.mjs` (bayangan dengan warna per tingkat dan lapisan ambient opsional), `agent/konsistensi.json` (`token-lama` tidak lagi melarang `canvas`; `warna-css` mengizinkan tiga token bayangan baru) beserta kasus uji, dan `docs/KIT_UI.md` bagian 10 (rencana komponen). Belum ada perubahan pada Blade dan `app.css`; latar `canvas` dipasang di D4.
+- [ ] D2 Komponen dasar (panel, stat, icon-chip, tile, tabs, avatar, lencana pil, tombol on-primary, ikon `user-check`).
+- [ ] D3 Grafik (bar dan donat, geometri PHP murni).
+- [ ] D4 Kerangka aplikasi (bilah atas, laci, latar `canvas`, jarak halaman).
+- [ ] D5 Dasbor Dinkes (`RingkasanDasbor`, tab, batas query).
+- [ ] D6 Peran lain dan sapuan halaman.
+- [ ] D7 Penutupan.

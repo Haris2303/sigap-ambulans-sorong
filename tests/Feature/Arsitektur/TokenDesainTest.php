@@ -56,14 +56,34 @@ class TokenDesainTest extends TestCase
             $this->assertArrayHasKey($peran, $this->warna, 'Peran M3 hilang: '.$peran);
         }
 
-        foreach (['canvas', 'line', 'control-border', 'primary-soft', 'primary-hover', 'danger', 'danger-soft', 'neutral-soft', 'on-surface-muted'] as $lama) {
+        // canvas bukan nama lama lagi: token latar halaman dasbor (docs/DESAIN_DASBOR_MATERIAL.md).
+        foreach (['line', 'control-border', 'primary-soft', 'primary-hover', 'danger', 'danger-soft', 'neutral-soft', 'on-surface-muted'] as $lama) {
             $this->assertArrayNotHasKey($lama, $this->warna, 'Nama token lama masih ada: '.$lama);
         }
     }
 
+    public function test_warna_dasbor_canvas_dan_chart_sky(): void
+    {
+        $this->assertSame('#EBF1F6', $this->warna['canvas'] ?? null);
+        $this->assertSame('#7FB9DA', $this->warna['chart-sky'] ?? null);
+        $this->assertStringContainsString('--color-canvas: #ebf1f6;', $this->css);
+        $this->assertStringContainsString('--color-chart-sky: #7fb9da;', $this->css);
+        $this->assertCount(32, $this->warna, 'Skema 30 warna M3 ditambah canvas dan chart-sky; tidak ada warna baru lain.');
+    }
+
     public function test_gaya_teks_dan_sudut_sinkron(): void
     {
-        $this->assertCount(15, $this->gayaTeks, 'Skala tipe M3 harus 15 gaya.');
+        $this->assertCount(20, $this->gayaTeks, 'Skala tipe harus 15 gaya M3 ditambah 5 gaya dasbor.');
+        foreach (['page-title', 'card-title', 'stat-hero', 'stat-l', 'stat-m'] as $gayaDasbor) {
+            $this->assertContains($gayaDasbor, $this->gayaTeks);
+            $this->assertStringContainsString('--text-'.$gayaDasbor.'--font-weight: 500;', $this->css);
+        }
+        $this->assertStringContainsString('--text-stat-hero: 56px;', $this->css);
+        $this->assertStringContainsString('--text-stat-hero--line-height: 60px;', $this->css);
+        $this->assertStringContainsString('--text-page-title: 28px;', $this->css);
+        $this->assertStringContainsString('--text-card-title: 20px;', $this->css);
+        $this->assertStringContainsString('--text-stat-l: 32px;', $this->css);
+        $this->assertStringContainsString('--text-stat-m: 28px;', $this->css);
         foreach ($this->gayaTeks as $nama) {
             $this->assertStringContainsString('--text-'.$nama.': ', $this->css, 'Gaya teks '.$nama.' tidak sinkron.');
             $this->assertStringContainsString('--text-'.$nama.'--line-height: ', $this->css);
@@ -81,6 +101,12 @@ class TokenDesainTest extends TestCase
             $this->assertStringContainsString('--shadow-level-'.$tingkat.': ', $this->css);
         }
         $this->assertStringNotContainsString('--shadow-overlay', $this->css);
+
+        // Bayangan dasbor: warna on-surface (24 28 32), bukan hitam; nav-active satu lapis.
+        $this->assertStringContainsString('--shadow-card: 0px 1px 3px 0px rgb(24 28 32 / 0.1), 0px 6px 16px 0px rgb(24 28 32 / 0.06);', $this->css);
+        $this->assertStringContainsString('--shadow-card-raised: 0px 1px 3px 0px rgb(24 28 32 / 0.12), 0px 8px 20px 0px rgb(24 28 32 / 0.1);', $this->css);
+        $this->assertStringContainsString('--shadow-nav-active: 0px 2px 6px 0px rgb(24 28 32 / 0.22);', $this->css);
+        $this->assertStringContainsString('--shadow-level-1: 0px 1px 2px 0px rgb(0 0 0 / 0.3)', $this->css, 'Level 1 tetap hitam.');
 
         foreach (['hover' => '0.08', 'focus' => '0.1', 'pressed' => '0.1', 'dragged' => '0.16'] as $keadaan => $opasitas) {
             $this->assertStringContainsString('--state-'.$keadaan.': '.$opasitas.';', $this->css);
