@@ -2,6 +2,8 @@
 
 > Pasangan `DESIGN.md` (identitas visual, token, larangan gaya). Dokumen ini menjawab "bagaimana dibangun di kode": tumpukan, kelas yang tersedia, komponen Blade, pola halaman. Tujuan: **semua halaman terasa satu aplikasi**. Halaman hanya merakit komponen; gaya tidak pernah ditulis per halaman. Sesi agen otonom tidak boleh mengubah dokumen ini; sesi interaktif boleh, bersama `DESIGN.md`.
 >
+> **Retema B "Terang lembut" (`docs/RETEMA_B.md`) mengalahkan dokumen ini dan `docs/DESAIN_DASBOR_MATERIAL.md` bila bertentangan.** Langkah R1 sudah mengganti token (warna, tipografi, bentuk, elevasi), font, dan aturan pemindai (§1 dan §9 di bawah sudah mengikutinya). Layout, komponen, dan halaman di §2 sampai §10 masih tampilan dasbor Material sampai dialihkan di R2 sampai R8; rencana komponen arah B ada di §11.
+>
 > **Arah dasbor Material (keputusan pemilik proyek, `docs/DESAIN_DASBOR_MATERIAL.md`) mengalahkan aturan Don't dan Layout lama, dan seluruhnya sudah dibangun (D1 sampai D7).** Komponen pra-dasbor `ringkasan`, `ringkasan-sel`, dan `grafik-batang` sudah dihapus; aturan `komponen-lama` mencegahnya kembali. Satu-satunya yang masih menunggu keputusan pemilik proyek: halaman Masyarakat tanpa laci navigasi (lihat akhir dokumen).
 >
 > **Material 3.** Token, aturan konsistensi, komponen, layout, dan halaman sudah Material 3. Nama token atau kelas lama ditolak oleh aturan `token-lama` di `agent/konsistensi.json` (pesannya memuat padanan baru). Catatan keputusan dan langkah migrasi ada di `docs/MIGRASI_M3.md`.
@@ -11,22 +13,22 @@
 | Hal | Ketentuan |
 |---|---|
 | CSS | Tailwind CSS 4.3 lewat Vite (`@tailwindcss/vite`). Token berasal dari `DESIGN.md`; `node agent/tokens.mjs` menghasilkan `resources/css/design-tokens.css` (jangan diubah dengan tangan). `resources/css/app.css` memuat dasar (latar, fokus, seleksi). CSS tambahan hanya di `resources/css/tambahan.css` (aturan di berkasnya; warna hanya `var(--color-…)`) |
-| Font | Roboto Variable dari paket npm (`@fontsource-variable/roboto`), diimpor di `app.css`. Tidak ada font dari internet |
+| Font | Plus Jakarta Sans Variable dari paket npm (`@fontsource-variable/plus-jakarta-sans`, bobot 200 sampai 800), diimpor di `app.css`; `--font-sans` dihasilkan dari `DESIGN.md`. Impor Roboto (`@fontsource-variable/roboto`) masih ada tetapi tidak dipakai lagi, dihapus di R9. Tidak ada font dari internet |
 | Ikon | Lucide, disalin ke `resources/icons/*.svg` (daftar di §6), ditampilkan lewat `<x-ui.ikon>` |
 | JS | Vite: `resources/js/app.js` (impor `sigap.js`) dan `resources/js/peta.js` (Leaflet 1.9.4 + Leaflet Routing Machine 3.2.12 dari npm). Tidak ada CDN, tidak ada `<script src>` di view mana pun |
 | Pemuatan | Hanya `layouts.dasar` yang memuat aset: `@vite(['resources/css/app.css','resources/js/app.js'])`, dan `@vite('resources/js/peta.js')` bila `:peta="true"` |
 | Build | `npm run build` harus lulus. Tes memakai `$this->withoutVite()` (di `Tests\TestCase`) sehingga tidak perlu manifest |
 
 **Kelas yang ada** (selain utilitas Tailwind biasa untuk tata letak: `flex`, `grid`, `gap-*`, `p-*`, `m-*`, `w-*`, `size-*`, `hidden`, `md:`, `lg:`, `truncate`, dst. dengan skala numerik bawaan):
-- Warna: `bg|text|border|outline|fill|stroke|divide-<token>` dengan token `primary`, `on-primary`, `primary-container`, `on-primary-container`, `secondary-container`, `on-secondary-container`, `error`, `on-error`, `error-container`, `on-error-container`, `success`, `success-container`, `on-success-container`, `warning`, `warning-container`, `on-warning-container`, `surface`, `surface-container-lowest`, `surface-container-low`, `surface-container`, `surface-container-high`, `surface-container-highest`, `on-surface`, `on-surface-variant`, `outline`, `outline-variant`, `inverse-surface`, `inverse-on-surface`, `inverse-primary`, `scrim`, serta token dasbor `canvas` (latar halaman) dan `chart-sky` (batang dan segmen grafik). Pengubah opasitas hanya untuk lapisan keadaan dan nonaktif: `/8`, `/10`, `/12`, `/38` (mis. `hover:bg-primary/8`, `disabled:text-on-surface/38`).
-- Teks: satu kelas per gaya, mengatur ukuran, tinggi baris, jarak huruf, dan bobot: `text-display-l|m|s`, `text-headline-l|m|s`, `text-title-l|m|s`, `text-body-l|m|s`, `text-label-l|m|s`, serta gaya dasbor (bobot 500) `text-page-title` (28px), `text-card-title` (20px), `text-stat-hero` (56px), `text-stat-l` (32px), `text-stat-m` (28px). Bobot lain hanya `font-normal|font-medium`. Angka berderet: `tabular-nums`.
-- Sudut: `rounded-xs` (4px), `rounded-sm` (8px), `rounded-md` (12px), `rounded-lg` (16px), `rounded-xl` (28px), `rounded-full`, serta `rounded-none`.
-- Bayangan: `shadow-level-1`, `shadow-level-2`, `shadow-level-3` untuk lapisan yang melayang; level 0 adalah `shadow-none`. Bayangan kartu dasbor (warna `on-surface`): `shadow-card` (panel, kartu statistik putih, bilah atas), `shadow-card-raised` (kartu statistik utama), `shadow-nav-active` (item menu aktif).
-- Ukuran: `min-h-touch`/`h-touch` (48px), `w-drawer` (280px), `max-w-content` (1152px), `max-w-prose`.
-- Gerak: `transition-colors` dan `transition-opacity` memakai 150ms dengan easing standar M3 secara bawaan.
+- Warna: `bg|text|border|outline|ring|fill|stroke|divide-<token>` dengan token arah B `primary`, `on-primary`, `primary-container`, `on-primary-container`, `secondary`, `on-secondary`, `secondary-container`, `on-secondary-container`, `tertiary`, `on-tertiary`, `tertiary-container`, `on-tertiary-container`, `success`, `on-success`, `success-container`, `on-success-container`, `warning`, `on-warning`, `warning-container`, `on-warning-container`, `error`, `on-error`, `error-container`, `on-error-container`, `surface`, `surface-container-lowest`, `surface-container-low`, `surface-container`, `surface-container-high`, `surface-container-highest`, `on-surface`, `on-surface-variant`, `outline`, `outline-variant`, `inverse-surface`, `inverse-on-surface`, `inverse-primary`, `selected`, `scrim`, `chart-mint`, `chart-coral`, `chart-amber`, `chart-slate`, serta token lama `canvas` (sama dengan `surface`) dan `chart-sky` (grafik dasbor Material), keduanya dihapus di R9. Pengubah opasitas hanya untuk lapisan keadaan dan nonaktif (`/8`, `/10`, `/12`, `/38`, mis. `hover:bg-primary/8`, `disabled:text-on-surface/38`) dan pemakaian arah B: `bg-scrim/45` (scrim dialog dan laci), `bg-primary/25` dan `bg-primary/15` (lingkaran kartu navy), `bg-on-secondary/15` (chip ikon kartu navy), `ring-primary/20` (fokus isian).
+- Teks: satu kelas per gaya, mengatur ukuran, tinggi baris, bobot, dan jarak huruf sekaligus. Arah B: `text-stat-hero` (56px), `text-stat-l` (38px), `text-page-title` (30px), `text-page-title-s` (26px), `text-title-xl` (22px), `text-title-l` (18px), `text-title-m` (16px), `text-brand` (19px), `text-ring-value` (16px), `text-body-l|m|s` (16, 14, 13px), `text-label-l|m` (14 dan 12px, bobot 600), `text-chip` (12px, bobot 700); nilai lengkap di `DESIGN.md` bagian Typography. Gaya lama (dihapus di R9 bila tak terpakai): `text-display-l|m|s`, `text-headline-l|m|s`, `text-title-s`, `text-label-s`, `text-card-title`, `text-stat-m`. Bobot hanya dari gaya; `font-normal|font-medium` masih ada untuk komponen lama dan dialihkan di R2 sampai R8. Angka berderet: `tabular-nums`.
+- Sudut: `rounded-sm` (10px), `rounded-md` (14px), `rounded-lg` (18px), `rounded-xl` (24px), `rounded-2xl` (28px), `rounded-full`, `rounded-none`, serta `rounded-xs` (4px, lama, dihapus di R9).
+- Bayangan (tinta biru tua `rgb(30 41 100)`): `shadow-card` (kartu, panel, bilah samping, kartu navy), `shadow-control` (kontrol melayang), `shadow-chip` (segmen aktif tab), `shadow-overlay` (dialog, menu tarik, laci ponsel, snackbar); `shadow-none` untuk yang datar. Lama, dipertahankan sampai pemakaiannya dialihkan dan dihapus di R9: `shadow-level-1|2|3`, `shadow-card-raised`, `shadow-nav-active`.
+- Ukuran: `min-h-touch`/`h-touch` (48px), `w-drawer` (280px, kerangka lama sampai R3), `max-w-content` (1152px, kerangka lama sampai R3), `max-w-prose`.
+- Gerak: `transition-colors` dan `transition-opacity` memakai 150ms dengan easing standar M3 secara bawaan; buka dan tutup (dialog, laci, scrim) 200ms (`--motion-duration-medium`).
 - Kelas di `tambahan.css`: `gulir-tipis` (bilah gulir tipis `outline-variant` untuk daftar yang bisa bergulir, mis. menu laci), `lapisan-keadaan` (lapisan hover 8%, fokus 10%, tekan 10% berwarna `currentColor` di bawah isi kontrol) dan `target-sentuh` (memperluas area sentuh tak terlihat menjadi minimal 48px).
 
-**Tidak ada** (tidak menghasilkan CSS, dan dipindai): palet bawaan (`bg-red-500`, `text-gray-600`, `text-white`), `text-sm|xs|lg|xl…`, `font-bold|semibold`, `rounded-2xl+`, `shadow-xs…2xl`, `blur`, `tracking-*`, `uppercase`, `italic`, gradien, `animate-pulse|bounce|ping`, `hover:scale|translate`, nilai sembarang untuk `rounded` dan `shadow`. Boleh: `animate-spin` untuk indikator memuat.
+**Tidak ada** (tidak menghasilkan CSS, dan dipindai): palet bawaan (`bg-red-500`, `text-gray-600`, `text-white`), ukuran teks mentah `text-xs|sm|base|lg|xl…` dan `text-[13px]` (aturan `teks-mentah`), kelas bobot `font-thin|extralight|light|semibold|bold|extrabold|black`, `font-<angka>`, `font-[…]`, `rounded-3xl+`, `shadow-xs…2xl` dan bayangan lain di luar token (termasuk bayangan berwarna atau beropasitas seperti `shadow-primary/40`), `blur`, `tracking-*`, `uppercase`, `italic`, gradien, `animate-pulse|bounce|ping`, `hover:scale|translate`, nilai sembarang untuk `rounded` dan `shadow`. Boleh: `animate-spin` untuk indikator memuat.
 
 ## 2. Resep kelas (supaya hal yang sama selalu terlihat sama)
 
@@ -156,7 +158,7 @@ Ikon hanya di menu laci, tombol yang butuh penjelas visual (mis. lokasi), pering
 
 ## 9. Larangan di halaman (diperiksa otomatis oleh `agent/konsistensi.json`)
 
-Pada berkas di bawah `resources/views/` (kecuali `pdf/`): kelas warna/gaya di luar §1 (palet bawaan, white/black, `bg-[#…]`, gradien, blur, bayangan dan sudut di luar token (bayangan yang sah: `shadow-none`, `shadow-level-1..3`, `shadow-card`, `shadow-card-raised`, `shadow-nav-active`) atau dengan nilai sembarang, `tracking-*`, `uppercase`, `italic`, `font-bold`, `text-sm|lg|…`, `animate-pulse|bounce|ping`, `hover:scale|translate`); nama token dan kelas pra-Material 3 (aturan `token-lama`, juga pada `resources/js` dan `app/Support`); sintaks Tailwind v3; emoji; tanda panah, titik tengah, dan em dash berspasi; tag `<script src>`/`<link href=http>`/CDN; URL ketikan tangan. Pada halaman di luar `components/`: elemen mentah `<button>`, `<table>`, `<select>`, `<textarea>`, `<input>` (kecuali `type="hidden"`); `<style>`, atribut `style=`, `<html>/<head>/<body>`; halaman yang tidak diawali `<x-layouts.*>` (fragmen `@include` diawali `_` dikecualikan). Pada `resources/css/tambahan.css`: warna hanya `var(--color-…)`, `color-mix()` hanya dengan `var(--color-…)`, `box-shadow` hanya `none`, `var(--shadow-level-1..3)`, `var(--shadow-card)`, `var(--shadow-card-raised)`, atau `var(--shadow-nav-active)`, tanpa gradien, `@keyframes`, atau `animation`. Seluruh `pdf/` berdiri sendiri (dirender dompdf) dan dikecualikan.
+Pada berkas di bawah `resources/views/` (kecuali `pdf/`): kelas warna/gaya di luar §1 (palet bawaan, white/black, `bg-[#…]`, gradien, blur, bayangan dan sudut di luar token (bayangan yang sah: `shadow-none`, `shadow-card`, `shadow-control`, `shadow-chip`, `shadow-overlay`, serta yang lama `shadow-level-1..3`, `shadow-card-raised`, `shadow-nav-active`; tanpa pengubah warna atau opasitas; sudut sampai `rounded-2xl`) atau dengan nilai sembarang, `tracking-*`, `uppercase`, `italic`, kelas bobot (`font-semibold`, `font-bold`, `font-<angka>`, dst.; `font-normal|font-medium` sementara untuk komponen lama), `animate-pulse|bounce|ping`, `hover:scale|translate`); ukuran teks mentah `text-sm|lg|…|[13px]` (aturan `teks-mentah`, juga pada `resources/js` dan `app/Support`); nama token dan kelas pra-Material 3 (aturan `token-lama`, juga pada `resources/js` dan `app/Support`); sintaks Tailwind v3; emoji; tanda panah, titik tengah, dan em dash berspasi; tag `<script src>`/`<link href=http>`/CDN; URL ketikan tangan. Pada halaman di luar `components/`: elemen mentah `<button>`, `<table>`, `<select>`, `<textarea>`, `<input>` (kecuali `type="hidden"`); `<style>`, atribut `style=`, `<html>/<head>/<body>`; halaman yang tidak diawali `<x-layouts.*>` (fragmen `@include` diawali `_` dikecualikan). Pada `resources/css/tambahan.css`: warna hanya `var(--color-…)`, `color-mix()` hanya dengan `var(--color-…)`, `box-shadow` hanya `none`, `var(--shadow-card)`, `var(--shadow-control)`, `var(--shadow-chip)`, `var(--shadow-overlay)`, atau yang lama `var(--shadow-level-1..3)`, `var(--shadow-card-raised)`, `var(--shadow-nav-active)`, tanpa gradien, `@keyframes`, atau `animation`. Seluruh `pdf/` berdiri sendiri (dirender dompdf) dan dikecualikan.
 
 ## 10. Dasbor Dinkes (halaman acuan)
 
@@ -232,3 +234,47 @@ Grafik digambar Chart.js (D3b), bukan SVG. Paket `chart.js` didaftarkan modular 
 - **Dasbor sopir**: penugasan aktif dalam satu `panel` besar bertanda `data-penugasan-aktif` (kode, lencana status dan Gawat, lokasi jemput `text-title-m`, `rincian` tanpa bingkai, kontak `tel:`, peta). Aksi utama (Terima, Mulai perjalanan, Selesai) berada di `bilah-aksi` lekat di dasar kartu; "Tolak penugasan" tersembunyi di `lipat` di atasnya supaya tidak tersentuh keliru. Tanpa grafik.
 - **Masyarakat dan Laporan**: `stat` putih menggantikan `ringkasan`. **Buat Pesanan**: tiap bagian formulir (`fieldset`) berada di dalam `panel`, tetap satu kolom `max-w-xl`. **Landing**: langkah "Cara kerja" di dalam `panel`. Jarak antar kartu `gap-5` / `space-y-5`.
 - Halaman Masyarakat (Buat Pesanan, lacak) tetap memakai laci navigasi; dokumen arah menyebut "tanpa laci" dan itu belum dilakukan (butuh keputusan pemilik proyek).
+
+## 11. Retema B (rencana)
+
+Daftar komponen arah B dari `docs/RETEMA_B.md` bagian 6. Semuanya **belum diimplementasikan**: halaman masih memakai komponen di §4. Nama mengikuti dokumen arah; bila padanannya sudah ada di repo, komponen itu yang diubah (variasi menjadi prop baru), bukan komponen kedua. Bagian ini menjadi dokumentasi sebenarnya di R2 (6.1 sampai 6.7, 6.9, 6.11 sampai 6.13) dan R4 (6.8, 6.10, bagian 7), lengkap dengan tes render dan entri katalog `/_ui`.
+
+| Bagian | Komponen arah B | Padanan di repo sekarang | Langkah | Status |
+|---|---|---|---|---|
+| 6.1 | `x-ui.panel` (prop `flush`, `as`; slot `header`) | `panel` | R2 | belum diimplementasikan |
+| 6.2 | `x-ui.button` (varian `primary`, `secondary`, `ghost`, `danger`, `on-secondary`; ukuran kecil) | `tombol` | R2 | belum diimplementasikan |
+| 6.3 | `x-ui.field`, `x-ui.select`, `x-ui.textarea` | `isian`, `pilihan`, `area-teks` | R2 | belum diimplementasikan |
+| 6.4 | `x-ui.choice-group`, `x-ui.choice` | `opsi-baris` | R2 | belum diimplementasikan |
+| 6.5 | `x-ui.tabs` (varian `track` dan `floating`), `x-ui.segmented` | `tabs` dan `tab` (garis bawah) | R2 | belum diimplementasikan |
+| 6.6 | `x-ui.badge` (`tone`, `dot`, `size`), `x-ui.icon-chip` (nada `tertiary` dan `neutral`, 40 dan 44px) | `lencana`, `lencana-status`, `icon-chip` | R2 | belum diimplementasikan |
+| 6.7 | `x-ui.avatar` (`md` 40px, `sm` 36px, warna dari hash nama) | `avatar` | R2 | belum diimplementasikan |
+| 6.8 | `x-ui.stat`, `x-ui.hero-stat` | `stat` (putih dan `featured`) | R4 | belum diimplementasikan |
+| 6.9 | `x-ui.table` (baris bulat, daftar baris di bawah `md`) | `tabel` | R2 | belum diimplementasikan |
+| 6.10 | `x-ui.ring-tile` | `tile` | R4 | belum diimplementasikan |
+| 6.11 | `x-ui.empty`, `x-ui.note`, snackbar, dialog | `kosong`, `peringatan`, `snackbar`, `dialog` | R2 | belum diimplementasikan |
+| 6.12 | `x-ui.timeline`, daftar info (`<dl>`) | `linimasa`, `rincian` | R2 | belum diimplementasikan |
+| 6.13 | ikon (21px di menu, chip, dan tombol ikon; garis 2,25 untuk tanda merek; ikon baru di `agent/icons.txt`) | `ikon` | R2 | belum diimplementasikan |
+| 7 | `x-ui.chart` (Chart.js garis dan donat), `App\Support\Chart\Sparkline`, `App\Support\Chart\Ring` | `chart.bar`, `chart.donut` (dihapus di R9) | R4 | belum diimplementasikan |
+
+Sudah ada sejak R1 sebagai dasar komponen di atas: token arah B (§1), font Plus Jakarta Sans, aturan pemindai (§9), pasangan kontras `agent/kontras.json` yang dijaga `KontrasTokenTest`, dan `PesananStatus::tone()`, satu tabel status untuk lencana, chip, dan grafik:
+
+| Tone | Status | Chip dan lencana | Grafik |
+|---|---|---|---|
+| `warning` | Menunggu verifikasi | `warning-container` / `on-warning-container` | `chart-amber` |
+| `primary` | Terverifikasi | `primary-container` / `on-primary-container` | `primary` |
+| `tertiary` | Ditugaskan, Diterima sopir, Dalam perjalanan | `tertiary-container` / `on-tertiary-container` | `tertiary` |
+| `success` | Selesai | `success-container` / `on-success-container` | `chart-mint` |
+| `error` | Ditolak, juga lencana Gawat | `error-container` / `on-error-container` | `chart-coral` |
+| `neutral` | Dibatalkan | `secondary-container` / `on-secondary-container` | `chart-slate` |
+
+Keputusan untuk status yang tidak disebut namanya di dokumen arah: **Diterima sopir** termasuk "status aktif setelah terverifikasi sampai dalam perjalanan", jadi bertone `tertiary`, sama persis dengan himpunan `PesananStatus::memegangSumberDaya()` (dijaga `EnumTest`). `nada()` dan `warnaGrafik()` lama tetap dipakai komponen sekarang sampai lencana dan grafik dialihkan.
+
+Catatan untuk langkah berikutnya:
+
+- Warna avatar: `crc32(nama) % 5` memilih pasangan container `primary`, `error`, `success`, `tertiary`, atau `warning` (6.7).
+- Aturan `token-lama` masih menolak `ukuran="sm"` (sisa tombol pra-M3). Bila R2 memberi tombol ukuran kecil lewat prop `ukuran`, aturan itu dan kasus tesnya diubah bersama.
+- `x-ui.ikon` sekarang hanya menerima ukuran 18, 20, 22, 24, dan 26; arah B butuh 21 serta 16 sampai 18 di tombol. Dari daftar ikon 6.13 hanya `chevron-left` yang belum ada di `agent/icons.txt`.
+- `font-normal` dan `font-medium` masih dipakai `linimasa`, `tabel`, `kontak-darurat`, dan `chart.donut`. Setelah dialihkan ke gaya token, keduanya ditambahkan ke aturan `gaya-dilarang`.
+- Dokumen arah menyebut bobot di luar gaya token (keterangan cincin "menipis" 13px bobot 600, langkah linimasa sekarang bobot 700). Karena kelas bobot dilarang di markup, R2 dan R4 memilih gaya token yang ada atau menambah gaya di `DESIGN.md`.
+- Sampai dialog (R2) dan laci ponsel (R3) memakai `bg-scrim/45`, `backdrop:bg-scrim` dan `bg-scrim` lama tampil pekat, tidak tembus pandang, karena token `scrim` kini tanpa alfa.
+- Lencana netral lama (`bg-surface-container-highest text-on-surface-variant`) kini berkontras 4,48:1, sedikit di bawah 4,5:1; lencana arah B memakai `secondary-container` / `on-secondary-container` (7,12:1).

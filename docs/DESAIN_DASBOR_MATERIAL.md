@@ -1,3 +1,5 @@
+Digantikan oleh docs/RETEMA_B.md
+
 # Arah desain: dasbor Material (keputusan pemilik proyek)
 
 Dokumen ini adalah keputusan pemilik proyek setelah melihat hasil M1 sampai M7. Pemilik menilai tampilan M3 baseline yang sekarang "terlalu simple" dan memilih gaya dasbor admin Material yang lebih kaya: kartu berbayang di atas latar bertint, chip ikon berwarna, grafik, tab, dan avatar. Pratinjau yang disetujui ada di `docs/referensi/`.
