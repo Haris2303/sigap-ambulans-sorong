@@ -102,7 +102,8 @@ function konfigGaris(data, tema) {
                 y: {
                     min: 0,
                     border: { display: false },
-                    ticks: { precision: 0, color: tema.warna('on-surface-variant'), font: kecil },
+                    // 3 sampai 5 garis kisi (docs/RETEMA_B.md 7.1), bukan satu per nilai bulat.
+                    ticks: { precision: 0, maxTicksLimit: 5, color: tema.warna('on-surface-variant'), font: kecil },
                     grid: { color: tema.warna('surface-container-highest'), dash: [4, 6] },
                 },
             },

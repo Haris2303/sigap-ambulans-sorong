@@ -34,22 +34,34 @@
             :series="$sparkline['pesanan_selesai']" sparkline-tone="chart-mint" class="col-span-2 xl:col-span-1" />
     </div>
 
-    {{-- Baris grafik (docs/RETEMA_B.md 8.1 butir 2): akan diganti Chart.js (x-ui.chart) pada langkah berikutnya. --}}
+    {{-- Baris grafik (docs/RETEMA_B.md 8.1 butir 2 dan bagian 7.1): garis Chart.js (8 kolom) dan donat (4 kolom). --}}
+    @php
+        $rentangGrafik = $periode->perJam() ? 'per jam hari ini' : 'per hari, '.$grafik['tooltip_titles'][0].' sampai '.$grafik['tooltip_titles'][count($grafik['tooltip_titles']) - 1];
+    @endphp
     <div data-shot="grafik" class="mt-5 grid grid-cols-1 gap-5 xl:grid-cols-12">
         <x-ui.panel class="xl:col-span-8">
-            <h2 class="text-title-l">Pesanan {{ $periode->labelKecil() }}</h2>
-            <p class="text-body-s text-on-surface-variant">Masuk dan selesai per hari</p>
-            <p class="mt-4 text-body-m text-on-surface-variant">Masuk: {{ implode(', ', $grafik['masuk']) }}</p>
-            <p class="text-body-m text-on-surface-variant">Selesai: {{ implode(', ', $grafik['pesanan_selesai']) }}</p>
+            <div class="mb-3 flex flex-wrap items-start justify-between gap-3">
+                <div>
+                    <h2 class="text-title-l">Pesanan {{ $periode->labelKecil() }}</h2>
+                    <p class="text-body-s text-on-surface-variant">Masuk dan selesai per hari</p>
+                </div>
+                <div class="flex gap-2">
+                    <span class="inline-flex h-8 items-center gap-2 rounded-full bg-surface px-3 text-label-m"><span class="size-2.5 rounded-full bg-primary" aria-hidden="true"></span>Masuk</span>
+                    <span class="inline-flex h-8 items-center gap-2 rounded-full bg-surface px-3 text-label-m"><span class="size-2.5 rounded-full bg-chart-mint" aria-hidden="true"></span>Selesai</span>
+                </div>
+            </div>
+            <x-ui.chart type="line" title="Grafik pesanan masuk dan selesai {{ $rentangGrafik }}" unit="pesanan"
+                :labels="$grafik['labels']" :tick-step="$grafik['tick_step']" :tooltip-titles="$grafik['tooltip_titles']"
+                :datasets="[
+                    ['label' => 'Masuk', 'data' => $grafik['masuk'], 'color' => 'primary', 'width' => 3.5, 'fill' => true],
+                    ['label' => 'Selesai', 'data' => $grafik['pesanan_selesai'], 'color' => 'chart-mint', 'width' => 3, 'fill' => false],
+                ]" />
         </x-ui.panel>
         <x-ui.panel class="xl:col-span-4">
             <h2 class="text-title-l">Status pesanan</h2>
-            <p class="text-body-s text-on-surface-variant">{{ $periode->labelKecil() }}</p>
-            <ul class="mt-4 space-y-1 text-body-m">
-                @foreach ($donat['segments'] as $s)
-                    <li>{{ $s['label'] }}: {{ $s['value'] }}</li>
-                @endforeach
-            </ul>
+            <p class="mb-2 text-body-s text-on-surface-variant">{{ $periode->labelKecil() }}</p>
+            <x-ui.chart type="doughnut" title="Diagram cincin status pesanan {{ $periode->labelKecil() }}" unit="pesanan"
+                center-label="pesanan" :segments="$donat['segments']" />
         </x-ui.panel>
     </div>
 

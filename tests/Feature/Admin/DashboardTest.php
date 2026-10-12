@@ -195,6 +195,12 @@ class DashboardTest extends TestCase
         $this->assertStringContainsString('Pesanan 7 hari', $html);
         $this->assertStringContainsString('Masuk dan selesai per hari', $html);
         $this->assertStringContainsString('Status pesanan', $html);
+        $this->assertStringContainsString('&quot;tipe&quot;:&quot;garis&quot;', $html);
+        $this->assertStringContainsString('&quot;tipe&quot;:&quot;donat&quot;', $html);
+        $this->assertStringContainsString('Diagram cincin status pesanan 7 hari', $html);
+        // Legenda HTML di luar Chart.js (bukan plugin legend).
+        $this->assertStringContainsString('>Masuk<', $html);
+        $this->assertStringContainsString('>Selesai<', $html);
     }
 
     // ---------- ketersediaan ----------
