@@ -194,29 +194,28 @@ document.addEventListener('click', (e) => {
     }
 });
 
-// Laci navigasi modal di bawah lg: buka dengan tombol menu, tutup dengan tombol, scrim, atau Escape.
-const aturLaci = (buka) => {
-    const rel = document.querySelector('[data-menu-rel]');
-    const scrim = document.querySelector('[data-menu-scrim]');
-    if (!rel) {
-        return;
-    }
-    rel.classList.toggle('hidden', !buka);
-    rel.classList.toggle('flex', buka);
-    scrim?.classList.toggle('hidden', !buka);
-    (buka ? rel.querySelector('[data-menu-tutup]') : document.querySelector('[data-menu-buka]'))?.focus();
-};
-
+// Laci navigasi modal di bawah lg (<dialog> data-laci): showModal() memberi fokus terjebak, Esc, dan backdrop bawaan
+// peramban; close() mengembalikan fokus ke tombol yang membuka. Klik langsung pada elemen dialog (bukan anaknya) berarti
+// klik di backdrop/scrim, sehingga menutup laci.
 document.addEventListener('click', (e) => {
     if (e.target.closest('[data-menu-buka]')) {
-        aturLaci(true);
-    } else if (e.target.closest('[data-menu-tutup]') || e.target.closest('[data-menu-scrim]')) {
-        aturLaci(false);
+        document.querySelector('[data-laci]')?.showModal();
+    } else if (e.target.closest('[data-menu-tutup]')) {
+        document.querySelector('[data-laci]')?.close();
+    } else if (e.target.matches('[data-laci]')) {
+        e.target.close();
     }
 });
 
-document.addEventListener('keydown', (e) => {
-    if (e.key === 'Escape' && document.querySelector('[data-menu-scrim]:not(.hidden)')) {
-        aturLaci(false);
+// Dialog "Cari pesanan" (kepala halaman, docs/RETEMA_B.md 5.1): tombol ikon membuka <dialog>, klik backdrop menutup.
+document.addEventListener('click', (e) => {
+    const pemicu = e.target.closest('[data-cari-buka]');
+    if (pemicu) {
+        document.getElementById(pemicu.dataset.cariBuka)?.showModal();
+
+        return;
+    }
+    if (e.target.matches('[data-dialog-cari]')) {
+        e.target.close();
     }
 });

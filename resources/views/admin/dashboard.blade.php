@@ -1,6 +1,6 @@
 {{-- Dasbor Dinkes (docs/DESAIN_DASBOR_MATERIAL.md bagian 6). Data dari App\Services\RingkasanDasbor. --}}
 <x-layouts.app judul="Dasbor">
-    <x-ui.judul-halaman judul="Dasbor" deskripsi="Ringkasan pesanan dan ketersediaan Faskes. Angka diperbarui otomatis.">
+    <x-ui.judul-halaman :judul="$judulDasbor" :deskripsi="$subjudulDasbor">
         <x-slot:aksi>
             <x-ui.tombol nada="tonal" :href="route('admin.ketersediaan.index')">Kelola ketersediaan</x-ui.tombol>
         </x-slot:aksi>

@@ -11,6 +11,8 @@ use Tests\Concerns\MembuatPengguna;
 use Tests\Concerns\MenyediakanRuteSementara;
 use Tests\TestCase;
 
+/** Kerangka halaman arah B (docs/RETEMA_B.md bagian 5): bilah samping/laci (components.layouts.menu-app, dipakai dua kali
+ *  oleh x-layouts.app), bilah atas ponsel, dan kepala halaman (x-ui.judul-halaman, pencarian dan lonceng desktop). */
 class LayoutTest extends TestCase
 {
     use MembuatPengguna, MenyediakanRuteSementara, RefreshDatabase;
@@ -35,6 +37,23 @@ class LayoutTest extends TestCase
         $this->assertStringContainsString('text-label-l', $html);
     }
 
+    public function test_tautan_lompat_adalah_elemen_pertama_di_body(): void
+    {
+        // docs/RETEMA_B.md 5: "Lewati ke isi" di awal tiap layout (app, publik, auth) lewat x-layouts.dasar bersama.
+        foreach ([
+            '<x-layouts.app judul="Uji">isi</x-layouts.app>',
+            '<x-layouts.auth judul="Masuk">isi</x-layouts.auth>',
+            '<x-layouts.publik judul="Beranda">isi</x-layouts.publik>',
+        ] as $markup) {
+            if (str_contains($markup, 'x-layouts.app')) {
+                $this->actingAs($this->buatAdmin());
+            }
+            $html = Blade::render($markup);
+            $setelahBody = substr($html, strpos($html, '<body>') + strlen('<body>'));
+            $this->assertMatchesRegularExpression('/^\s*<a href="#isi"/', $setelahBody, $markup);
+        }
+    }
+
     public function test_layout_publik_untuk_tamu_dan_pengguna_masuk(): void
     {
         $tamu = Blade::render('<x-layouts.publik judul="Beranda">isi</x-layouts.publik>');
@@ -42,8 +61,8 @@ class LayoutTest extends TestCase
         $this->assertStringContainsString('Info Faskes', $tamu);
         $this->assertStringContainsString('Dinas Kesehatan Kota Sorong', $tamu);
         $this->assertStringNotContainsString('Ke dasbor', $tamu);
-        // Bilah atas publik: kartu melayang (token top-app-bar) di atas latar canvas.
-        foreach (['h-16', 'bg-surface-container-lowest rounded-xl shadow-card', 'text-title-l', 'border-outline-variant', 'text-body-s text-on-surface-variant'] as $kelas) {
+        // Bilah atas publik (docs/RETEMA_B.md 5.3): kartu melayang 60px di atas latar surface.
+        foreach (['h-15', 'bg-surface-container-lowest rounded-xl shadow-card', 'text-title-l', 'border-outline-variant', 'text-body-s text-on-surface-variant'] as $kelas) {
             $this->assertStringContainsString($kelas, $tamu);
         }
         $this->assertStringContainsString('px-4 lg:px-7', $tamu);
@@ -55,7 +74,7 @@ class LayoutTest extends TestCase
         $this->assertStringContainsString('Ke dasbor', $masuk);
     }
 
-    public function test_layout_auth_kolom_tunggal_dengan_flash(): void
+    public function test_layout_auth_kolom_tunggal_dengan_tanda_merek_dan_flash(): void
     {
         session()->flash('galat', 'Email atau kata sandi salah.');
         $html = Blade::render('<x-layouts.auth judul="Masuk">formulir</x-layouts.auth>');
@@ -64,6 +83,8 @@ class LayoutTest extends TestCase
         $this->assertStringContainsString('text-title-l', $html);
         $this->assertStringContainsString('Email atau kata sandi salah.', $html);
         $this->assertStringContainsString('formulir', $html);
+        // Tanda merek 48px (docs/RETEMA_B.md 5.3) di atas judul, bukan sekadar tautan teks.
+        $this->assertMatchesRegularExpression('/<span class="inline-flex size-12 shrink-0 items-center justify-center rounded-md bg-primary text-on-primary">\s*<svg/', $html);
     }
 
     public function test_layout_app_menu_sesuai_peran(): void
@@ -100,67 +121,51 @@ class LayoutTest extends TestCase
         return $cocok[0];
     }
 
-    public function test_bilah_atas_adalah_kartu_melayang_dengan_pencarian_lonceng_dan_avatar(): void
+    /** Potongan HTML dari tag pembuka $mulai (mis. "<aside") sampai padanan tag penutup $akhir (mis. "</aside>") pertama setelahnya. */
+    private function potong(string $html, string $mulai, string $akhir): string
+    {
+        $awal = strpos($html, $mulai);
+        $this->assertNotFalse($awal, 'Tag awal tidak ditemukan: '.$mulai);
+        $ujung = strpos($html, $akhir, $awal);
+        $this->assertNotFalse($ujung, 'Tag akhir tidak ditemukan: '.$akhir);
+
+        return substr($html, $awal, $ujung + strlen($akhir) - $awal);
+    }
+
+    // ---------- bilah atas ponsel dan laci (docs/RETEMA_B.md 5.2) ----------
+
+    public function test_bilah_atas_ponsel_kartu_melayang_dengan_menu_lonceng_dan_avatar(): void
     {
         $this->actingAs($this->buatAdmin(['name' => 'Admin Dinkes']));
         $html = Blade::render('<x-layouts.app judul="Uji">isi</x-layouts.app>');
 
-        // Kartu putih 64px berbayang card, sudut 24px (Tampilan::KARTU arah B), di atas latar canvas; melayang.
-        $bilah = $this->tag($html, 'data-bilah-atas');
-        foreach (['h-16', 'rounded-xl', 'bg-surface-container-lowest', 'shadow-card'] as $kelas) {
+        $bilah = $this->potong($html, '<div class="sticky top-4 z-20 mb-4', '</div>');
+        foreach (['rounded-xl', 'bg-surface-container-lowest', 'shadow-card', 'lg:hidden'] as $kelas) {
             $this->assertStringContainsString($kelas, $bilah);
         }
-        $this->assertStringContainsString('sticky top-0', $html);
-        $this->assertStringContainsString('bg-canvas', $html);
 
-        // Tombol menu hanya di bawah lg.
-        $menu = $this->tag($html, 'aria-label="Buka menu"');
-        $this->assertStringContainsString('lg:hidden', $menu);
-        $this->assertStringContainsString('data-menu-buka', $menu);
+        // Tombol menu 48px, hanya di bawah lg (bilah seluruhnya lg:hidden).
+        $this->assertStringContainsString('aria-label="Buka menu"', $bilah);
+        $this->assertStringContainsString('data-menu-buka', $bilah);
+        $this->assertStringContainsString('size-12', $bilah);
 
-        // Pencarian: form GET ke daftar pesanan dengan ?q=, pil 48px surface-container, input type search berlabel.
-        $form = $this->tag($html, 'role="search"');
-        $this->assertStringContainsString('method="GET"', $form);
-        $this->assertStringContainsString('action="'.route('admin.pesanan.index').'"', $form);
-        foreach (['h-12', 'rounded-full', 'bg-surface-container', 'min-w-0', 'flex-1', 'lg:max-w-[460px]'] as $kelas) {
-            $this->assertStringContainsString($kelas, $form);
-        }
-        $this->assertMatchesRegularExpression('/<input[^>]*type="search"[^>]*name="q"|<input[^>]*name="q"[^>]*type="search"/', $html);
-        $this->assertMatchesRegularExpression('/<label[^>]*class="sr-only"[^>]*>Cari kode pesanan atau nama pasien<\/label>/', $html);
+        // Lonceng (Dinkes): titik error, bukan lencana angka; avatar di ujung.
+        $this->assertStringContainsString('data-lonceng="pesanan_menunggu"', $bilah);
+        $this->assertStringContainsString('aria-label="Pesanan menunggu verifikasi, 0"', $bilah);
+        $this->assertStringContainsString('data-sembunyi-nol="pesanan_menunggu"', $bilah);
+        $this->assertStringContainsString('>AD<', $bilah);
 
-        // Avatar dan, di desktop, nama dengan peran dua baris.
-        $this->assertStringContainsString('>AD<', $html);
-        $this->assertMatchesRegularExpression('/<div class="hidden[^"]*lg:block[^"]*">\s*<p class="[^"]*text-label-l[^"]*">Admin Dinkes<\/p>\s*<p class="[^"]*text-body-s text-on-surface-variant[^"]*">Dinkes<\/p>/', $html);
+        // Tidak ada pencarian di bilah atas ponsel (docs/RETEMA_B.md 5.2 tidak menyebutnya; ada di kepala halaman lg ke atas).
+        $this->assertStringNotContainsString('data-cari-buka', $bilah);
     }
 
-    public function test_lonceng_menghitung_pesanan_menunggu_verifikasi(): void
-    {
-        $this->actingAs($this->buatAdmin());
-
-        // Tanpa pesanan menunggu: label menyebut 0 dan lencana tersembunyi.
-        $kosong = Blade::render('<x-layouts.app judul="Dasbor">isi</x-layouts.app>');
-        $lonceng = $this->tag($kosong, 'data-lonceng');
-        $this->assertStringContainsString('aria-label="Pesanan menunggu verifikasi, 0"', $lonceng);
-        $this->assertStringContainsString('href="'.route('admin.pesanan.index', ['tab' => 'perlu-tindakan']).'"', $lonceng);
-        $this->assertStringContainsString('lapisan-keadaan', $lonceng);
-        $this->assertStringContainsString('<svg', $kosong);
-
-        // Dengan pesanan menunggu: label dan lencana error 18px menyebut jumlahnya.
-        Pesanan::factory()->count(3)->create();
-        $html = Blade::render('<x-layouts.app judul="Dasbor">isi</x-layouts.app>');
-        $this->assertStringContainsString('aria-label="Pesanan menunggu verifikasi, 3"', $this->tag($html, 'data-lonceng'));
-        $this->assertMatchesRegularExpression('/<span data-lencana="pesanan_menunggu"[^>]*h-4\.5 min-w-4\.5[^>]*bg-error[^>]*>3<\/span>/', $html);
-        $this->assertSame(2, substr_count($html, 'data-lencana="pesanan_menunggu"'), 'Satu di menu Pesanan dan satu di lonceng.');
-    }
-
-    public function test_peran_selain_dinkes_tanpa_lonceng_dan_pencarian_tetapi_dengan_avatar(): void
+    public function test_peran_selain_dinkes_tanpa_lonceng_tetapi_dengan_avatar(): void
     {
         foreach ([$this->buatWarga(['name' => 'Siti Aminah']), $this->buatPetugas(), $this->buatSopir()] as $pengguna) {
             $this->actingAs($pengguna);
             $html = Blade::render('<x-layouts.app judul="Uji">isi</x-layouts.app>');
 
             $this->assertStringNotContainsString('data-lonceng', $html, $pengguna->role->value);
-            $this->assertStringNotContainsString('role="search"', $html, $pengguna->role->value);
             $this->assertStringNotContainsString('Pesanan menunggu verifikasi', $html, $pengguna->role->value);
             $this->assertStringContainsString('aria-label="Buka menu"', $html);
             // Warna avatar dari hash nama (DESIGN.md 6.7), bukan selalu primary-container.
@@ -169,45 +174,63 @@ class LayoutTest extends TestCase
         }
     }
 
-    public function test_laci_navigasi_putih_dengan_kepala_label_grup_dan_item_pil_48px(): void
+    public function test_laci_adalah_dialog_316px_melayang_dengan_tombol_tutup(): void
     {
         $this->actingAs($this->buatAdmin());
         $html = Blade::render('<x-layouts.app judul="Uji">isi</x-layouts.app>');
 
-        // Laci: putih 280px (lg), tepi kanan 1px surface-container-high, modal di ponsel dengan scrim; satu-satunya wadah gulir menu.
-        $laci = $this->tag($html, 'data-menu-rel');
-        foreach (['bg-surface-container-lowest', 'lg:w-drawer', 'lg:border-r', 'lg:border-surface-container-high', 'lg:sticky', 'lg:top-0', 'lg:h-screen',
-            'overflow-y-auto', 'gulir-tipis', 'rounded-r-lg', 'shadow-level-1'] as $kelas) {
+        // <dialog> native (docs/RETEMA_B.md 5.2): fokus terjebak, Esc, dan backdrop bawaan peramban (sigap.js hanya showModal()/close()).
+        $laci = $this->potong($html, '<dialog data-laci', '</dialog>');
+        $this->assertStringStartsWith('<dialog', $laci);
+        foreach (['w-79', 'rounded-2xl', 'shadow-overlay', 'backdrop:bg-scrim/45', 'lg:hidden', 'bg-surface-container-lowest'] as $kelas) {
             $this->assertStringContainsString($kelas, $laci);
         }
-        $this->assertStringNotContainsString('bg-surface-container-low ', $laci.' ');
-        $this->assertStringContainsString('data-menu-scrim', $html);
-        $this->assertStringContainsString('bg-scrim', $html);
-        $this->assertStringContainsString('aria-label="Tutup menu"', $html);
-
-        // Menu tidak punya bilah gulir sendiri (hanya satu bilah vertikal per halaman).
-        $this->assertStringNotContainsString('overflow-y-auto', $this->tag($html, 'aria-label="Menu utama"'));
-
-        // Kepala: tanda merek 40px (primary, sudut 12px, ikon plus) dan nama aplikasi title-l.
-        $this->assertMatchesRegularExpression('/<span[^>]*size-10[^>]*rounded-md[^>]*bg-primary[^>]*>\s*<svg/', $html);
-        $this->assertMatchesRegularExpression('/<a [^>]*class="[^"]*text-title-l[^"]*">SIGAP Ambulans<\/a>/', $html);
-
-        // Label grup label-m on-surface-variant, urut sesuai pengelompokan.
-        $this->assertMatchesRegularExpression('/<p class="[^"]*text-label-m text-on-surface-variant[^"]*">Operasional<\/p>/', $html);
-        $this->assertMatchesRegularExpression('/<p class="[^"]*text-label-m text-on-surface-variant[^"]*">Data master<\/p>/', $html);
-        $this->assertLessThan(strpos($html, '>Dasbor<'), strpos($html, '>Operasional<'));
-        $this->assertLessThan(strpos($html, '>Faskes<'), strpos($html, '>Data master<'));
-        $this->assertLessThan(strpos($html, '>Data master<'), strpos($html, '>Laporan<'));
-        $this->assertSame(1, substr_count($html, '>Operasional<'));
-
-        // Item 48px berbentuk pil dengan lapisan keadaan, ikon 22px, teks label-l.
-        foreach (['lapisan-keadaan', 'min-h-12', 'rounded-full', 'px-4', 'text-label-l', 'width="22"'] as $kelas) {
-            $this->assertStringContainsString($kelas, $html);
-        }
-        $this->assertStringNotContainsString('min-h-14', $html);
+        $this->assertStringContainsString('aria-label="Tutup menu"', $laci);
+        $this->assertStringContainsString('data-menu-tutup', $laci);
     }
 
-    public function test_item_aktif_berlatar_primary_dengan_bayangan_nav_active(): void
+    public function test_bilah_samping_desktop_248px_sticky_dan_satu_bilah_gulir(): void
+    {
+        $this->actingAs($this->buatAdmin());
+        $html = Blade::render('<x-layouts.app judul="Uji">isi</x-layouts.app>');
+
+        $aside = $this->potong($html, '<aside', '</aside>');
+        foreach (['w-62', 'bg-surface-container-lowest', 'rounded-2xl', 'shadow-card', 'sticky top-4', 'h-[calc(100vh-2rem)]', 'overflow-y-auto', 'gulir-tipis', 'lg:flex', 'hidden'] as $kelas) {
+            $this->assertStringContainsString($kelas, $aside);
+        }
+        // Menu sendiri tidak punya bilah gulir lagi (hanya satu bilah vertikal, pada aside).
+        $this->assertStringNotContainsString('overflow-y-auto', $this->tag($aside, 'aria-label="Menu utama"'));
+        // Bilah samping (tempat tetap) tidak punya tombol tutup, berbeda dari laci.
+        $this->assertStringNotContainsString('data-menu-tutup', $aside);
+    }
+
+    // ---------- isi bersama bilah samping/laci (components/layouts/menu-app.blade.php) ----------
+
+    public function test_kepala_merek_label_grup_dan_item_pil_48px(): void
+    {
+        $this->actingAs($this->buatAdmin());
+        $html = Blade::render('<x-layouts.app judul="Uji">isi</x-layouts.app>');
+        $aside = $this->potong($html, '<aside', '</aside>');
+
+        // Merek: tanda 42px (primary, sudut md, ikon plus) dan "SIGAP" gaya brand.
+        $this->assertMatchesRegularExpression('/<span class="inline-flex size-10\.5 shrink-0 items-center justify-center rounded-md bg-primary text-on-primary">\s*<svg/', $aside);
+        $this->assertMatchesRegularExpression('/<span class="min-w-0 truncate text-brand">SIGAP<\/span>/', $aside);
+
+        // Label grup label-m on-surface-variant, urut sesuai pengelompokan.
+        $this->assertMatchesRegularExpression('/<p class="[^"]*text-label-m text-on-surface-variant[^"]*">Operasional<\/p>/', $aside);
+        $this->assertMatchesRegularExpression('/<p class="[^"]*text-label-m text-on-surface-variant[^"]*">Data master<\/p>/', $aside);
+        $this->assertLessThan(strpos($aside, '>Dasbor<'), strpos($aside, '>Operasional<'));
+        $this->assertLessThan(strpos($aside, '>Faskes<'), strpos($aside, '>Data master<'));
+        $this->assertLessThan(strpos($aside, '>Data master<'), strpos($aside, '>Laporan<'));
+        $this->assertSame(1, substr_count($aside, '>Operasional<'));
+
+        // Item 48px, ikon 21px, teks label-l.
+        foreach (['lapisan-keadaan', 'min-h-12', 'rounded-md', 'px-3.5', 'text-label-l', 'width="21"'] as $kelas) {
+            $this->assertStringContainsString($kelas, $aside);
+        }
+    }
+
+    public function test_item_aktif_berlatar_primary_container_tanpa_bayangan(): void
     {
         Route::get('/_uji/dasbor', fn () => Blade::render('<x-layouts.app judul="Dasbor">isi</x-layouts.app>'))
             ->middleware('web')->name('admin.dashboard');
@@ -215,55 +238,26 @@ class LayoutTest extends TestCase
 
         $html = $this->actingAs($this->buatAdmin())->get('/_uji/dasbor')->assertOk()->getContent();
 
+        // Item aktif tampil di aside DAN di laci (keduanya merender menu yang sama): bg-primary-container, tanpa bayangan
+        // (docs/RETEMA_B.md 4.6: item menu aktif tanpa bayangan, berbeda dari kontrak lama shadow-nav-active).
+        $this->assertSame(2, substr_count($html, 'aria-current="page"'));
         $aktif = $this->tag($html, 'aria-current="page"');
-        $this->assertStringContainsString('bg-primary text-on-primary shadow-nav-active', $aktif);
-        $this->assertStringNotContainsString('bg-secondary-container', $aktif);
-        $this->assertSame(1, substr_count($html, 'aria-current="page"'));
+        $this->assertStringContainsString('bg-primary-container text-primary', $aktif);
+        $this->assertStringNotContainsString('shadow-nav-active', $aktif);
+        $this->assertStringNotContainsString('bg-primary text-on-primary', $aktif);
     }
 
-    public function test_blok_pengguna_di_dasar_laci_dengan_keluar_sebagai_form_post(): void
-    {
-        $this->actingAs($this->buatAdmin(['name' => 'Admin Dinkes']));
-        $html = Blade::render('<x-layouts.app judul="Uji">isi</x-layouts.app>');
-
-        // Blok tonal sudut 16px berisi avatar, nama, dan peran.
-        $this->assertMatchesRegularExpression('/<div class="[^"]*bg-surface-container-low[^"]*rounded-lg[^"]*">\s*<span aria-hidden="true"[^>]*>AD<\/span>/', $html);
-        $this->assertStringContainsString('Admin Dinkes', $html);
-
-        // Keluar: form POST ber-CSRF ke route logout dengan tombol ikon 20px; bukan tautan.
-        $this->assertMatchesRegularExpression('/<form method="POST" action="'.preg_quote(route('logout'), '/').'"[^>]*>\s*<input type="hidden" name="_token"/', $html);
-        $keluar = $this->tag($html, 'aria-label="Keluar"');
-        $this->assertStringStartsWith('<button', $keluar);
-        $this->assertStringContainsString('type="submit"', $keluar);
-        $this->assertDoesNotMatchRegularExpression('/<a [^>]*href="[^"]*logout[^"]*"/', $html);
-        $this->assertMatchesRegularExpression('/aria-label="Keluar"[^>]*>\s*<svg[^>]*width="20"/', $html);
-    }
-
-    public function test_isi_halaman_memakai_jarak_dasbor_dan_latar_canvas(): void
-    {
-        $this->actingAs($this->buatAdmin());
-        $html = Blade::render('<x-layouts.app judul="Uji">isi</x-layouts.app>');
-
-        // Padding halaman 16px di ponsel dan 28px di desktop; kolom isi tidak boleh melebihi viewport (min-w-0).
-        $this->assertMatchesRegularExpression('/<main id="isi" class="[^"]*min-w-0[^"]*px-4 lg:px-7[^"]*"/', $html);
-        $this->assertStringContainsString('max-w-content', $html);
-        $this->assertStringContainsString('min-w-0 flex-1', $html);
-
-        // Latar halaman semua peran adalah canvas (app-background di DESIGN.md).
-        $css = (string) file_get_contents(base_path('resources/css/app.css'));
-        $this->assertStringContainsString('@apply bg-canvas', $css);
-        $this->assertSame($css, (string) file_get_contents(base_path('agent/templates/app.css')), 'Templat app.css harus identik.');
-    }
-
-    public function test_lencana_pesanan_menunggu_hanya_untuk_dinkes(): void
+    public function test_lencana_hitungan_pesanan_min_22px_dengan_teks_sr_only(): void
     {
         Pesanan::factory()->count(3)->create();
         $this->actingAs($this->buatAdmin());
 
         $html = Blade::render('<x-layouts.app judul="Dasbor">isi</x-layouts.app>');
 
-        $this->assertMatchesRegularExpression('/data-lencana="pesanan_menunggu"[^>]*>3</', $html);
-        $this->assertMatchesRegularExpression('/<span data-lencana="pesanan_menunggu"[^>]*h-5 min-w-5[^>]*bg-error[^>]*text-label-m[^>]*>3</', $html);
+        // Lencana error/on-error, rounded-full, min 22px, gaya chip (docs/RETEMA_B.md 5.1); teks sr-only " menunggu verifikasi" di sampingnya.
+        $this->assertMatchesRegularExpression('/<span data-lencana="pesanan_menunggu"[^>]*h-5\.5 min-w-5\.5[^>]*bg-error[^>]*text-chip[^>]*>3<\/span><span class="sr-only"> menunggu verifikasi<\/span>/', $html);
+        // Muncul dua kali (aside dan laci merender menu yang sama).
+        $this->assertSame(2, substr_count($html, 'data-lencana="pesanan_menunggu"'));
         $this->assertDoesNotMatchRegularExpression('/data-lencana="pesanan_menunggu"[^>]*\shidden[\s>]/', $html);
     }
 
@@ -274,6 +268,96 @@ class LayoutTest extends TestCase
         $html = Blade::render('<x-layouts.app judul="Dasbor">isi</x-layouts.app>');
 
         $this->assertMatchesRegularExpression('/data-lencana="pesanan_menunggu"[^>]*\shidden[\s>]/', $html);
+    }
+
+    public function test_blok_pengguna_tonal_di_dasar_dengan_keluar_sebagai_form_post(): void
+    {
+        $this->actingAs($this->buatAdmin(['name' => 'Admin Dinkes']));
+        $html = Blade::render('<x-layouts.app judul="Uji">isi</x-layouts.app>');
+        $aside = $this->potong($html, '<aside', '</aside>');
+
+        // Blok tonal sudut lg (bg-surface, berbeda dari latar kartu putih bilah samping) berisi avatar, nama, dan peran.
+        $this->assertMatchesRegularExpression('/<div class="flex items-center gap-3 rounded-lg bg-surface p-3">\s*<span aria-hidden="true"[^>]*>AD<\/span>/', $aside);
+        $this->assertStringContainsString('Admin Dinkes', $aside);
+
+        // Keluar: form POST ber-CSRF ke route logout dengan tombol ikon 20px; bukan tautan.
+        $this->assertMatchesRegularExpression('/<form method="POST" action="'.preg_quote(route('logout'), '/').'"[^>]*>\s*<input type="hidden" name="_token"/', $aside);
+        $keluar = $this->tag($aside, 'aria-label="Keluar"');
+        $this->assertStringStartsWith('<button', $keluar);
+        $this->assertStringContainsString('type="submit"', $keluar);
+        $this->assertDoesNotMatchRegularExpression('/<a [^>]*href="[^"]*logout[^"]*"/', $aside);
+        $this->assertMatchesRegularExpression('/aria-label="Keluar"[^>]*>\s*<svg[^>]*width="20"/', $aside);
+    }
+
+    // ---------- kolom isi dan kepala halaman (x-ui.judul-halaman, docs/RETEMA_B.md 5.1) ----------
+
+    public function test_kolom_isi_memakai_padding_dan_lebar_maksimum_arah_b(): void
+    {
+        $this->actingAs($this->buatAdmin());
+        $html = Blade::render('<x-layouts.app judul="Uji">isi unik</x-layouts.app>');
+
+        $this->assertMatchesRegularExpression('/<main id="isi" class="[^"]*min-w-0[^"]*lg:max-w-screen-2xl[^"]*lg:pb-6 lg:pr-2 lg:pt-1\.5[^"]*"/', $html);
+        $this->assertStringContainsString('isi unik', $html);
+
+        // Akar halaman: latar surface, padding 16px, jarak 20px antara bilah samping dan kolom isi (docs/RETEMA_B.md 5.1).
+        $this->assertStringContainsString('bg-surface p-4', $html);
+        $this->assertStringContainsString('lg:gap-5', $html);
+    }
+
+    public function test_kepala_halaman_judul_subjudul_dan_aksi(): void
+    {
+        $this->actingAs($this->buatWarga());
+        $html = Blade::render('<x-ui.judul-halaman judul="Riwayat pesanan" deskripsi="Semua pesanan Anda." />');
+
+        $header = $this->potong($html, '<header', '</header>');
+        // Baris di lg ke atas; bertumpuk di bawah lg supaya judul tidak terjepit tombol aksi (docs/RETEMA_B.md 5.1, 5.2).
+        $this->assertStringContainsString('flex flex-col items-start gap-3.5 lg:flex-row lg:items-center', $header);
+        $this->assertStringContainsString('<h1 class="text-page-title max-lg:text-page-title-s">Riwayat pesanan</h1>', $html);
+        $this->assertMatchesRegularExpression('/<p class="mt-1 text-body-m text-on-surface-variant">Semua pesanan Anda\.<\/p>/', $html);
+    }
+
+    public function test_pencarian_dan_lonceng_desktop_hanya_untuk_peran_yang_memakainya(): void
+    {
+        $this->actingAs($this->buatAdmin(['name' => 'Admin Dinkes']));
+        $html = Blade::render('<x-ui.judul-halaman judul="Dasbor" />');
+
+        // Tombol cari: dialog native "Cari pesanan", GET ke daftar pesanan dengan ?q=, hanya tampil di lg ke atas.
+        $tombolCari = $this->tag($html, 'data-cari-buka');
+        $this->assertStringContainsString('aria-label="Cari pesanan"', $tombolCari);
+        foreach (['hidden', 'lg:inline-flex', 'size-12', 'bg-surface-container-lowest', 'rounded-lg', 'shadow-control'] as $kelas) {
+            $this->assertStringContainsString($kelas, $tombolCari);
+        }
+
+        $dialog = $this->tag($html, 'id="dialog-cari-pesanan"');
+        $this->assertStringStartsWith('<dialog', $dialog);
+        $this->assertStringContainsString('role="search"', $html);
+        $this->assertStringContainsString('method="GET"', $html);
+        $this->assertStringContainsString('action="'.route('admin.pesanan.index').'"', $html);
+        $this->assertMatchesRegularExpression('/<input[^>]*type="search"[^>]*name="q"|<input[^>]*name="q"[^>]*type="search"/', $html);
+        $this->assertMatchesRegularExpression('/<label[^>]*class="sr-only"[^>]*>Cari kode pesanan atau nama pasien<\/label>/', $html);
+
+        // Lonceng: titik 10px tepi putih 2px, tersembunyi bila 0.
+        $lonceng = $this->tag($html, 'data-lonceng');
+        $this->assertStringContainsString('aria-label="Pesanan menunggu verifikasi, 0"', $lonceng);
+        $this->assertStringContainsString('href="'.route('admin.pesanan.index', ['tab' => 'perlu-tindakan']).'"', $lonceng);
+        $this->assertMatchesRegularExpression('/<span data-sembunyi-nol="pesanan_menunggu"[^>]*hidden[^>]*size-2\.5 rounded-full bg-error ring-2 ring-surface-container-lowest/', $html);
+
+        // Peran lain (mis. Masyarakat) tidak punya pencarian/lonceng di kepala halaman.
+        $this->actingAs($this->buatWarga());
+        $tanpaPencarian = Blade::render('<x-ui.judul-halaman judul="Beranda" />');
+        $this->assertStringNotContainsString('data-cari-buka', $tanpaPencarian);
+        $this->assertStringNotContainsString('data-lonceng', $tanpaPencarian);
+    }
+
+    public function test_lonceng_desktop_menghitung_pesanan_menunggu_verifikasi(): void
+    {
+        $this->actingAs($this->buatAdmin());
+        Pesanan::factory()->count(3)->create();
+
+        $html = Blade::render('<x-ui.judul-halaman judul="Dasbor" />');
+
+        $this->assertStringContainsString('aria-label="Pesanan menunggu verifikasi, 3"', $this->tag($html, 'data-lonceng'));
+        $this->assertDoesNotMatchRegularExpression('/data-sembunyi-nol="pesanan_menunggu"[^>]*\shidden[\s>]/', $html);
     }
 
     public function test_layout_menerima_peta_dan_menampilkan_flash_di_atas_isi(): void

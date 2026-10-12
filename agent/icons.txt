@@ -34,4 +34,5 @@ refresh-cw
 bell
 chevron-down
 chevron-right
+chevron-left
 arrow-left

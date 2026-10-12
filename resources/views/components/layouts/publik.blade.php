@@ -1,7 +1,7 @@
 @props(['judul' => null, 'peta' => false])
 <x-layouts.dasar :judul="$judul" :peta="$peta">
     <header class="mx-auto max-w-content px-4 lg:px-7 pt-5">
-        <div class="flex h-16 items-center justify-between gap-4 {{ \App\Support\Tampilan::KARTU }} px-4">
+        <div class="flex h-15 items-center justify-between gap-4 {{ \App\Support\Tampilan::KARTU }} px-4">
             <a href="{{ route('beranda') }}" class="text-title-l text-on-surface">SIGAP Ambulans</a>
             <nav class="flex items-center gap-2" aria-label="Menu publik">
                 <x-ui.tombol nada="hantu" :href="route('faskes.index')">Info Faskes</x-ui.tombol>

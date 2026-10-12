@@ -56,15 +56,28 @@ class DashboardTest extends TestCase
 
     // ---------- judul dan kartu statistik ----------
 
-    public function test_judul_halaman_subjudul_dan_aksi_tonal(): void
+    public function test_judul_halaman_sapaan_subjudul_dan_aksi_tonal(): void
     {
+        // Sapaan dan subjudul (docs/RETEMA_B.md 5.1): "Selamat {pagi|siang|sore|malam}, {nama depan}" menurut jam
+        // Asia/Jayapura, lalu tanggal dan jumlah pesanan yang menunggu. 18.00 WIT jatuh ke "malam".
+        Carbon::setTestNow(Carbon::parse('2026-10-11 18:00:00', 'Asia/Jayapura'));
         $html = $this->dasbor();
 
-        $this->assertStringContainsString('<h1 class="text-page-title">Dasbor</h1>', $html);
-        $this->assertStringContainsString('Ringkasan pesanan dan ketersediaan Faskes. Angka diperbarui otomatis.', $html);
-        $this->assertStringContainsString('text-body-l text-on-surface-variant', $html);
+        $this->assertStringContainsString('<h1 class="text-page-title max-lg:text-page-title-s">Selamat malam, Admin</h1>', $html);
+        $this->assertStringContainsString('Minggu, 11 Oktober 2026. Tidak ada pesanan yang menunggu Anda.', $html);
+        $this->assertStringContainsString('text-body-m text-on-surface-variant', $html);
         // Tombol tonal (nada="tonal") kini varian secondary arah B (DESIGN.md 6.2).
         $this->assertMatchesRegularExpression('/<a href="'.preg_quote(route('admin.ketersediaan.index'), '/').'"[^>]*bg-surface-container text-on-surface border border-outline-variant[^>]*>\s*Kelola ketersediaan\s*<\/a>/', $html);
+    }
+
+    public function test_judul_halaman_menyebut_jumlah_pesanan_yang_menunggu(): void
+    {
+        Carbon::setTestNow(Carbon::parse('2026-10-11 18:00:00', 'Asia/Jayapura'));
+        $this->dataDemo();
+        $html = $this->dasbor();
+
+        // dataDemo membuat dua pesanan berstatus Menunggu.
+        $this->assertStringContainsString('Minggu, 11 Oktober 2026. Ada 2 pesanan yang menunggu Anda.', $html);
     }
 
     public function test_empat_kartu_statistik_dengan_angka_label_keterangan_dan_ikon(): void
@@ -235,7 +248,8 @@ class DashboardTest extends TestCase
         foreach (['semua' => 'Semua', 'perlu-tindakan' => 'Perlu tindakan', 'berjalan' => 'Berjalan'] as $nilai => $label) {
             $this->assertMatchesRegularExpression('~<a href="'.preg_quote(route('admin.dashboard', ['tab' => $nilai]), '~').'#pesanan-terbaru"[^>]*>\s*'.$label.'\s*</a>~', $html, $label);
         }
-        $this->assertSame(1, substr_count($html, 'aria-current="page"') - 1, 'Satu tab aktif (selain item menu).');
+        // Menu Dasbor aktif muncul dua kali (bilah samping dan laci merender menu yang sama, docs/RETEMA_B.md 5.2).
+        $this->assertSame(1, substr_count($html, 'aria-current="page"') - 2, 'Satu tab aktif (selain dua item menu).');
         $this->assertMatchesRegularExpression('~<a href="[^"]*tab=semua#pesanan-terbaru"[^>]*aria-current="page"~', $html);
     }
 

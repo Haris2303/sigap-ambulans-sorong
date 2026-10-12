@@ -320,7 +320,11 @@ class KomponenDasborTest extends TestCase
         $this->assertStringContainsString('width="20"', $html);
         $this->assertStringContainsString('aria-label="Keluar"', $html);
 
+        // 21px (docs/RETEMA_B.md 6.13: menu, chip, tombol ikon) valid sejak R3; 23 di luar skala baku.
+        $dengan21 = $this->html('<x-ui.tombol nada="hantu" ikon="log-out" ikon-ukuran="21" aria-label="Keluar" />');
+        $this->assertStringContainsString('width="21"', $dengan21);
+
         $this->expectException(ViewException::class);
-        $this->html('<x-ui.tombol nada="hantu" ikon="log-out" ikon-ukuran="21" aria-label="Keluar" />');
+        $this->html('<x-ui.tombol nada="hantu" ikon="log-out" ikon-ukuran="23" aria-label="Keluar" />');
     }
 }

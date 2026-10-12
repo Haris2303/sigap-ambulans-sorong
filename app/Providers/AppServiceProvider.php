@@ -24,7 +24,8 @@ class AppServiceProvider extends ServiceProvider
      */
     public function boot(): void
     {
-        View::composer('components.layouts.app', MenuComposer::class);
+        // Keduanya butuh $lencanaMenu: bilah samping/laci (lencana menu Pesanan) dan kepala halaman (titik lonceng).
+        View::composer(['components.layouts.app', 'components.ui.judul-halaman'], MenuComposer::class);
 
         // Akun peran lain pada {sopir}/{petugas} menghasilkan 404.
         Route::bind('sopir', fn (string $nilai) => User::sopir()->findOrFail($nilai));

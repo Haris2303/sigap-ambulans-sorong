@@ -38,16 +38,17 @@ class KomponenUiTest extends TestCase
         $this->assertStringContainsString('text-primary', $html);
         $this->assertStringContainsString('width="24"', $this->render('<x-ui.ikon nama="house" />'));
 
-        foreach ([18, 20, 22, 24, 26] as $ukuran) {
+        // Skala ikon arah B (docs/RETEMA_B.md 6.13): 16/17/18 dalam tombol, 20 tombol keluar, 21 menu/chip/tombol ikon, 22/24/26.
+        foreach ([16, 17, 18, 20, 21, 22, 24, 26] as $ukuran) {
             $this->assertStringContainsString('width="'.$ukuran.'"', $this->render('<x-ui.ikon nama="house" :ukuran="$u" />', ['u' => $ukuran]));
         }
 
-        foreach ([16, 21, 28] as $salah) {
+        foreach ([15, 19, 23, 28] as $salah) {
             try {
                 $this->render('<x-ui.ikon nama="house" :ukuran="$u" />', ['u' => $salah]);
                 $this->fail('Ukuran ikon '.$salah.' harus ditolak.');
             } catch (ViewException $e) {
-                $this->assertStringContainsString('18, 20, 22, 24, atau 26', $e->getMessage());
+                $this->assertStringContainsString('16, 17, 18, 20, 21, 22, 24, atau 26', $e->getMessage());
             }
         }
 
@@ -291,10 +292,10 @@ class KomponenUiTest extends TestCase
     public function test_judul_halaman_bagian_panel_kosong(): void
     {
         $judul = $this->render('<x-ui.judul-halaman judul="Pesanan" deskripsi="Daftar pesanan."><x-slot:aksi>AKSI</x-slot:aksi></x-ui.judul-halaman>');
-        $this->assertStringContainsString('<h1 class="text-page-title">Pesanan</h1>', $judul);
+        $this->assertStringContainsString('<h1 class="text-page-title max-lg:text-page-title-s">Pesanan</h1>', $judul);
         $this->assertStringNotContainsString('text-headline-s', $judul);
         $this->assertStringContainsString('Daftar pesanan.', $judul);
-        $this->assertStringContainsString('text-body-l text-on-surface-variant', $judul);
+        $this->assertStringContainsString('text-body-m text-on-surface-variant', $judul);
         $this->assertStringContainsString('AKSI', $judul);
         // Judul 24px dan keterangan 16px tidak boleh setara: kelas ukuran keduanya berbeda.
         $this->assertStringNotContainsString('<h1 class="text-body', $judul);
