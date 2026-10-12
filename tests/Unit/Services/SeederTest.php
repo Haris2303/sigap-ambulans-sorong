@@ -11,7 +11,11 @@ use App\Models\Ambulans;
 use App\Models\Faskes;
 use App\Models\Pesanan;
 use App\Models\User;
+use Database\Seeders\AkunDemoSeeder;
+use Database\Seeders\AmbulansSeeder;
 use Database\Seeders\DatabaseSeeder;
+use Database\Seeders\DemoSeeder;
+use Database\Seeders\FaskesSeeder;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 use Illuminate\Support\Facades\Hash;
 use Tests\TestCase;
@@ -83,5 +87,44 @@ class SeederTest extends TestCase
         $this->assertGreaterThanOrEqual(10, Pesanan::count());
         $this->assertGreaterThanOrEqual(5, Pesanan::pluck('created_at')->map(fn ($t) => $t->toDateString())->unique()->count());
         $this->assertSame(0, Ambulans::where('status', StatusAmbulans::Bertugas->value)->count() - Pesanan::aktif()->whereNotNull('ambulans_id')->count());
+    }
+
+    // ---------- DemoSeeder (docs/RETEMA_B.md "DB" langkah 6) ----------
+
+    public function test_demo_seeder_menolak_di_luar_local(): void
+    {
+        $this->seed([FaskesSeeder::class, AmbulansSeeder::class, AkunDemoSeeder::class]);
+
+        $this->seed(DemoSeeder::class);
+
+        $this->assertSame(0, Pesanan::count());
+    }
+
+    public function test_demo_seeder_di_local_menambah_sekitar_70_pesanan_30_hari_dan_dua_menipis(): void
+    {
+        $this->app->detectEnvironment(fn () => 'local');
+        $this->seed([FaskesSeeder::class, AmbulansSeeder::class, AkunDemoSeeder::class]);
+
+        $this->seed(DemoSeeder::class);
+
+        $jumlah = Pesanan::count();
+        $this->assertGreaterThanOrEqual(50, $jumlah);
+        $this->assertLessThanOrEqual(100, $jumlah);
+
+        // Riwayat status (pesanan_log) terisi untuk setiap pesanan, bukan hanya kolom status.
+        $this->assertGreaterThan($jumlah, \App\Models\PesananLog::count());
+
+        // Rentang 30 hari: pesanan tersebar di banyak tanggal berbeda, bukan menumpuk satu hari.
+        $this->assertGreaterThanOrEqual(15, Pesanan::pluck('created_at')->map(fn ($t) => $t->toDateString())->unique()->count());
+
+        // Dua sumber daya menipis pada RSUD Selebesolu (docs/referensi-b/B1-dasbor-1440.png).
+        $faskes = Faskes::where('nama', 'RSUD Selebesolu')->first();
+        $this->assertLessThan(0.12, $faskes->bed_igd_tersedia / $faskes->bed_igd_total);
+        $this->assertLessThan(0.12, $faskes->bed_rawat_inap_tersedia / $faskes->bed_rawat_inap_total);
+        $this->assertNotNull($faskes->ketersediaan_diperbarui_pada);
+
+        // Semua pesanan lewat PesananWorkflow: tidak ada status di luar Enum, dan hanya menambah (jalankan dua kali, bertambah).
+        $this->seed(DemoSeeder::class);
+        $this->assertGreaterThan($jumlah, Pesanan::count());
     }
 }
