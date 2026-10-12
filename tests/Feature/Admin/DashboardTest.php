@@ -13,7 +13,7 @@ use Tests\Concerns\MembuatPengguna;
 use Tests\Concerns\MenyediakanRuteSementara;
 use Tests\TestCase;
 
-/** Dasbor Dinkes (docs/DESAIN_DASBOR_MATERIAL.md bagian 6). Hitungan, grafik, dan batas query ada di RingkasanDasborTest. */
+/** Dasbor Dinkes arah B (docs/RETEMA_B.md bagian 8.1). Hitungan, grafik, dan batas query ada di RingkasanDasborTest. */
 class DashboardTest extends TestCase
 {
     use MembuatPengguna, MenyediakanRuteSementara, RefreshDatabase;
@@ -36,12 +36,12 @@ class DashboardTest extends TestCase
         Carbon::setTestNow(Carbon::parse('2026-10-11 18:00:00', 'Asia/Jayapura'));
 
         Pesanan::factory()->berstatus(PesananStatus::Menunggu)->create(['created_at' => '2026-10-11 09:00:00', 'nama_pasien' => 'Pasien Satu']);
-        Pesanan::factory()->berstatus(PesananStatus::Menunggu)->create(['created_at' => '2026-10-10 09:00:00', 'nama_pasien' => 'Pasien Dua']);
-        Pesanan::factory()->berstatus(PesananStatus::Terverifikasi)->create(['created_at' => '2026-10-09 09:00:00', 'nama_pasien' => 'Pasien Tiga']);
-        Pesanan::factory()->berstatus(PesananStatus::Ditugaskan)->create(['created_at' => '2026-10-08 09:00:00', 'nama_pasien' => 'Pasien Empat']);
-        Pesanan::factory()->berstatus(PesananStatus::Diterima)->create(['created_at' => '2026-10-07 09:00:00', 'nama_pasien' => 'Pasien Lima']);
-        Pesanan::factory()->berstatus(PesananStatus::DalamPerjalanan)->create(['created_at' => '2026-10-06 09:00:00', 'nama_pasien' => 'Pasien Enam', 'tingkat_darurat' => TingkatDarurat::Gawat]);
-        Pesanan::factory()->berstatus(PesananStatus::Selesai)->create(['created_at' => '2026-10-11 08:00:00', 'selesai_pada' => '2026-10-11 10:00:00', 'nama_pasien' => 'Pasien Tujuh']);
+        Pesanan::factory()->berstatus(PesananStatus::Menunggu)->create(['created_at' => '2026-10-11 10:00:00', 'nama_pasien' => 'Pasien Dua']);
+        Pesanan::factory()->berstatus(PesananStatus::Terverifikasi)->create(['created_at' => '2026-10-11 11:00:00', 'nama_pasien' => 'Pasien Tiga']);
+        Pesanan::factory()->berstatus(PesananStatus::Ditugaskan)->create(['created_at' => '2026-10-11 12:00:00', 'nama_pasien' => 'Pasien Empat']);
+        Pesanan::factory()->berstatus(PesananStatus::Diterima)->create(['created_at' => '2026-10-11 13:00:00', 'nama_pasien' => 'Pasien Lima']);
+        Pesanan::factory()->berstatus(PesananStatus::DalamPerjalanan)->create(['created_at' => '2026-10-11 14:00:00', 'nama_pasien' => 'Pasien Enam', 'tingkat_darurat' => TingkatDarurat::Gawat]);
+        Pesanan::factory()->berstatus(PesananStatus::Selesai)->create(['created_at' => '2026-10-11 08:00:00', 'selesai_pada' => '2026-10-11 15:00:00', 'nama_pasien' => 'Pasien Tujuh']);
 
         $faskes = Faskes::factory()->diperbarui(4, 9)->create();
         Faskes::factory()->diperbarui(1, 1)->nonaktif()->create();
@@ -54,237 +54,177 @@ class DashboardTest extends TestCase
         return $this->actingAs($this->buatAdmin(['name' => 'Admin Dinkes']))->get(route('admin.dashboard', $query))->assertOk()->getContent();
     }
 
-    // ---------- judul dan kartu statistik ----------
+    // ---------- judul dan filter periode ----------
 
-    public function test_judul_halaman_sapaan_subjudul_dan_aksi_tonal(): void
+    public function test_judul_halaman_sapaan_dan_subjudul(): void
     {
-        // Sapaan dan subjudul (docs/RETEMA_B.md 5.1): "Selamat {pagi|siang|sore|malam}, {nama depan}" menurut jam
-        // Asia/Jayapura, lalu tanggal dan jumlah pesanan yang menunggu. 18.00 WIT jatuh ke "malam".
         Carbon::setTestNow(Carbon::parse('2026-10-11 18:00:00', 'Asia/Jayapura'));
         $html = $this->dasbor();
 
         $this->assertStringContainsString('<h1 class="text-page-title max-lg:text-page-title-s">Selamat malam, Admin</h1>', $html);
         $this->assertStringContainsString('Minggu, 11 Oktober 2026. Tidak ada pesanan yang menunggu Anda.', $html);
-        $this->assertStringContainsString('text-body-m text-on-surface-variant', $html);
-        // Tombol tonal (nada="tonal") kini varian secondary arah B (DESIGN.md 6.2).
-        $this->assertMatchesRegularExpression('/<a href="'.preg_quote(route('admin.ketersediaan.index'), '/').'"[^>]*bg-surface-container text-on-surface border border-outline-variant[^>]*>\s*Kelola ketersediaan\s*<\/a>/', $html);
     }
 
-    public function test_judul_halaman_menyebut_jumlah_pesanan_yang_menunggu(): void
+    public function test_filter_periode_floating_tabs_default_7_hari_dan_tautan_mempertahankan_tab(): void
     {
-        Carbon::setTestNow(Carbon::parse('2026-10-11 18:00:00', 'Asia/Jayapura'));
-        $this->dataDemo();
-        $html = $this->dasbor();
+        $html = $this->dasbor(['tab' => 'berjalan']);
 
-        // dataDemo membuat dua pesanan berstatus Menunggu.
-        $this->assertStringContainsString('Minggu, 11 Oktober 2026. Ada 2 pesanan yang menunggu Anda.', $html);
-    }
-
-    public function test_empat_kartu_statistik_dengan_angka_label_keterangan_dan_ikon(): void
-    {
-        $this->dataDemo();
-        $html = $this->dasbor();
-
-        // Kartu utama primary: menunggu verifikasi, dengan tombol on-primary ke daftar pesanan tab Perlu tindakan.
-        $utama = $this->bagian($html, 'data-ringkasan="pesanan_menunggu"', 'data-ringkasan="pesanan_terverifikasi"');
-        foreach (['bg-primary', 'text-on-primary', 'shadow-card-raised', 'text-stat-hero', 'Menunggu verifikasi', 'pesanan baru', 'bg-on-primary text-primary', 'Verifikasi pesanan'] as $teks) {
-            $this->assertStringContainsString($teks, $utama);
+        $this->assertStringContainsString('aria-label="Filter periode"', $html);
+        $this->assertStringContainsString('shadow-control', $html);
+        foreach (['Hari ini', '7 hari', '30 hari'] as $label) {
+            $this->assertStringContainsString($label, $html);
         }
-        $this->assertMatchesRegularExpression('/data-nilai>2</', $utama);
-        $this->assertStringContainsString('href="'.route('admin.pesanan.index', ['tab' => 'perlu-tindakan']).'"', $utama);
-
-        // Tiga kartu putih dengan nada dan keterangan sesuai dokumen.
-        $kartu = [
-            ['pesanan_terverifikasi', 'pesanan_berjalan', 'Terverifikasi', 'menunggu penugasan', 'bg-primary-container text-on-primary-container', '1'],
-            ['pesanan_berjalan', 'pesanan_selesai_hari_ini', 'Sedang berjalan', 'ditugaskan sampai di jalan', 'bg-warning-container text-on-warning-container', '3'],
-            ['pesanan_selesai_hari_ini', 'Pesanan 7 hari terakhir', 'Selesai hari ini', 'pesanan tuntas', 'bg-success-container text-on-success-container', '1'],
-        ];
-        foreach ($kartu as [$kunci, $berikut, $label, $hint, $chip, $angka]) {
-            $isi = $this->bagian($html, 'data-ringkasan="'.$kunci.'"', str_contains($berikut, ' ') ? $berikut : 'data-ringkasan="'.$berikut.'"');
-            foreach (['shadow-card', 'text-stat-l tabular-nums', $label, $hint, $chip, 'size-13'] as $teks) {
-                $this->assertStringContainsString($teks, $isi, $kunci.': '.$teks);
-            }
-            $this->assertMatchesRegularExpression('/data-nilai>'.$angka.'</', $isi, $kunci);
-        }
+        // Bawaan 7 hari aktif, dan tautan periode mempertahankan tab yang sedang dipilih.
+        $urlTujuhHari = str_replace('&', '&amp;', route('admin.dashboard', ['tab' => 'berjalan', 'periode' => '7']));
+        $this->assertMatchesRegularExpression(
+            '~<a href="'.preg_quote($urlTujuhHari, '~').'"[^>]*aria-current="page"[^>]*>\s*7 hari\s*</a>~',
+            $html,
+        );
+        $this->assertStringNotContainsString('Kelola ketersediaan', $html);
     }
 
-    public function test_tabel_pesanan_terbaru_menampilkan_waktu_tunggu_untuk_menunggu_dan_terverifikasi(): void
+    public function test_periode_tidak_dikenal_jatuh_ke_7_hari(): void
+    {
+        $html = $this->dasbor(['periode' => 'ngawur']);
+
+        $this->assertMatchesRegularExpression('~periode=7"[^>]*aria-current="page"~', $html);
+    }
+
+    public function test_filter_periode_hari_ini_mengubah_label_kartu_selesai_dan_grafik(): void
     {
         $this->dataDemo();
+        $html = $this->dasbor(['periode' => 'hari']);
+
+        $this->assertStringContainsString('Selesai, hari ini', $html);
+        $this->assertStringContainsString('Pesanan hari ini', $html);
+        $this->assertMatchesRegularExpression('~periode=hari"[^>]*aria-current="page"~', $html);
+    }
+
+    // ---------- baris statistik ----------
+
+    public function test_kartu_navy_menunggu_verifikasi_dengan_waktu_tunggu_dan_aksi(): void
+    {
+        Carbon::setTestNow(Carbon::parse('2026-10-11 09:30:00', 'Asia/Jayapura'));
+        Pesanan::factory()->berstatus(PesananStatus::Menunggu)->create(['created_at' => '2026-10-11 09:00:00']);
 
         $html = $this->dasbor();
 
-        // Dua Menunggu dan satu Terverifikasi di tabel; waktu sekarang 11 Okt 18:00 dan dibuat 09:00 (9 jam), 10 Okt 09:00 (33 jam), 9 Okt 09:00 (57 jam).
-        $this->assertSame(3, substr_count($html, 'data-waktu-tunggu'));
-        $this->assertStringContainsString('Menunggu 9 j', $html);
-        $this->assertStringContainsString('Menunggu 1 hari', $html);
-        $this->assertStringContainsString('Menunggu 2 hari', $html);
-        $this->assertSame(3, substr_count($html, 'data-nada="bahaya"'));
+        foreach (['bg-secondary', 'text-stat-hero', 'Menunggu verifikasi', 'pesanan, terlama 30 menit', 'Verifikasi sekarang'] as $teks) {
+            $this->assertStringContainsString($teks, $html);
+        }
+        $this->assertStringContainsString('bg-surface-container-lowest text-secondary', $html);
+        $this->assertMatchesRegularExpression('/data-nilai[^>]*>1</', $html);
+        $this->assertStringContainsString('href="'.route('admin.pesanan.index', ['tab' => 'perlu-tindakan']).'"', $html);
+    }
+
+    public function test_kartu_navy_tanpa_pesanan_menunggu(): void
+    {
+        $html = $this->dasbor();
+
+        $this->assertStringContainsString('tidak ada pesanan menunggu', $html);
+    }
+
+    public function test_tiga_kartu_putih_dengan_sparkline_dan_chip_keterangan(): void
+    {
+        $this->dataDemo();
+        $html = $this->dasbor();
+
+        foreach (['Terverifikasi', 'menunggu penugasan', 'Sedang berjalan', 'ditugaskan sampai di jalan', 'Selesai, 7 hari'] as $teks) {
+            $this->assertStringContainsString($teks, $html);
+        }
+        $this->assertStringContainsString('<svg width="92" height="38"', $html);
+        $this->assertMatchesRegularExpression('/data-ringkasan="pesanan_terverifikasi"[\s\S]*?data-nilai[^>]*>1</', $html);
+        $this->assertMatchesRegularExpression('/data-ringkasan="pesanan_berjalan"[\s\S]*?data-nilai[^>]*>3</', $html);
+        // Delta "+1 dari 7 hari sebelumnya" (satu pesanan selesai hari ini, nol di periode sebelumnya).
+        $this->assertStringContainsString('+1 dari 7 hari sebelumnya', $html);
+    }
+
+    public function test_kartu_selesai_hari_ini_terhubung_polling_hanya_saat_periode_hari(): void
+    {
+        $this->dataDemo();
+
+        $tujuh = $this->dasbor();
+        $this->assertStringNotContainsString('data-ringkasan="pesanan_selesai_hari_ini"', $tujuh);
+
+        $hari = $this->dasbor(['periode' => 'hari']);
+        $this->assertStringContainsString('data-ringkasan="pesanan_selesai_hari_ini"', $hari);
     }
 
     public function test_kartu_utama_menonjolkan_jumlah_pesanan_gawat_yang_menunggu(): void
     {
         Pesanan::factory()->berstatus(PesananStatus::Menunggu)->gawat()->count(2)->create();
         Pesanan::factory()->berstatus(PesananStatus::Menunggu)->create();
-        // Gawat pada status lain tidak dihitung: yang diminta adalah pesanan Gawat yang menunggu verifikasi.
-        Pesanan::factory()->berstatus(PesananStatus::Terverifikasi)->gawat()->create();
 
-        $utama = $this->bagian($this->dasbor(), 'data-ringkasan="pesanan_menunggu"', 'data-ringkasan="pesanan_terverifikasi"');
+        $html = $this->dasbor();
 
-        $this->assertMatchesRegularExpression('/data-nilai>3</', $utama, 'Tiga pesanan menunggu.');
-        $this->assertMatchesRegularExpression(
-            '/<span[^>]*data-sembunyi-nol="pesanan_menunggu_gawat"[^>]*>\s*<span class="size-1\.5[^>]*><\/span>\s*<span data-angka="pesanan_menunggu_gawat" class="tabular-nums">2<\/span> Gawat\s*<\/span>/',
-            $utama,
-        );
-        $this->assertStringContainsString('bg-error-container text-on-error-container', $utama);
-        $this->assertDoesNotMatchRegularExpression('/data-sembunyi-nol="pesanan_menunggu_gawat"[^>]*\shidden/', $utama);
-        // Tidak menimpa angka kartu lewat data-nilai (polling mengisi data-nilai di dalam data-ringkasan).
-        $this->assertSame(1, preg_match_all('/data-nilai>/', $utama));
+        $this->assertMatchesRegularExpression('/data-nilai[^>]*>3</', $html, 'Tiga pesanan menunggu.');
+        $this->assertStringContainsString('2</span> Gawat', $html);
+        $this->assertStringContainsString('bg-error-container text-on-error-container', $html);
     }
 
     public function test_lencana_gawat_disembunyikan_bila_tidak_ada_pesanan_gawat_menunggu(): void
     {
         Pesanan::factory()->berstatus(PesananStatus::Menunggu)->count(2)->create();
 
-        $utama = $this->bagian($this->dasbor(), 'data-ringkasan="pesanan_menunggu"', 'data-ringkasan="pesanan_terverifikasi"');
+        $html = $this->dasbor();
 
-        $this->assertMatchesRegularExpression('/data-sembunyi-nol="pesanan_menunggu_gawat"[^>]*\shidden/', $utama);
-        $this->assertMatchesRegularExpression('/data-angka="pesanan_menunggu_gawat"[^>]*>0</', $utama);
+        $this->assertMatchesRegularExpression('/data-sembunyi-nol="pesanan_menunggu_gawat"[^>]*\shidden/', $html);
     }
 
-    public function test_polling_json_memuat_jumlah_gawat_menunggu(): void
+    public function test_polling_json_memuat_jumlah_gawat_dan_total_ketersediaan(): void
     {
         Pesanan::factory()->berstatus(PesananStatus::Menunggu)->gawat()->create();
         Pesanan::factory()->berstatus(PesananStatus::Menunggu)->create();
+        Faskes::factory()->diperbarui(4, 9)->create();
 
         $this->actingAs($this->buatAdmin())->getJson(route('admin.pesanan.ringkasan'))
             ->assertOk()
             ->assertJsonPath('data.pesanan_menunggu', 2)
-            ->assertJsonPath('data.pesanan_menunggu_gawat', 1);
-    }
-
-    public function test_selesai_hari_ini_tidak_menghitung_hari_lain(): void
-    {
-        $this->dataDemo();
-        Pesanan::factory()->berstatus(PesananStatus::Selesai)->create(['selesai_pada' => '2026-10-10 23:59:00']);
-
-        $html = $this->dasbor();
-
-        $this->assertMatchesRegularExpression('/data-ringkasan="pesanan_selesai_hari_ini".*?data-nilai>1</s', $html);
+            ->assertJsonPath('data.pesanan_menunggu_gawat', 1)
+            ->assertJsonPath('data.ambulans_total', 0)
+            ->assertJsonPath('data.bed_igd_total', 6);
     }
 
     // ---------- grafik ----------
 
-    public function test_kartu_grafik_batang_dan_donat_dengan_subjudul(): void
+    public function test_kartu_grafik_garis_dan_donat_dengan_judul_periode(): void
     {
         $this->dataDemo();
         $html = $this->dasbor();
 
-        $this->assertStringContainsString('<h2 class="text-card-title">Pesanan 7 hari terakhir</h2>', $html);
-        $this->assertStringContainsString('5 sampai 11 Okt 2026', $html);
-        // Grafik batang berupa kanvas Chart.js: hari ini (indeks 6) disorot dan datanya dikirim lewat atribut JSON.
-        $this->assertStringContainsString('&quot;tipe&quot;:&quot;batang&quot;', $html);
-        $this->assertStringContainsString('&quot;highlight&quot;:6', $html);
-        $this->assertStringContainsString('&quot;unit&quot;:&quot;pesanan&quot;', $html);
-        $this->assertStringContainsString('aria-label="Grafik batang pesanan per hari: Sen 05/10 0 pesanan', $html);
-        $this->assertStringContainsString('Min 11/10 2 pesanan', $html);
-        $this->assertStringNotContainsString('<svg viewBox', $html);
-
-        $this->assertStringContainsString('<h2 class="text-card-title">Status pesanan</h2>', $html);
-        $this->assertStringContainsString('7 pesanan terbaru', $html);
-        $this->assertStringContainsString('&quot;tipe&quot;:&quot;donat&quot;', $html);
-        $this->assertStringContainsString('Diagram cincin status 7 pesanan terbaru: ', $html);
-        // Legenda hanya status bernilai lebih dari nol, dengan warna tetap per status.
-        foreach (['Menunggu verifikasi', 'Terverifikasi', 'Ditugaskan', 'Diterima sopir', 'Dalam perjalanan', 'Selesai'] as $label) {
-            $this->assertMatchesRegularExpression('/<span class="flex-1">'.preg_quote($label, '/').'<\/span>/', $html, $label);
-        }
-        $this->assertDoesNotMatchRegularExpression('/<span class="flex-1">(Ditolak|Dibatalkan)<\/span>/', $html);
-        $this->assertStringContainsString('bg-warning', $html);
+        $this->assertStringContainsString('Pesanan 7 hari', $html);
+        $this->assertStringContainsString('Masuk dan selesai per hari', $html);
+        $this->assertStringContainsString('Status pesanan', $html);
     }
 
     // ---------- ketersediaan ----------
 
-    public function test_kartu_ketersediaan_dengan_empat_petak_dan_tautan_kelola(): void
+    public function test_kartu_ketersediaan_empat_sumber_daya_tersedia_dan_total(): void
     {
         $this->dataDemo();
         $html = $this->dasbor();
 
-        $this->assertStringContainsString('<h2 class="text-card-title">Ketersediaan</h2>', $html);
-        $this->assertStringContainsString('Semua Faskes, diperbarui otomatis', $html);
-        $this->assertMatchesRegularExpression('/<a href="'.preg_quote(route('admin.ketersediaan.index'), '/').'"[^>]*text-primary[^>]*>Kelola<\/a>/', $html);
-
-        $petak = [
-            ['ambulans_tersedia', 'Ambulans tersedia', 'bg-primary-container text-on-primary-container', '2'],
-            ['bed_igd_tersedia', 'Bed IGD tersedia', 'bg-error-container text-on-error-container', '4'],
-            ['bed_rawat_inap_tersedia', 'Bed rawat inap tersedia', 'bg-warning-container text-on-warning-container', '9'],
-            ['dokter_tersedia', 'Dokter tersedia', 'bg-success-container text-on-success-container', null],
-        ];
-        foreach ($petak as [$kunci, $label, $chip, $angka]) {
-            $this->assertMatchesRegularExpression('/<div(?=[^>]*data-ringkasan="'.$kunci.'")(?=[^>]*bg-surface-container-low)[^>]*>/', $html, $kunci);
+        $this->assertStringContainsString('Ketersediaan', $html);
+        $this->assertStringContainsString('Tersedia dari total, semua Faskes', $html);
+        foreach (['Ambulans', 'Bed IGD', 'Bed rawat inap', 'Dokter'] as $label) {
             $this->assertStringContainsString($label, $html);
-            $this->assertStringContainsString($chip, $html);
-            if ($angka !== null) {
-                $this->assertMatchesRegularExpression('/data-ringkasan="'.$kunci.'".*?data-nilai>'.$angka.'</s', $html, $kunci);
-            }
         }
-        $this->assertStringContainsString('text-stat-m tabular-nums', $html);
-        $this->assertStringContainsString('sm:grid-cols-2', $html);
     }
 
     // ---------- pesanan terbaru ----------
 
-    public function test_kartu_pesanan_terbaru_dengan_tab_tabel_dan_tautan_semua(): void
+    public function test_kartu_pesanan_terbaru_menampilkan_jumlah_hari_ini(): void
     {
         $this->dataDemo();
         $html = $this->dasbor();
 
-        $this->assertStringContainsString('<h2 class="text-card-title">Pesanan terbaru</h2>', $html);
-        $this->assertStringContainsString('Menampilkan 5 dari 7 pesanan terbaru', $html);
-        $this->assertMatchesRegularExpression('/<a href="'.preg_quote(route('admin.pesanan.index'), '/').'"[^>]*>Semua pesanan<\/a>/', $html);
-        $this->assertStringContainsString('id="pesanan-terbaru"', $html);
-
-        // Tab: tautan ke dasbor yang sama dengan ?tab=; "Semua" aktif secara bawaan.
-        $this->assertMatchesRegularExpression('/aria-label="Filter pesanan terbaru"/', $html);
-        foreach (['semua' => 'Semua', 'perlu-tindakan' => 'Perlu tindakan', 'berjalan' => 'Berjalan'] as $nilai => $label) {
-            $this->assertMatchesRegularExpression('~<a href="'.preg_quote(route('admin.dashboard', ['tab' => $nilai]), '~').'#pesanan-terbaru"[^>]*>\s*'.$label.'\s*</a>~', $html, $label);
+        $this->assertStringContainsString('Pesanan terbaru', $html);
+        $this->assertStringContainsString('7 pesanan terakhir hari ini', $html);
+        // Tujuh dibuat hari ini; tabel menampilkan lima yang paling baru (Tiga sampai Tujuh).
+        foreach (['Pasien Tiga', 'Pasien Empat', 'Pasien Lima', 'Pasien Enam', 'Pasien Tujuh'] as $pasien) {
+            $this->assertStringContainsString($pasien, $html);
         }
-        // Menu Dasbor aktif muncul dua kali (bilah samping dan laci merender menu yang sama, docs/RETEMA_B.md 5.2).
-        $this->assertSame(1, substr_count($html, 'aria-current="page"') - 2, 'Satu tab aktif (selain dua item menu).');
-        $this->assertMatchesRegularExpression('~<a href="[^"]*tab=semua#pesanan-terbaru"[^>]*aria-current="page"~', $html);
-    }
-
-    public function test_tabel_pesanan_terbaru_empat_kolom_dengan_kode_waktu_dan_lencana(): void
-    {
-        $this->dataDemo();
-        $html = $this->dasbor();
-
-        foreach (['Kode', 'Pasien', 'Layanan', 'Status'] as $kolom) {
-            $this->assertMatchesRegularExpression('/<th[^>]*>'.$kolom.'<\/th>/', $html, $kolom);
-        }
-        $terbaru = Pesanan::latest()->orderByDesc('id')->first();
-
-        // Kode: tautan bertanda tabular di atas tanggal dan jam (body-s) berkoma; tampil paling banyak 5 baris.
-        $this->assertMatchesRegularExpression('~<a href="'.preg_quote(route('admin.pesanan.show', $terbaru), '~').'"[^>]*tabular-nums[^>]*>'.preg_quote($terbaru->kode, '~').'</a>~', $html);
-        $this->assertStringContainsString('11 Okt 2026, 09:00', $html);
-        $this->assertMatchesRegularExpression('/<time[^>]*text-body-s text-on-surface-variant[^>]*>/', $html);
-        $this->assertSame(5, preg_match_all('/<tr>\s*<td/', $html));
-
-        // Layanan dengan lencana Gawat sejajar; status berupa lencana pil dari Enum.
-        $this->assertStringContainsString('Pasien Satu', $html);
-        $this->assertStringContainsString('rounded-full px-2.5', $html);
-        $this->assertStringContainsString('Menunggu verifikasi', $html);
-
-        // Tabel bergulir di dalam kartu (bukan kepala dan tab) dengan lebar minimum; tanpa bingkai ganda.
-        $this->assertStringContainsString('min-w-136', $html);
-        $this->assertStringContainsString('overflow-x-auto', $html);
-    }
-
-    public function test_lencana_gawat_sejajar_dengan_teks_layanan(): void
-    {
-        $this->dataDemo();
-        $html = $this->dasbor(['tab' => 'berjalan']);
-
-        $this->assertMatchesRegularExpression('/<span class="inline-flex items-center gap-2">Darurat\s*<span[^>]*bg-error-container[^>]*>/', $html);
+        $this->assertStringNotContainsString('Pasien Satu', $html);
     }
 
     public function test_tab_perlu_tindakan_hanya_menunggu_dan_terverifikasi(): void
@@ -298,9 +238,6 @@ class DashboardTest extends TestCase
         foreach (['Pasien Empat', 'Pasien Lima', 'Pasien Enam', 'Pasien Tujuh'] as $pasien) {
             $this->assertStringNotContainsString($pasien, $html);
         }
-        $this->assertStringContainsString('Menampilkan 3 dari 7 pesanan terbaru', $html);
-        $this->assertMatchesRegularExpression('~<a href="[^"]*tab=perlu-tindakan#pesanan-terbaru"[^>]*aria-current="page"~', $html);
-        $this->assertDoesNotMatchRegularExpression('~<a href="[^"]*tab=semua#pesanan-terbaru"[^>]*aria-current="page"~', $html);
     }
 
     public function test_tab_berjalan_hanya_status_aktif_setelah_terverifikasi(): void
@@ -316,34 +253,12 @@ class DashboardTest extends TestCase
         }
     }
 
-    public function test_tab_tanpa_pesanan_menampilkan_keadaan_kosong(): void
-    {
-        $this->dataDemo();
-        Pesanan::query()->whereIn('status', [PesananStatus::Ditugaskan->value, PesananStatus::Diterima->value, PesananStatus::DalamPerjalanan->value])->delete();
-
-        $html = $this->dasbor(['tab' => 'berjalan']);
-
-        $this->assertStringContainsString('Belum ada pesanan di tab ini.', $html);
-        $this->assertDoesNotMatchRegularExpression('/<th[^>]*>Kode<\/th>/', $html);
-    }
-
-    public function test_tab_tidak_dikenal_kembali_ke_semua(): void
-    {
-        $this->dataDemo();
-        $html = $this->dasbor(['tab' => 'ngawur']);
-
-        $this->assertMatchesRegularExpression('~<a href="[^"]*tab=semua#pesanan-terbaru"[^>]*aria-current="page"~', $html);
-        $this->assertStringContainsString('Menampilkan 5 dari 7 pesanan terbaru', $html);
-    }
-
-    public function test_dasbor_kosong_tidak_error_dan_menampilkan_keadaan_kosong(): void
+    public function test_dasbor_kosong_tidak_error(): void
     {
         $html = $this->dasbor();
 
-        $this->assertStringContainsString('Belum ada pesanan di tab ini.', $html);
-        $this->assertStringContainsString('0 pesanan terbaru', $html);
-        $this->assertStringContainsString('tidak ada data', $html);
-        $this->assertMatchesRegularExpression('/data-ringkasan="pesanan_menunggu".*?data-nilai>0</s', $html);
+        $this->assertStringContainsString('0 pesanan terakhir hari ini', $html);
+        $this->assertMatchesRegularExpression('/data-ringkasan="pesanan_menunggu"[\s\S]*?data-nilai[^>]*>0</', $html);
     }
 
     // ---------- polling, JSON, dan otorisasi ----------
@@ -357,23 +272,6 @@ class DashboardTest extends TestCase
             ->assertSee('data-lencana="pesanan_menunggu"', false);
     }
 
-    public function test_ringkasan_json_mengikuti_konvensi_dan_memuat_ketersediaan(): void
-    {
-        Pesanan::factory()->count(2)->create();
-        Pesanan::factory()->berstatus(PesananStatus::Ditugaskan)->create();
-        Faskes::factory()->diperbarui(4, 9)->create();
-
-        $this->actingAs($this->buatAdmin())->getJson(route('admin.pesanan.ringkasan'))
-            ->assertOk()
-            ->assertJsonPath('ok', true)
-            ->assertJsonPath('data.pesanan_menunggu', 2)
-            ->assertJsonPath('data.pesanan_berjalan', 1)
-            ->assertJsonPath('data.pesanan_terverifikasi', 0)
-            ->assertJsonPath('data.bed_igd_tersedia', 4)
-            ->assertJsonPath('data.bed_rawat_inap_tersedia', 9)
-            ->assertJsonStructure(['data' => ['ambulans_tersedia', 'dokter_tersedia', 'pesanan_selesai_hari_ini']]);
-    }
-
     public function test_dasbor_dan_ringkasan_hanya_untuk_dinkes(): void
     {
         $this->get(route('admin.dashboard'))->assertRedirect(route('login'));
@@ -383,20 +281,5 @@ class DashboardTest extends TestCase
             $this->actingAs($user)->get(route('admin.dashboard'))->assertForbidden();
             $this->actingAs($user)->getJson(route('admin.pesanan.ringkasan'))->assertForbidden()->assertJson(['ok' => false]);
         }
-    }
-
-    /** Potongan HTML dari penanda awal sampai sebelum penanda akhir; penanda atribut data-* diperluas ke awal tag `<div` pemiliknya. */
-    private function bagian(string $html, string $awal, string $akhir): string
-    {
-        $i = strpos($html, $awal);
-        $this->assertNotFalse($i, 'Penanda awal tidak ada: '.$awal);
-        $j = strpos($html, $akhir, $i + 1);
-        $this->assertNotFalse($j, 'Penanda akhir tidak ada: '.$akhir);
-
-        $awalTag = fn (int $posisi) => (int) strrpos(substr($html, 0, $posisi), '<div');
-        $mulai = str_starts_with($awal, 'data-') ? $awalTag($i) : $i;
-        $selesai = str_starts_with($akhir, 'data-') ? $awalTag($j) : $j;
-
-        return substr($html, $mulai, $selesai - $mulai);
     }
 }

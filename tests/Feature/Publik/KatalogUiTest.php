@@ -76,10 +76,10 @@ class KatalogUiTest extends TestCase
         $this->get('/_ui')
             ->assertOk()
             ->assertSee('Kartu statistik')
-            ->assertSee('shadow-card-raised', false)
+            ->assertSee('bg-secondary', false)
             ->assertSee('text-stat-hero', false)
-            ->assertSee('bg-on-primary text-primary', false)
-            ->assertSee('size-13', false)
+            ->assertSee('bg-surface-container-lowest text-secondary', false)
+            ->assertSee('size-11', false)
             ->assertSee('aria-current="page"', false)
             ->assertSee('>AD<', false)
             ->assertSee('Bed IGD tersedia');
@@ -106,6 +106,10 @@ class KatalogUiTest extends TestCase
 
         // x-ui.empty (kosong) dengan judul dan ikon.
         $this->assertStringContainsString('border-dashed', $html);
+
+        // x-ui.ring-tile (docs/RETEMA_B.md 6.10): cincin SVG sisi-server.
+        $this->assertStringContainsString('text-ring-value', $html);
+        $this->assertStringContainsString('dari 24', $html);
     }
 
     public function test_katalog_ui_memuat_grafik_dengan_data_pratinjau(): void

@@ -68,15 +68,14 @@
 
     <x-ui.bagian judul="Kartu statistik">
         <div class="flex flex-wrap gap-5">
-            <x-ui.stat :featured="true" icon="clock" :value="2" label="Menunggu verifikasi" hint="pesanan baru" class="min-w-64 flex-[1.5]">
+            <x-ui.stat :featured="true" icon="clock" :value="2" label="Menunggu verifikasi" hint="pesanan, terlama 21 menit" class="min-w-64 flex-[1.5]">
                 <x-slot:aksi>
-                    <x-ui.tombol nada="on-primary" :href="route('beranda')">Verifikasi pesanan</x-ui.tombol>
+                    <x-ui.tombol nada="on-secondary" :href="route('beranda')">Verifikasi sekarang</x-ui.tombol>
                 </x-slot:aksi>
             </x-ui.stat>
-            <x-ui.stat tone="primary" icon="user-check" :value="1" label="Terverifikasi" hint="menunggu penugasan" class="min-w-56 flex-1" />
-            <x-ui.stat tone="warning" icon="ambulance" :value="3" label="Sedang berjalan" hint="ditugaskan sampai di jalan" class="min-w-56 flex-1" />
-            <x-ui.stat tone="success" icon="circle-check" :value="1" label="Selesai hari ini" hint="pesanan tuntas" :href="route('beranda')" class="min-w-56 flex-1" />
-            <x-ui.stat tone="error" icon="triangle-alert" :value="0" label="Ditolak hari ini" class="min-w-56 flex-1" />
+            <x-ui.stat tone="primary" icon="user-check" :value="1" label="Terverifikasi" hint="menunggu penugasan" hint-tone="primary" :series="[5, 8, 6, 9, 7, 4, 6]" class="min-w-56 flex-1" />
+            <x-ui.stat tone="warning" icon="ambulance" :value="3" label="Sedang berjalan" hint="ditugaskan sampai di jalan" hint-tone="neutral" :series="[2, 4, 3, 5, 4, 2, 3]" sparkline-tone="chart-amber" class="min-w-56 flex-1" />
+            <x-ui.stat tone="success" icon="circle-check" :value="36" label="Selesai, 7 hari" hint="+5 dari 7 hari sebelumnya" hint-tone="success" :series="[4, 6, 6, 7, 6, 3, 4]" sparkline-tone="chart-mint" :href="route('beranda')" class="min-w-56 flex-1" />
         </div>
     </x-ui.bagian>
 
@@ -95,6 +94,15 @@
                 <x-ui.tile tone="error" icon="bed-double" :value="1" label="Bed IGD tersedia" />
                 <x-ui.tile tone="warning" icon="bed-double" :value="1" label="Bed rawat inap tersedia" />
                 <x-ui.tile tone="success" icon="stethoscope" :value="6" label="Dokter tersedia" />
+            </div>
+        </x-ui.panel>
+        <p class="mb-2 mt-5 text-label-m text-on-surface-variant">Cincin ketersediaan (x-ui.ring-tile)</p>
+        <x-ui.panel class="max-w-sm">
+            <div class="grid grid-cols-2 gap-3">
+                <x-ui.ring-tile :tersedia="19" :total="24" label="Ambulans" />
+                <x-ui.ring-tile :tersedia="1" :total="14" label="Bed IGD" />
+                <x-ui.ring-tile :tersedia="1" :total="40" label="Bed rawat inap" />
+                <x-ui.ring-tile :tersedia="6" :total="9" label="Dokter" />
             </div>
         </x-ui.panel>
         <x-ui.panel :flush="true" class="mt-5">
@@ -133,6 +141,33 @@
         <x-ui.panel class="mt-5 max-w-sm">
             <x-ui.chart.donut :segments="[]" center-label="pesanan" title="Diagram cincin status pesanan" />
         </x-ui.panel>
+    </x-ui.bagian>
+
+    <x-ui.bagian judul="Grafik arah B (x-ui.chart)">
+        <div class="flex flex-wrap gap-5">
+            <x-ui.panel class="min-w-0 flex-[2] basis-80">
+                <div class="mb-3 flex items-start justify-between gap-3">
+                    <div>
+                        <h3 class="text-title-l">Pesanan 7 hari</h3>
+                        <p class="text-body-s text-on-surface-variant">Masuk dan selesai per hari</p>
+                    </div>
+                    <div class="flex gap-2">
+                        <span class="inline-flex h-8 items-center gap-2 rounded-full bg-surface px-3 text-label-m"><span class="size-2.5 rounded-full bg-primary" aria-hidden="true"></span>Masuk</span>
+                        <span class="inline-flex h-8 items-center gap-2 rounded-full bg-surface px-3 text-label-m"><span class="size-2.5 rounded-full bg-chart-mint" aria-hidden="true"></span>Selesai</span>
+                    </div>
+                </div>
+                <x-ui.chart type="line" title="Grafik pesanan masuk dan selesai per hari, 7 hari" unit="pesanan"
+                    :labels="$labelTujuhHari" :tick-step="1" :datasets="[
+                        ['label' => 'Masuk', 'data' => $seriMasuk, 'color' => 'primary', 'width' => 3.5, 'fill' => true],
+                        ['label' => 'Selesai', 'data' => $seriSelesaiRetema, 'color' => 'chart-mint', 'width' => 3, 'fill' => false],
+                    ]" />
+            </x-ui.panel>
+            <x-ui.panel class="min-w-0 flex-1 basis-64">
+                <h3 class="text-title-l">Status pesanan</h3>
+                <p class="mb-2 text-body-s text-on-surface-variant">7 hari</p>
+                <x-ui.chart type="doughnut" title="Diagram cincin status 7 hari" unit="pesanan" center-label="pesanan" :segments="$donatRetema" />
+            </x-ui.panel>
+        </div>
     </x-ui.bagian>
 
     <x-ui.bagian judul="Pengungkap dan bilah aksi">

@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers\Admin;
 
+use App\Enums\PeriodeDasbor;
 use App\Enums\TabPesanan;
 use App\Http\Controllers\Controller;
 use App\Services\RingkasanDasbor;
@@ -14,7 +15,8 @@ class DashboardController extends Controller
     public function __invoke(Request $request, RingkasanDasbor $dasbor): View
     {
         $tab = TabPesanan::tryFrom((string) $request->query('tab')) ?? TabPesanan::Semua;
-        $data = $dasbor->ambil($tab);
+        $periode = PeriodeDasbor::dariQuery($request->query('periode'));
+        $data = $dasbor->ambil($tab, $periode);
 
         return view('admin.dashboard', $data + [
             'judulDasbor' => 'Selamat '.$this->sapaan().', '.Str::before($request->user()->name, ' '),

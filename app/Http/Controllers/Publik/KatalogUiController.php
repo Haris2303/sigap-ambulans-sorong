@@ -72,6 +72,14 @@ class KatalogUiController extends Controller
                 [PesananStatus::Terverifikasi, 1], [PesananStatus::DalamPerjalanan, 1],
             ])->map(fn (array $s) => ['label' => $s[0]->label(), 'value' => $s[1], 'color' => $s[0]->warnaGrafik()])->all(),
             'statusPesanan' => PesananStatus::cases(),
+            // Data contoh x-ui.chart arah B (docs/RETEMA_B.md R4): 7 hari terakhir, sama dengan papan B1.
+            'labelTujuhHari' => ['Sen', 'Sel', 'Rab', 'Kam', 'Jum', 'Sab', 'Min'],
+            'seriMasuk' => [5, 8, 6, 9, 7, 4, 6],
+            'seriSelesaiRetema' => [4, 6, 6, 7, 6, 3, 4],
+            'donatRetema' => collect([
+                [PesananStatus::Selesai, 31], [PesananStatus::Dibatalkan, 5], [PesananStatus::Ditolak, 3],
+                [PesananStatus::DalamPerjalanan, 3], [PesananStatus::Menunggu, 2], [PesananStatus::Terverifikasi, 1],
+            ])->map(fn (array $s) => ['label' => $s[0]->label(), 'value' => $s[1], 'color' => $s[0]->warnaChart()])->all(),
         ]);
     }
 }

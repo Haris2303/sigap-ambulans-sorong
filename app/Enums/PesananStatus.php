@@ -72,6 +72,23 @@ enum PesananStatus: string
         };
     }
 
+    /**
+     * Warna donat dan grafik arah B (docs/RETEMA_B.md 4.3, kolom "Warna grafik"): sama persis dengan tone() untuk primary
+     * dan tertiary, tetapi memakai varian chart-* yang lebih terang untuk warning/success/error/neutral karena nilainya
+     * selalu tertulis di legenda.
+     */
+    public function warnaChart(): string
+    {
+        return match ($this) {
+            self::Menunggu => 'chart-amber',
+            self::Terverifikasi => 'primary',
+            self::Ditugaskan, self::Diterima, self::DalamPerjalanan => 'tertiary',
+            self::Selesai => 'chart-mint',
+            self::Ditolak => 'chart-coral',
+            self::Dibatalkan => 'chart-slate',
+        };
+    }
+
     public function final(): bool
     {
         return in_array($this, [self::Selesai, self::Ditolak, self::Dibatalkan], true);

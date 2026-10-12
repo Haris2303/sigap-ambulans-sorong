@@ -16,7 +16,7 @@
     @endif
 </div>
 
-<nav class="flex-1 space-y-1" aria-label="Menu utama">
+<nav class="min-h-0 flex-1 space-y-1 overflow-y-auto gulir-tipis" aria-label="Menu utama">
     @foreach ($menu as $item)
         @php
             $aktif = request()->routeIs($item['cocok']);

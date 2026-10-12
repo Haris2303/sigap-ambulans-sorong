@@ -590,4 +590,81 @@ class KomponenUiTest extends TestCase
         // Komponen ketersediaan memakai keterangan yang sama.
         $this->assertStringContainsString('Belum diperbarui', $this->render('<x-ui.ketersediaan :faskes="$f" />', ['f' => Faskes::factory()->create()]));
     }
+
+    public function test_ring_tile_cincin_ketersediaan(): void
+    {
+        $biasa = $this->render('<x-ui.ring-tile :tersedia="19" :total="24" label="Ambulans" />');
+        $this->assertStringContainsString('role="img"', $biasa);
+        $this->assertStringContainsString('aria-label="Ambulans: 19 dari 24"', $biasa);
+        $this->assertStringContainsString('>19<', $biasa);
+        $this->assertStringContainsString('Ambulans', $biasa);
+        $this->assertStringContainsString('dari 24', $biasa);
+        $this->assertStringContainsString('stroke="var(--color-primary)"', $biasa);
+        $this->assertStringNotContainsString('menipis', $biasa);
+        foreach (['bg-surface-container-low', 'rounded-lg', 'text-ring-value', 'text-label-l'] as $kelas) {
+            $this->assertStringContainsString($kelas, $biasa);
+        }
+
+        // Tersedia < 12% dari total: isi chart-coral, teks "menipis" dengan label-m on-error-container (DESIGN.md 6.10).
+        $menipis = $this->render('<x-ui.ring-tile :tersedia="1" :total="14" label="Bed IGD" />');
+        $this->assertStringContainsString('aria-label="Bed IGD: 1 dari 14, menipis"', $menipis);
+        $this->assertStringContainsString('stroke="var(--color-chart-coral)"', $menipis);
+        $this->assertStringContainsString('dari 14, menipis', $menipis);
+        $this->assertStringContainsString('text-label-m text-on-error-container', $menipis);
+
+        // Total 0: cincin hampir kosong, "dari 0", tidak menipis (tidak ada penyebut untuk persen).
+        $kosong = $this->render('<x-ui.ring-tile :tersedia="0" :total="0" label="Dokter" />');
+        $this->assertStringContainsString('aria-label="Dokter: 0 dari 0"', $kosong);
+        $this->assertStringContainsString('dari 0', $kosong);
+        $this->assertStringNotContainsString('menipis', $kosong);
+    }
+
+    public function test_chart_garis_dan_donat(): void
+    {
+        $garis = $this->render(<<<'BLADE'
+            <x-ui.chart type="line" title="Grafik pesanan" unit="pesanan" :labels="$l" :tick-step="1" :datasets="$d" />
+            BLADE, [
+            'l' => ['Sen', 'Sel', 'Rab'],
+            'd' => [
+                ['label' => 'Masuk', 'data' => [5, 8, 6], 'color' => 'primary', 'width' => 3.5, 'fill' => true],
+                ['label' => 'Selesai', 'data' => [4, 6, 6], 'color' => 'chart-mint', 'width' => 3, 'fill' => false],
+            ],
+        ]);
+        $this->assertStringContainsString('role="img"', $garis);
+        $this->assertStringContainsString('&quot;tipe&quot;:&quot;garis&quot;', $garis);
+        $this->assertStringContainsString('&quot;color&quot;:&quot;primary&quot;', $garis);
+        $this->assertStringContainsString('h-58', $garis);
+        $this->assertStringContainsString('lg:h-77.5', $garis);
+        $this->assertStringContainsString('Masuk', $garis);
+        $this->assertStringContainsString('<table class="sr-only">', $garis);
+        $this->assertStringContainsString('Grafik pesanan', $garis);
+
+        try {
+            $this->render('<x-ui.chart type="line" title="X" :labels="$l" :datasets="$d" />', [
+                'l' => ['Sen', 'Sel'],
+                'd' => [['label' => 'Masuk', 'data' => [1, 2, 3], 'color' => 'primary']],
+            ]);
+            $this->fail('Jumlah data dan labels yang tidak sama harus ditolak.');
+        } catch (\Illuminate\View\ViewException $e) {
+            $this->assertStringContainsString('jumlah data dataset', $e->getMessage());
+        }
+
+        $donat = $this->render('<x-ui.chart type="doughnut" title="Status pesanan" unit="pesanan" center-label="pesanan" :segments="$s" />', [
+            's' => [
+                ['label' => 'Selesai', 'value' => 31, 'color' => 'chart-mint'],
+                ['label' => 'Dibatalkan', 'value' => 5, 'color' => 'chart-slate'],
+                ['label' => 'Ditolak', 'value' => 0, 'color' => 'chart-coral'],
+            ],
+        ]);
+        $this->assertStringContainsString('&quot;tipe&quot;:&quot;donat&quot;', $donat);
+        $this->assertStringContainsString('Selesai', $donat);
+        $this->assertStringContainsString('86%', $donat); // 31/36
+        $this->assertStringContainsString('var(--color-chart-mint)', $donat);
+        $this->assertStringNotContainsString('Ditolak', $donat); // nilai 0 tidak tampil.
+        $this->assertStringContainsString('>36<', $donat); // total di tengah.
+
+        $kosong = $this->render('<x-ui.chart type="doughnut" title="Status pesanan" :segments="[]" />');
+        $this->assertStringContainsString('&quot;segments&quot;:[]', $kosong);
+        $this->assertStringContainsString('>0<', $kosong);
+    }
 }

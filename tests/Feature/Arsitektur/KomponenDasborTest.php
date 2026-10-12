@@ -43,12 +43,12 @@ class KomponenDasborTest extends TestCase
     {
         $md = $this->html('<x-ui.icon-chip tone="primary" icon="user-check" />');
         $this->assertStringContainsString('size-10', $md);
-        $this->assertStringContainsString('width="22"', $md);
-        $this->assertStringContainsString('height="22"', $md);
+        $this->assertStringContainsString('width="21"', $md);
+        $this->assertStringContainsString('height="21"', $md);
 
         $lg = $this->html('<x-ui.icon-chip tone="success" icon="circle-check" size="lg" />');
-        $this->assertStringContainsString('size-13', $lg);
-        $this->assertStringContainsString('width="26"', $lg);
+        $this->assertStringContainsString('size-11', $lg);
+        $this->assertStringContainsString('width="22"', $lg);
         $this->assertStringNotContainsString('size-10', $lg);
     }
 
@@ -64,27 +64,27 @@ class KomponenDasborTest extends TestCase
         }
     }
 
-    // ---------- stat ----------
+    // ---------- stat (docs/RETEMA_B.md 6.8) ----------
 
     public function test_stat_putih_menyusun_chip_angka_label_dan_keterangan(): void
     {
-        $html = $this->html('<x-ui.stat tone="success" icon="circle-check" :value="12" label="Selesai hari ini" hint="pesanan tuntas" />');
+        $html = $this->html('<x-ui.stat tone="success" icon="circle-check" :value="12" label="Selesai hari ini" hint="pesanan tuntas" hint-tone="success" />');
 
-        // Kartu putih berbayang dengan padding 20px (sudut 24px sejak Tampilan::KARTU arah B, R1/R2).
         foreach (['bg-surface-container-lowest', 'rounded-xl', 'shadow-card', 'p-5'] as $kelas) {
             $this->assertStringContainsString($kelas, $html);
         }
         $this->assertDoesNotMatchRegularExpression('/shadow-card-raised/', $html);
 
-        // Chip ikon 52px dengan pasangan container nada.
-        $this->assertStringContainsString('size-13', $html);
+        // Chip ikon 44px dengan pasangan container nada.
+        $this->assertStringContainsString('size-11', $html);
         $this->assertStringContainsString('bg-success-container text-on-success-container', $html);
 
-        // Urutan: angka, label, keterangan.
+        // Urutan: angka (mt-14px), label, keterangan sebagai chip (bukan teks biasa).
+        $this->assertStringContainsString('mt-3.5', $html);
         $this->assertStringContainsString('text-stat-l tabular-nums', $html);
         $this->assertStringContainsString('data-nilai', $html);
         $this->assertStringContainsString('text-label-l', $html);
-        $this->assertStringContainsString('text-body-s text-on-surface-variant', $html);
+        $this->assertStringContainsString('bg-success-container text-on-success-container', $html);
         $angka = strpos($html, '>12<');
         $label = strpos($html, 'Selesai hari ini');
         $hint = strpos($html, 'pesanan tuntas');
@@ -99,39 +99,63 @@ class KomponenDasborTest extends TestCase
     public function test_stat_putih_tanpa_keterangan_dan_dengan_tautan_pada_label(): void
     {
         $tanpa = $this->html('<x-ui.stat tone="primary" icon="user-check" :value="1" label="Terverifikasi" />');
-        $this->assertStringNotContainsString('text-body-s text-on-surface-variant', $tanpa);
+        $this->assertStringNotContainsString('<x-ui.lencana', $tanpa);
 
         $html = $this->html('<x-ui.stat tone="primary" icon="user-check" :value="1" label="Terverifikasi" href="https://contoh.test/pesanan" />');
         $this->assertMatchesRegularExpression('~<a href="https://contoh.test/pesanan"[^>]*>\s*Terverifikasi\s*</a>~', $html);
         $this->assertSame(1, substr_count($html, '<a '), 'Hanya label yang menjadi tautan, bukan seluruh kartu.');
     }
 
-    public function test_stat_utama_berlatar_primary_dengan_angka_besar_dan_aksi(): void
+    public function test_stat_putih_menampilkan_sparkline_hanya_bila_series_diberi(): void
+    {
+        $tanpa = $this->html('<x-ui.stat tone="primary" icon="user-check" :value="1" label="Terverifikasi" />');
+        $this->assertStringNotContainsString('<svg width="92" height="38"', $tanpa);
+
+        $dengan = $this->html('<x-ui.stat tone="warning" icon="ambulance" :value="3" label="Sedang berjalan" :series="$s" sparkline-tone="chart-amber" />', ['s' => [1, 4, 2, 6, 3]]);
+        $this->assertStringContainsString('<svg width="92" height="38"', $dengan);
+        $this->assertStringContainsString('var(--color-chart-amber)', $dengan);
+        $this->assertStringContainsString('hidden', $dengan);
+        $this->assertStringContainsString('sm:inline-flex', $dengan);
+    }
+
+    public function test_stat_navy_berlatar_secondary_dengan_angka_besar_dan_aksi(): void
     {
         $html = $this->html(<<<'BLADE'
-            <x-ui.stat :featured="true" icon="clock" :value="2" label="Menunggu verifikasi" hint="pesanan baru">
-                <x-slot:aksi><x-ui.tombol nada="on-primary" href="https://contoh.test/perlu-tindakan">Verifikasi pesanan</x-ui.tombol></x-slot:aksi>
+            <x-ui.stat :featured="true" icon="clock" :value="2" label="Menunggu verifikasi" hint="pesanan, terlama 21 menit">
+                <x-slot:aksi><x-ui.tombol nada="on-secondary" href="https://contoh.test/perlu-tindakan">Verifikasi sekarang</x-ui.tombol></x-slot:aksi>
             </x-ui.stat>
             BLADE);
 
-        foreach (['bg-primary', 'text-on-primary', 'rounded-lg', 'shadow-card-raised', 'px-6', 'py-5'] as $kelas) {
+        foreach (['bg-secondary', 'text-on-secondary', 'rounded-xl', 'shadow-card', 'overflow-hidden', 'relative'] as $kelas) {
             $this->assertStringContainsString($kelas, $html);
         }
-        $this->assertDoesNotMatchRegularExpression('/shadow-card(?!-raised)/', $html);
-        $this->assertStringNotContainsString('bg-surface-container-lowest', $html);
+        $this->assertStringNotContainsString('bg-primary text-on-primary', $html);
 
-        // Chip 44px berlatar on-primary 18%, judul title-m, angka stat-hero, keterangan primary-container.
+        // Dua lingkaran dekoratif (bg-primary/25 dan bg-primary/15), chip 44px berlatar on-secondary/15.
+        $this->assertStringContainsString('bg-primary/25', $html);
+        $this->assertStringContainsString('bg-primary/15', $html);
         $this->assertStringContainsString('size-11', $html);
-        $this->assertStringContainsString('bg-on-primary/18', $html);
+        $this->assertStringContainsString('bg-on-secondary/15', $html);
         $this->assertStringContainsString('text-title-m', $html);
         $this->assertStringContainsString('text-stat-hero tabular-nums', $html);
         $this->assertStringContainsString('text-body-m text-primary-container', $html);
         $this->assertStringContainsString('aria-hidden="true"', $html);
 
-        // Aksi di bawah: tombol on-primary.
-        $this->assertStringContainsString('bg-on-primary text-primary', $html);
-        $this->assertStringContainsString('Verifikasi pesanan', $html);
-        $this->assertLessThan(strpos($html, 'Verifikasi pesanan'), strpos($html, '>2<'));
+        // Aksi di bawah: tombol on-secondary (putih di atas navy).
+        $this->assertStringContainsString('bg-surface-container-lowest text-secondary', $html);
+        $this->assertStringContainsString('Verifikasi sekarang', $html);
+        $this->assertLessThan(strpos($html, 'Verifikasi sekarang'), strpos($html, '>2<'));
+    }
+
+    public function test_stat_navy_menampilkan_penanda_tambahan(): void
+    {
+        $html = $this->html(<<<'BLADE'
+            <x-ui.stat :featured="true" icon="clock" :value="2" label="Menunggu verifikasi" hint="pesanan, terlama 21 menit">
+                <x-slot:penanda><x-ui.lencana nada="bahaya">1 gawat</x-ui.lencana></x-slot:penanda>
+            </x-ui.stat>
+            BLADE);
+
+        $this->assertStringContainsString('1 gawat', $html);
     }
 
     public function test_stat_meneruskan_atribut_ke_akar_dan_nilai_dapat_diperbarui(): void

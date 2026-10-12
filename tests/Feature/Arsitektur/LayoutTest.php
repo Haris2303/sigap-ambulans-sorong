@@ -195,11 +195,14 @@ class LayoutTest extends TestCase
         $html = Blade::render('<x-layouts.app judul="Uji">isi</x-layouts.app>');
 
         $aside = $this->potong($html, '<aside', '</aside>');
-        foreach (['w-62', 'bg-surface-container-lowest', 'rounded-2xl', 'shadow-card', 'sticky top-4', 'h-[calc(100vh-2rem)]', 'overflow-y-auto', 'gulir-tipis', 'lg:flex', 'hidden'] as $kelas) {
+        foreach (['w-62', 'bg-surface-container-lowest', 'rounded-2xl', 'shadow-card', 'sticky top-4', 'h-[calc(100vh-2rem)]', 'lg:flex', 'hidden'] as $kelas) {
             $this->assertStringContainsString($kelas, $aside);
         }
-        // Menu sendiri tidak punya bilah gulir lagi (hanya satu bilah vertikal, pada aside).
-        $this->assertStringNotContainsString('overflow-y-auto', $this->tag($aside, 'aria-label="Menu utama"'));
+        // Merek dan blok pengguna tetap (bukan area gulir); hanya daftar menu yang bergulir, supaya pada tinggi
+        // layar pendek bilah gulir berpanah tidak muncul dan blok pengguna selalu terlihat (docs/RETEMA_B.md "DB" 1).
+        $this->assertStringNotContainsString('overflow-y-auto', $this->potong($aside, '<aside', '<nav'));
+        $this->assertStringContainsString('min-h-0 flex-1', $this->tag($aside, 'aria-label="Menu utama"'));
+        $this->assertStringContainsString('overflow-y-auto gulir-tipis', $this->tag($aside, 'aria-label="Menu utama"'));
         // Bilah samping (tempat tetap) tidak punya tombol tutup, berbeda dari laci.
         $this->assertStringNotContainsString('data-menu-tutup', $aside);
     }
