@@ -88,3 +88,18 @@ Catatan di luar checklist tahap 0 sampai 7 di atas (tidak mengubah status agen).
 - Menunggu keputusan pemilik proyek: halaman Masyarakat (Buat Pesanan, lacak) "tanpa laci" seperti tertulis di dokumen arah; saat ini masih memakai laci navigasi.
 - Belum dilakukan: pemeriksaan visual di browser (sesi pengerjaan tidak punya browser); lihat checklist uji tampilan di `docs/HASIL_AKHIR.md`.
 - Audit UX (`docs/AUDIT_UX.md`): gelombang pertama T1 sampai T8 selesai pada branch `material-design` (status dan penyimpangan di bagian 11 dokumen itu). Yang menunggu Dinkes: nomor darurat (`KONTAK_DARURAT_NOMOR`) dan ambang waktu tunggu.
+
+## Retema B — mode shot, alat banding visual (langkah RS, sesi interaktif)
+
+`agent/shot.mjs` (`npm run shot`), `agent/shot.json`, `database/seeders/ShotSeeder.php`. Server khusus `APP_ENV=shot` pada `database/shot.sqlite` (gitignored, dibuat ulang tiap jalan), waktu dibekukan `2026-10-11 21:26:00` WIT (`AppServiceProvider::boot()`, hanya bila `app()->environment('shot')`). Tidak mengubah tampilan aplikasi; alat ini hanya menangkap dan membandingkan.
+
+Selisih data terhadap papan `docs/referensi-b/B1-dasbor.html`, dengan alasannya:
+
+- **SGP-000037 sampai SGP-000041**: persis papan (nama, layanan, gawat, status, jam 19.54–21.12), termasuk "terlama 21 menit" (pesanan menunggu tertua SGP-000040 pukul 21.05, beku pada 21.26). Supaya kodenya pas, ada tepat 36 pesanan sebelum kelimanya (Senin 5 Okt sampai Sabtu 10 Okt).
+- **Total pesanan 7 hari**: 41, bukan 45 (jumlah masuk papan 5,8,6,9,7,4,6). Satu sopir hanya bisa memegang satu pesanan aktif sekaligus (`PesananWorkflow::periksaSumberDaya`, dan CLAUDE.md: status hanya lewat `PesananWorkflow`, tidak ada jalan pintas lewat DB langsung), jadi target per-hari diskalakan ke 41: masuk 5,7,6,8,6,4,5 (vs papan 5,8,6,9,7,4,6).
+- **Status "sedang berjalan" (ditugaskan/diterima/dalam_perjalanan)**: hasil seed 1 (SGP-000038), papan menyebut "dalam perjalanan: 3" pada diagram cincin status. Dengan satu sopir, hanya satu pesanan bisa berstatus ini sekaligus pada saat database "dibekukan" di akhir seeding; tidak bisa dibuat 3 tanpa sopir/ambulans tambahan atau tanpa melewati `PesananWorkflow`. `selesai` disesuaikan ikut mengisi selisihnya: hasil 29, papan 31 (dari 45).
+- **Status lain** (menunggu 2, terverifikasi 1, dibatalkan 5, ditolak 3): persis papan.
+- **Ketersediaan**: ambulans 19/24, bed IGD 1/14, bed rawat inap 1/40, dokter 6/9 — persis papan, meski ShotSeeder hanya membuat **satu** Faskes (papan menyiratkan "semua Faskes"; wajar untuk data demo).
+- **Dokter "dari 9"**: skema (`faskes.dokter_umum_tersedia`, `dokter_spesialis_tersedia`) tidak punya kolom total/kapasitas dokter, hanya "tersedia". Angka 6 (tersedia) persis papan; "9" (total) tidak tersimpan di database dan akan jadi perhatian saat `x-ui.ring-tile` dokter dibangun di R4/R5 (tambah kolom atau pakai konstanta).
+
+`agent/shot.json` mendaftar 6 halaman (masuk, dasbor admin, daftar pesanan, satu detail pesanan, `/_ui`, Pesan ambulans Masyarakat) pada lebar 1440 dan 390. Hanya dasbor admin dan `/_ui` dibandingkan piksel (pixelmatch) dengan `B1-dasbor-1440.png` dan `B2-komponen-1440.png`; dasbor ponsel dibandingkan dengan mata terhadap `B3-ponsel-390.png`. Hasil garis dasar (sebelum R3) ada di laporan sesi yang menjalankannya; jangan menganggap selisih besar di garis dasar sebagai regresi — kerangka, komponen dasbor, dan seluruh gaya arah B belum diterapkan ke halaman nyata sampai R3 sampai R8.

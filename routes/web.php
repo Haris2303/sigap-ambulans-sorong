@@ -100,6 +100,6 @@ Route::middleware(['auth', 'role:admin'])->prefix('admin')->name('admin.')->grou
     Route::put('/ketersediaan/{faskes}', [AdminKetersediaanController::class, 'update'])->name('ketersediaan.update');
 });
 
-if (app()->environment('local', 'testing')) {
+if (app()->environment('local', 'testing', 'shot')) {
     Route::get('/_ui', KatalogUiController::class)->name('ui.katalog');
 }

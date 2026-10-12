@@ -80,7 +80,7 @@ class AkunDemoSeeder extends Seeder
             return $this->sandi = $dariConfig;
         }
 
-        if (app()->environment('local', 'testing')) {
+        if (app()->environment('local', 'testing', 'shot')) {
             return $this->sandi = 'password';
         }
 

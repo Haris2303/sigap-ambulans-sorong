@@ -18,8 +18,9 @@ class KatalogUiController extends Controller
     public function __invoke(): View
     {
         // Pemeriksa saat permintaan, bukan hanya saat route didaftarkan (routes/web.php): dijaga KatalogUiTest
-        // lewat $this->app->detectEnvironment(), sama seperti PesananDemoSeeder.
-        abort_unless(app()->environment('local', 'testing'), 404);
+        // lewat $this->app->detectEnvironment(), sama seperti PesananDemoSeeder. Mode shot (agent/shot.mjs,
+        // docs/RETEMA_B.md "Banding visual") juga perlu halaman ini untuk ditangkap dan dibandingkan.
+        abort_unless(app()->environment('local', 'testing', 'shot'), 404);
 
         $pelaku = new User(['name' => 'Siti Aminah']);
 

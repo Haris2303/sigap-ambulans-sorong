@@ -493,6 +493,13 @@ Gagal di gerbang = langkah belum selesai. Laporkan nama tes yang gagal; jangan m
 
 Setiap laporan akhir langkah memuat bagian "Yang perlu dilihat pengguna": URL yang dibuka (`php artisan serve`), lebar jendela (1440 dan 390), dan bagian papan mana yang harus dibandingkan.
 
+### Banding visual
+
+Alat (`agent/shot.mjs`, `npm run shot`, langkah RS) menangkap halaman nyata pada data demo dan membandingkannya dengan `docs/referensi-b/` lewat pixelmatch. Mulai R3, gerbang di atas ditambah:
+
+6. `npm run shot`. Buka tangkapan di `storage/shots/` bersama rujukannya di `docs/referensi-b/` (dan gambar selisih `diff-*.png` untuk dasbor admin dan `/_ui`). Perbaiki selisih yang masih kasat mata dan berada dalam cakupan langkah itu sebelum commit; selisih di luar cakupan langkah dicatat untuk langkah R berikutnya, bukan diperbaiki sekarang.
+7. Laporan akhir langkah memuat persen selisih piksel untuk dasbor admin (vs `B1-dasbor-1440.png`) dan `/_ui` (vs `B2-komponen-1440.png`), serta catatan hasil banding mata untuk dasbor ponsel (vs `B3-ponsel-390.png`).
+
 ## 11. Langkah
 
 Branch kerja: `retema-b`, dibuat dari `material-design` setelah D7 ter-commit.
@@ -500,6 +507,8 @@ Branch kerja: `retema-b`, dibuat dari `material-design` setelah D7 ter-commit.
 **R1. Aturan, token, font.** Bagian 4 seluruhnya: front matter `DESIGN.md` (warna, tipografi, bentuk, elevasi), teks prosa (4.9), `agent/tokens.mjs` (letter spacing, `@theme static` untuk `chart-*`), `agent/konsistensi.json` dan kasusnya (4.10), `agent/kontras.json` dan `KontrasTokenTest` (4.8), pasang `@fontsource-variable/plus-jakarta-sans` dan ganti font dasar, catatan "Digantikan" di `docs/DESAIN_DASBOR_MATERIAL.md`, tambahkan bagian "Retema B (rencana)" di `docs/KIT_UI.md` berisi daftar komponen bagian 6 dengan status "belum diimplementasikan". Token lama dipertahankan. Belum ada perubahan Blade selain impor font. Selesai bila gerbang lulus dan semua token baru ada sebagai variabel CSS di hasil pembuat token. Setelah R1 aplikasi akan tampak berwarna dan berhuruf baru tetapi bentuknya belum berubah, itu wajar.
 
 **R2. Komponen dasar.** Bagian 6.1 sampai 6.7, 6.9, dan 6.11 sampai 6.13, ditambah rute pratinjau `/dev/komponen` yang hanya terdaftar bila `app()->isLocal()` (tes membuktikan 404 di lingkungan produksi) berisi semua komponen dengan data contoh seperti B2. Tes render tiap komponen. Perbarui KIT_UI dari "rencana" menjadi dokumentasi sebenarnya. Selesai bila halaman yang sudah ada masih tampil benar dan `/dev/komponen` mirip `B2-komponen-1440.png`.
+
+**RS. Alat banding visual.** Tidak mengubah tampilan aplikasi. `agent/shot.mjs` + `npm run shot`: server khusus `APP_ENV=shot` pada `database/shot.sqlite` (terpisah dari DB nyata), `database/seeders/ShotSeeder.php` (data demo mendekati B1, hanya mode shot), waktu dibekukan 2026-10-11 21.26 WIT. Menangkap dasbor admin, daftar pesanan, satu detail pesanan, `/_ui`, halaman "Pesan ambulans" Masyarakat, dan masuk pada lebar 1440 dan 390 ke `storage/shots/`; membandingkan dasbor admin dan `/_ui` dengan `docs/referensi-b/` lewat pixelmatch. Ini garis dasar sebelum R3: selisihnya besar dan itu wajar (kerangka, komponen dasbor, dan data demo B1 belum ada). Mulai R3, tiap langkah mengakhiri gerbangnya dengan `npm run shot` dan memperbaiki selisih yang masih kasat mata dalam cakupannya (bagian 10, "Banding visual").
 
 **R3. Kerangka.** Bagian 5: bilah samping, kepala halaman, pencarian dan lonceng, bilah atas dan laci ponsel, layout publik dan masuk, serta tautan lompat "Lewati ke isi" (terlihat saat fokus) di awal setiap layout. Terapkan ke layout semua peran. Selesai bila setiap halaman yang ada masih terbuka (`php artisan test` menyapu rute utama), tidak ada scroll horizontal di 390px, dan kerangka mirip B1 dan B3 dengan isi sementara.
 
