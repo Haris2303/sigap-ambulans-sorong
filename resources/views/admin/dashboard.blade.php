@@ -128,7 +128,7 @@
                                 <x-ui.avatar :nama="$pesanan->nama_pasien" />
                                 <div class="min-w-0">
                                     <p class="truncate text-label-l"><a href="{{ route('admin.pesanan.show', $pesanan) }}" class="after:absolute after:inset-0">{{ $pesanan->nama_pasien }}</a></p>
-                                    <p class="truncate text-body-s text-on-surface-variant tabular-nums">{{ $pesanan->kode }}, {{ $pesanan->jenis_layanan->label() }}</p>
+                                    <p class="text-body-s text-on-surface-variant tabular-nums">{{ $pesanan->kode }}, {{ $pesanan->jenis_layanan->label() }}</p>
                                 </div>
                                 <div class="flex flex-col items-end gap-1">
                                     <x-ui.lencana-status :status="$pesanan->status" size="sm" />
