@@ -215,6 +215,10 @@ class DashboardTest extends TestCase
         foreach (['Ambulans', 'Bed IGD', 'Bed rawat inap', 'Dokter'] as $label) {
             $this->assertStringContainsString($label, $html);
         }
+        // x-ui.ring-tile: cincin SVG dengan role=img dan aria-label, bukan daftar teks.
+        $this->assertStringContainsString('role="img"', $html);
+        $this->assertStringContainsString('aria-label="Ambulans: 2 dari 3"', $html);
+        $this->assertSame(4, substr_count($html, 'text-ring-value'));
     }
 
     // ---------- pesanan terbaru ----------
@@ -264,7 +268,24 @@ class DashboardTest extends TestCase
         $html = $this->dasbor();
 
         $this->assertStringContainsString('0 pesanan terakhir hari ini', $html);
+        $this->assertStringContainsString('Belum ada pesanan di tab ini.', $html);
         $this->assertMatchesRegularExpression('/data-ringkasan="pesanan_menunggu"[\s\S]*?data-nilai[^>]*>0</', $html);
+    }
+
+    public function test_tabel_pesanan_terbaru_desktop_dan_daftar_ponsel_markup_terpisah(): void
+    {
+        $this->dataDemo();
+        $html = $this->dasbor();
+
+        // Tabel (md ke atas) dan daftar baris (di bawah md) adalah markup terpisah untuk kartu ini (bukan x-ui.table generik).
+        $this->assertStringContainsString('hidden md:block', $html);
+        $this->assertStringContainsString('role="list"', $html);
+        $this->assertStringContainsString('md:hidden', $html);
+        $this->assertStringContainsString('border-t border-surface-container-highest', $html);
+        $this->assertStringContainsString('grid-cols-[40px_1fr_auto]', $html);
+        foreach (['Pasien', 'Layanan', 'Status', 'Jam'] as $kolom) {
+            $this->assertMatchesRegularExpression('/<th[^>]*>'.$kolom.'<\/th>/', $html, $kolom);
+        }
     }
 
     // ---------- polling, JSON, dan otorisasi ----------

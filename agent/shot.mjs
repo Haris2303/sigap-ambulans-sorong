@@ -114,10 +114,18 @@ function matikanServer(proc) {
   }
 }
 
-/** Memuat PNG, memotong ke ukuran terkecil bersama, lalu pixelmatch. Mengembalikan {persen, tinggiA, tinggiB}. */
-function bandingkanPng(pathHasil, pathRujukan, pathDiff) {
-  const a = PNG.sync.read(readFileSync(pathHasil));
-  const b = PNG.sync.read(readFileSync(pathRujukan));
+/** Memotong PNG ke kotak [x1, y1, x2, y2] (piksel, x2/y2 tidak termasuk atau melampaui batas gambar dipotong aman). */
+function potongPng(png, [x1, y1, x2, y2]) {
+  const lebar = Math.max(1, Math.min(x2, png.width) - x1);
+  const tinggi = Math.max(1, Math.min(y2, png.height) - y1);
+  const out = new PNG({ width: lebar, height: tinggi });
+  PNG.bitblt(png, out, x1, y1, lebar, tinggi, 0, 0);
+
+  return out;
+}
+
+/** Membandingkan dua objek PNG (sudah dipotong ke ukuran yang sama bila perlu) lewat pixelmatch, menulis diff. */
+function bandingkanObjekPng(a, b, pathDiff) {
   const lebar = Math.min(a.width, b.width);
   const tinggi = Math.min(a.height, b.height);
 
@@ -133,11 +141,15 @@ function bandingkanPng(pathHasil, pathRujukan, pathDiff) {
   const jumlahBeda = pixelmatch(ca.data, cb.data, diff.data, lebar, tinggi, { threshold: 0.1 });
   writeFileSync(pathDiff, PNG.sync.write(diff));
 
-  return {
-    persen: (jumlahBeda / (lebar * tinggi)) * 100,
-    tinggiHasil: a.height,
-    tinggiRujukan: b.height,
-  };
+  return { persen: (jumlahBeda / (lebar * tinggi)) * 100, tinggiHasil: a.height, tinggiRujukan: b.height };
+}
+
+/** Memuat PNG dari berkas, memotong ke ukuran terkecil bersama, lalu pixelmatch. Mengembalikan {persen, tinggiA, tinggiB}. */
+function bandingkanPng(pathHasil, pathRujukan, pathDiff) {
+  const a = PNG.sync.read(readFileSync(pathHasil));
+  const b = PNG.sync.read(readFileSync(pathRujukan));
+
+  return bandingkanObjekPng(a, b, pathDiff);
 }
 
 async function masuk(context, email, password) {
@@ -161,8 +173,22 @@ async function tangkapHalaman(context, h) {
     await page.waitForTimeout(150);
     const tujuan = resolve(shotsDir, h.nama + '-' + lebar + '.png');
     await page.screenshot({ path: tujuan, fullPage: true });
+
+    // Potongan menurut elemen [data-shot=nama] (docs/RETEMA_B.md "DB", banding visual): hanya pada lebar yang
+    // dikalibrasi di agent/shot.json (kotak potong rujukan dibuat untuk lebar itu).
+    const potongan = [];
+    if (h.potongan && String(lebar) === '1440') {
+      for (const nama of Object.keys(h.potongan.kotak)) {
+        const lokator = page.locator('[data-shot="' + nama + '"]').first();
+        if ((await lokator.count()) === 0) continue;
+        const tujuanPotongan = resolve(shotsDir, h.nama + '-potongan-' + nama + '-' + lebar + '.png');
+        await lokator.screenshot({ path: tujuanPotongan });
+        potongan.push({ nama, tujuan: tujuanPotongan });
+      }
+    }
+
     await page.close();
-    hasil.push({ lebar, tujuan });
+    hasil.push({ lebar, tujuan, potongan });
   }
 
   return hasil;
@@ -189,6 +215,7 @@ async function utama() {
   });
 
   const ringkasan = [];
+  const ringkasanPotongan = [];
   try {
     await tungguServer();
 
@@ -224,6 +251,21 @@ async function utama() {
             ringkasan.push({ nama: h.nama, lebar, rujukan: berkasRujukan, ...r });
           }
         }
+
+        if (h.potongan) {
+          const t = tangkapan.find((x) => x.potongan && x.potongan.length > 0);
+          if (t) {
+            const rujukanPng = PNG.sync.read(readFileSync(resolve(refDir, h.potongan.rujukan)));
+            for (const p of t.potongan) {
+              const kotak = h.potongan.kotak[p.nama];
+              const hasilPng = PNG.sync.read(readFileSync(p.tujuan));
+              const rujukanPotongan = potongPng(rujukanPng, kotak);
+              const pathDiff = resolve(shotsDir, 'diff-' + h.nama + '-potongan-' + p.nama + '-' + t.lebar + '.png');
+              const r = bandingkanObjekPng(hasilPng, rujukanPotongan, pathDiff);
+              ringkasanPotongan.push({ nama: h.nama, potongan: p.nama, lebar: t.lebar, ...r });
+            }
+          }
+        }
       }
     } finally {
       await browser.close();
@@ -238,6 +280,12 @@ async function utama() {
       '  ' + r.nama + ' @' + r.lebar + ' vs ' + r.rujukan + ': ' + r.persen.toFixed(2) + '% piksel berbeda'
       + ' (tinggi hasil ' + r.tinggiHasil + 'px, tinggi rujukan ' + r.tinggiRujukan + 'px)',
     );
+  }
+  if (ringkasanPotongan.length > 0) {
+    console.log('\nshot.mjs: banding per baris (elemen [data-shot], docs/RETEMA_B.md "DB"):');
+    for (const r of ringkasanPotongan) {
+      console.log('  ' + r.nama + ' [' + r.potongan + '] @' + r.lebar + ': ' + r.persen.toFixed(2) + '% piksel berbeda');
+    }
   }
   console.log('\nshot.mjs: tangkapan layar ada di storage/shots/. Server shot sudah dimatikan.');
 }

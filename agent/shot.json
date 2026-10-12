@@ -7,7 +7,17 @@
   },
   "halaman": [
     { "nama": "masuk", "path": "/login", "peran": null },
-    { "nama": "dasbor-admin", "path": "/admin", "peran": "admin", "banding": { "1440": "B1-dasbor-1440.png" } },
+    { "nama": "dasbor-admin", "path": "/admin", "peran": "admin", "banding": { "1440": "B1-dasbor-1440.png" },
+      "potongan": {
+        "rujukan": "B1-dasbor-1440.png",
+        "kotak": {
+          "samping": [16, 16, 264, 1380],
+          "stat": [284, 16, 1416, 356],
+          "grafik": [284, 376, 1416, 862],
+          "bawah": [284, 882, 1416, 1340]
+        }
+      }
+    },
     { "nama": "daftar-pesanan", "path": "/admin/pesanan", "peran": "admin" },
     { "nama": "detail-pesanan", "path": "/admin/pesanan/38", "peran": "admin" },
     { "nama": "komponen", "path": "/_ui", "peran": "admin", "banding": { "1440": "B2-komponen-1440.png" } },

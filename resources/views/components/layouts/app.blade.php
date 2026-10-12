@@ -41,7 +41,7 @@
         </dialog>
 
         {{-- Bilah samping desktop (RETEMA_B.md 5.1): 248px, sticky, satu bilah gulir. --}}
-        <aside aria-label="Bilah samping" class="sticky top-4 hidden h-[calc(100vh-2rem)] w-62 shrink-0 flex-col rounded-2xl bg-surface-container-lowest px-4 py-5.5 shadow-card lg:flex">
+        <aside aria-label="Bilah samping" data-shot="samping" class="sticky top-4 hidden h-[calc(100vh-2rem)] w-62 shrink-0 flex-col rounded-2xl bg-surface-container-lowest px-4 py-5.5 shadow-card lg:flex">
             <x-layouts.menu-app :pengguna="$pengguna" :menu="$menu" :lencana-menu="$lencanaMenu" />
         </aside>
 
