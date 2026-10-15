@@ -22,8 +22,8 @@ Status "sudah" = sudah dibangun ulang arah B (R1 sampai R3, langkah "DB"). Statu
 | `warga/pesanan/konfirmasi.blade.php` | `warga.pesanan.konfirmasi` | Masyarakat | sudah: ringkasan dalam `x-ui.panel` (`x-ui.rincian` tanpa bingkai), tombol di kaki panel. Bagian dari alur buat pesanan (8.5) | sudah | **P3b** | R8 |
 | `admin/ambulans/index.blade.php` | `admin.ambulans.index` | Dinkes | lama: `x-ui.tabel`, status aktif/nonaktif | lama | **P2** | R7 |
 | `admin/ambulans/form.blade.php` | `admin.ambulans.{create,edit}` | Dinkes | lama: `x-ui.isian`, `x-ui.pilihan` | lama | **P2** | R7 |
-| `admin/faskes/index.blade.php` | `admin.faskes.index` | Dinkes | lama: `x-ui.tabel` | lama | **P2** | R7 |
-| `admin/faskes/form.blade.php` | `admin.faskes.{create,edit}` | Dinkes | lama: `x-ui.isian` | lama | **P2** | R7 |
+| `admin/faskes/index.blade.php` | `admin.faskes.index` | Dinkes | sudah: `x-ui.panel flush` + `x-ui.tabel :bingkai="false"` (baris bulat 64px, `x-ui.icon-chip` nama+alamat, `x-ui.cari`), daftar baris `<ul>` di bawah `md` (pola `pesanan/_baris`) | sudah | **P2** | R7 |
+| `admin/faskes/form.blade.php` | `admin.faskes.{create,edit}` | Dinkes | sudah: `x-ui.panel max-w-3xl`, tombol kaki kanan bawah + bar lekat ponsel (pola `warga/pesanan/buat.blade.php`) | sudah | **P2** | R7 |
 | `admin/akun/index.blade.php` | `admin.petugas.index`, `admin.sopir.index` (satu view dipakai dua resource via `AkunFaskesController`) | Dinkes | lama: `x-ui.tabel` | lama | **P2** | R7 |
 | `admin/akun/form.blade.php` | `admin.petugas.{create,edit}`, `admin.sopir.{create,edit}` | Dinkes | lama: `x-ui.isian`, `x-ui.pilihan` | lama | **P2** | R7 |
 | `admin/ketersediaan/index.blade.php` | `admin.ketersediaan.index` | Dinkes | lama: formulir angka per Faskes. Sesuai 8.3 "Ketersediaan" | lama | **P2** | R7 |
