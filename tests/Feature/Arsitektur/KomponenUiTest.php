@@ -683,4 +683,42 @@ class KomponenUiTest extends TestCase
         $this->assertStringContainsString('&quot;segments&quot;:[]', $kosong);
         $this->assertStringContainsString('>0<', $kosong);
     }
+
+    public function test_chart_batang(): void
+    {
+        $batang = $this->render(<<<'BLADE'
+            <x-ui.chart type="bar" title="Waktu respons" unit="menit" :labels="$l" :datasets="$d" />
+            BLADE, [
+            'l' => ['Tercepat', 'Rata-rata', 'Terlama'],
+            'd' => [
+                ['label' => 'Respons', 'data' => [10, 12, 15], 'valueLabels' => ['10 menit', '12 menit', '15 menit'], 'color' => 'primary'],
+            ],
+        ]);
+        $this->assertStringContainsString('role="img"', $batang);
+        $this->assertStringContainsString('&quot;tipe&quot;:&quot;batang&quot;', $batang);
+        $this->assertStringContainsString('&quot;color&quot;:&quot;primary&quot;', $batang);
+        $this->assertStringContainsString('Tercepat 10 menit', $batang); // aria-label memakai valueLabels, bukan angka mentah.
+        $this->assertStringContainsString('<table class="sr-only">', $batang);
+        $this->assertStringContainsString('15 menit', $batang);
+
+        // Tanpa valueLabels: tabel sr-only jatuh ke angka mentah + unit.
+        $polos = $this->render(<<<'BLADE'
+            <x-ui.chart type="bar" title="Penugasan per Faskes asal" unit="pesanan" :labels="$l" :datasets="$d" />
+            BLADE, [
+            'l' => ['RSUD Selebesolu', 'Puskesmas Klasaman'],
+            'd' => [['label' => 'Pesanan', 'data' => [5, 3], 'color' => 'primary']],
+        ]);
+        $this->assertStringContainsString('5 pesanan', $polos);
+        $this->assertStringContainsString('RSUD Selebesolu', $polos);
+
+        try {
+            $this->render('<x-ui.chart type="bar" title="X" :labels="$l" :datasets="$d" />', [
+                'l' => ['Sen', 'Sel'],
+                'd' => [['label' => 'Masuk', 'data' => [1, 2, 3], 'color' => 'primary']],
+            ]);
+            $this->fail('Jumlah data dan labels yang tidak sama harus ditolak.');
+        } catch (\Illuminate\View\ViewException $e) {
+            $this->assertStringContainsString('jumlah data dataset', $e->getMessage());
+        }
+    }
 }

@@ -51,4 +51,14 @@ enum JenisLayanan: string
     {
         return $this === self::Darurat ? JenisAmbulans::Darurat : JenisAmbulans::Transport;
     }
+
+    /** Warna donat arah B (nama token; DESIGN.md: seri grafik hanya primary, tertiary, dan chart-*). */
+    public function warnaChart(): string
+    {
+        return match ($this) {
+            self::Darurat => 'chart-coral',
+            self::Rujukan => 'chart-sky',
+            self::Persalinan => 'chart-amber',
+        };
+    }
 }

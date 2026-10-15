@@ -24,7 +24,7 @@ class GrafikRetemaTest extends TestCase
         $nama = array_map('trim', explode(',', trim($impor[1], " \n,")));
         sort($nama);
         $this->assertSame(
-            ['ArcElement', 'CategoryScale', 'Chart', 'DoughnutController', 'Filler', 'LineController', 'LineElement', 'LinearScale', 'PointElement', 'Tooltip'],
+            ['ArcElement', 'BarController', 'BarElement', 'CategoryScale', 'Chart', 'DoughnutController', 'Filler', 'LineController', 'LineElement', 'LinearScale', 'PointElement', 'Tooltip'],
             $nama,
         );
         $this->assertStringNotContainsString('chart.js/auto', $js);
@@ -32,7 +32,7 @@ class GrafikRetemaTest extends TestCase
         $this->assertSame(1, preg_match('/Chart\.register\(([^)]+)\);/', $js, $daftar));
         $didaftarkan = array_map('trim', explode(',', $daftar[1]));
         sort($didaftarkan);
-        $this->assertSame(['ArcElement', 'CategoryScale', 'DoughnutController', 'Filler', 'LineController', 'LineElement', 'LinearScale', 'PointElement', 'Tooltip'], $didaftarkan);
+        $this->assertSame(['ArcElement', 'BarController', 'BarElement', 'CategoryScale', 'DoughnutController', 'Filler', 'LineController', 'LineElement', 'LinearScale', 'PointElement', 'Tooltip'], $didaftarkan);
     }
 
     public function test_bundel_charts_hanya_dimuat_di_halaman_yang_punya_kanvas_data_chart(): void

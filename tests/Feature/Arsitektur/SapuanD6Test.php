@@ -121,7 +121,8 @@ class SapuanD6Test extends TestCase
         foreach (['Total pesanan', 'Selesai', 'Rata-rata waktu respons', 'Rata-rata durasi layanan'] as $label) {
             $this->assertStringContainsString($label, $html);
         }
-        $this->assertSame(4, substr_count($html, 'text-stat-l tabular-nums'));
+        // 4 kartu statistik + 2 total di tengah donat ("Pesanan per status" dan "per jenis layanan"), gaya sama.
+        $this->assertSame(6, substr_count($html, 'text-stat-l tabular-nums'));
         $this->assertStringNotContainsString('gap-px', $html);
         $this->assertStringContainsString('bg-surface-container-lowest rounded-xl shadow-card', $html);
     }

@@ -2,6 +2,8 @@
 
 namespace App\Http\Controllers\Admin;
 
+use App\Enums\JenisLayanan;
+use App\Enums\PesananStatus;
 use App\Http\Controllers\Controller;
 use App\Http\Requests\Admin\LaporanRequest;
 use App\Models\Pesanan;
@@ -16,12 +18,56 @@ class LaporanController extends Controller
     public function index(LaporanRequest $request): View
     {
         $laporan = $request->laporan();
+        $data = $laporan->ringkas();
 
         return view('admin.laporan.index', [
-            'data' => $laporan->ringkas(),
+            'data' => $data,
             'dari' => $laporan->dari->toDateString(),
             'sampai' => $laporan->sampai->toDateString(),
+            'segmenStatus' => $this->segmen($data['per_status'], PesananStatus::cases()),
+            'segmenJenis' => $this->segmen($data['per_jenis'], JenisLayanan::cases()),
+            'grafikFaskes' => [
+                'labels' => array_keys($data['per_faskes']),
+                'data' => array_values($data['per_faskes']),
+            ],
+            'grafikRespons' => $this->grafikWaktu($data['respons']),
+            'grafikDurasi' => $this->grafikWaktu($data['durasi']),
         ]);
+    }
+
+    /**
+     * Segmen donat (label, value, color) dari kasus Enum berurut dan peta label=>jumlah. PesananStatus dan
+     * JenisLayanan sama-sama punya label() dan warnaChart(), dipakai bergantian untuk kedua donat Laporan.
+     *
+     * @param  array<string, int>  $perLabel
+     * @param  array<int, PesananStatus|JenisLayanan>  $kasus
+     * @return array<int, array{label: string, value: int, color: string}>
+     */
+    private function segmen(array $perLabel, array $kasus): array
+    {
+        return array_map(fn ($k) => [
+            'label' => $k->label(),
+            'value' => $perLabel[$k->label()] ?? 0,
+            'color' => $k->warnaChart(),
+        ], $kasus);
+    }
+
+    /**
+     * Grafik batang 3 kategori (Tercepat, Rata-rata, Terlama) dari statistik respons/durasi (detik): nilai dalam
+     * menit untuk tinggi batang, dan label berformat ("1 jam 0 menit") untuk tabel sr-only dan tooltip.
+     *
+     * @param  array{jumlah: int, rata: ?int, tercepat: ?int, terlama: ?int}  $statistik
+     * @return array{labels: array<int, string>, data: array<int, int>, valueLabels: array<int, string>}
+     */
+    private function grafikWaktu(array $statistik): array
+    {
+        $urutan = ['tercepat' => 'Tercepat', 'rata' => 'Rata-rata', 'terlama' => 'Terlama'];
+
+        return [
+            'labels' => array_values($urutan),
+            'data' => array_map(fn ($k) => LaporanPesanan::menit($statistik[$k]), array_keys($urutan)),
+            'valueLabels' => array_map(fn ($k) => LaporanPesanan::formatDurasi($statistik[$k]), array_keys($urutan)),
+        ];
     }
 
     public function pdf(LaporanRequest $request): Response

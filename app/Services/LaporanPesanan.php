@@ -110,6 +110,12 @@ class LaporanPesanan
         ];
     }
 
+    /** Menit bulat (pembulatan sama dengan formatDurasi), 0 bila tidak ada data. Dipakai grafik batang Laporan. */
+    public static function menit(?int $detik): int
+    {
+        return $detik === null ? 0 : intdiv($detik + 30, 60);
+    }
+
     /** "1 jam 5 menit", "7 menit", atau "-" bila tidak ada data. */
     public static function formatDurasi(?int $detik): string
     {

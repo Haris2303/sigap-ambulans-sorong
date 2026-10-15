@@ -3,6 +3,8 @@
 // datang dari token CSS (bacaTema), tidak ada hex di skrip ini kecuali suffix alfa gradien (dua digit heksa opasitas).
 import {
     ArcElement,
+    BarController,
+    BarElement,
     CategoryScale,
     Chart,
     DoughnutController,
@@ -15,7 +17,7 @@ import {
 } from 'chart.js';
 import { bacaTema } from './grafik-opsi';
 
-Chart.register(LineController, DoughnutController, LineElement, PointElement, ArcElement, LinearScale, CategoryScale, Tooltip, Filler);
+Chart.register(LineController, DoughnutController, BarController, LineElement, PointElement, BarElement, ArcElement, LinearScale, CategoryScale, Tooltip, Filler);
 
 const format = new Intl.NumberFormat('id-ID');
 const kurangGerak = () => window.matchMedia?.('(prefers-reduced-motion: reduce)').matches ?? false;
@@ -163,7 +165,66 @@ function konfigDonat(data, tema) {
     };
 }
 
-const pembangun = { garis: konfigGaris, donat: konfigDonat };
+/** Grafik batang horizontal "Faskes"/"Respons dan durasi". data: { labels, datasets: [{ label, data, color, valueLabels }], unit }. */
+function konfigBatang(data, tema) {
+    const { labels, datasets, unit = '' } = data;
+    const satuan = unit ? ` ${unit}` : '';
+    const kecil = tema.teks('body-s');
+
+    return {
+        type: 'bar',
+        data: {
+            labels,
+            datasets: datasets.map((d) => {
+                const warna = tema.warna(d.color);
+
+                return {
+                    label: d.label,
+                    data: d.data,
+                    backgroundColor: warna,
+                    hoverBackgroundColor: warna,
+                    borderRadius: 6,
+                    borderSkipped: false,
+                    maxBarThickness: 28,
+                };
+            }),
+        },
+        options: {
+            indexAxis: 'y',
+            responsive: true,
+            maintainAspectRatio: false,
+            animation: kurangGerak() ? false : { duration: 700, easing: 'easeOutQuart' },
+            interaction: { mode: 'index', intersect: false },
+            scales: {
+                x: {
+                    min: 0,
+                    border: { display: false },
+                    ticks: { precision: 0, maxTicksLimit: 4, color: tema.warna('on-surface-variant'), font: kecil },
+                    grid: { color: tema.warna('surface-container-highest'), dash: [4, 6] },
+                },
+                y: {
+                    border: { display: false },
+                    grid: { display: false },
+                    ticks: { autoSkip: false, color: tema.warna('on-surface-variant'), font: kecil },
+                },
+            },
+            plugins: {
+                legend: { display: false },
+                tooltip: tooltipGelap(tema, {
+                    title: (butir) => butir[0].label,
+                    label: (butir) => {
+                        const d = datasets[butir.datasetIndex];
+                        const teks = d.valueLabels?.[butir.dataIndex];
+
+                        return teks ?? `${format.format(butir.parsed.x)}${satuan}`;
+                    },
+                }),
+            },
+        },
+    };
+}
+
+const pembangun = { garis: konfigGaris, donat: konfigDonat, batang: konfigBatang };
 
 function pasang() {
     const tema = bacaTema();

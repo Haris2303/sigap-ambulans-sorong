@@ -22,24 +22,14 @@
     </div>
 
     <x-ui.bagian judul="Pesanan per status">
-        <x-ui.panel :flush="true">
-            <x-ui.tabel :bingkai="false" class="px-5 pb-5 pt-2 lg:px-6 lg:pb-6">
-                <x-slot:kepala><th>Status</th><th class="text-right">Jumlah</th></x-slot:kepala>
-                @foreach ($data['per_status'] as $label => $jumlah)
-                    <tr><td>{{ $label }}</td><td class="text-right tabular-nums">{{ $jumlah }}</td></tr>
-                @endforeach
-            </x-ui.tabel>
+        <x-ui.panel>
+            <x-ui.chart type="doughnut" title="Pesanan per status" unit="pesanan" center-label="pesanan" :segments="$segmenStatus" />
         </x-ui.panel>
     </x-ui.bagian>
 
     <x-ui.bagian judul="Pesanan per jenis layanan">
-        <x-ui.panel :flush="true">
-            <x-ui.tabel :bingkai="false" class="px-5 pb-5 pt-2 lg:px-6 lg:pb-6">
-                <x-slot:kepala><th>Jenis layanan</th><th class="text-right">Jumlah</th></x-slot:kepala>
-                @foreach ($data['per_jenis'] as $label => $jumlah)
-                    <tr><td>{{ $label }}</td><td class="text-right tabular-nums">{{ $jumlah }}</td></tr>
-                @endforeach
-            </x-ui.tabel>
+        <x-ui.panel>
+            <x-ui.chart type="doughnut" title="Pesanan per jenis layanan" unit="pesanan" center-label="pesanan" :segments="$segmenJenis" />
         </x-ui.panel>
     </x-ui.bagian>
 
@@ -47,29 +37,28 @@
         @if (empty($data['per_faskes']))
             <x-ui.kosong pesan="Belum ada penugasan pada periode ini." />
         @else
-            <x-ui.panel :flush="true">
-                <x-ui.tabel :bingkai="false" class="px-5 pb-5 pt-2 lg:px-6 lg:pb-6">
-                    <x-slot:kepala><th>Faskes</th><th class="text-right">Jumlah</th></x-slot:kepala>
-                    @foreach ($data['per_faskes'] as $nama => $jumlah)
-                        <tr><td>{{ $nama }}</td><td class="text-right tabular-nums">{{ $jumlah }}</td></tr>
-                    @endforeach
-                </x-ui.tabel>
+            <x-ui.panel>
+                <x-ui.chart type="bar" title="Penugasan per Faskes asal" unit="pesanan"
+                    :labels="$grafikFaskes['labels']"
+                    :datasets="[['label' => 'Pesanan', 'data' => $grafikFaskes['data'], 'color' => 'primary']]" />
             </x-ui.panel>
         @endif
     </x-ui.bagian>
 
     <x-ui.bagian judul="Waktu respons dan durasi layanan" deskripsi="Respons dihitung dari pesanan dibuat sampai ditugaskan. Durasi dihitung dari ditugaskan sampai selesai.">
-        <x-ui.panel :flush="true">
-            <x-ui.tabel :bingkai="false" lebar-min="min-w-100" class="px-5 pb-5 pt-2 lg:px-6 lg:pb-6">
-                <x-slot:kepala><th>Ukuran</th><th>Respons</th><th>Durasi layanan</th></x-slot:kepala>
-                @foreach (['rata' => 'Rata-rata', 'tercepat' => 'Tercepat', 'terlama' => 'Terlama'] as $kunci => $label)
-                    <tr>
-                        <td>{{ $label }}</td>
-                        <td class="tabular-nums">{{ \App\Services\LaporanPesanan::formatDurasi($data['respons'][$kunci]) }}</td>
-                        <td class="tabular-nums">{{ \App\Services\LaporanPesanan::formatDurasi($data['durasi'][$kunci]) }}</td>
-                    </tr>
-                @endforeach
-            </x-ui.tabel>
-        </x-ui.panel>
+        <div class="grid grid-cols-1 gap-5 lg:grid-cols-2">
+            <x-ui.panel>
+                <h3 class="mb-3 text-title-m">Waktu respons</h3>
+                <x-ui.chart type="bar" title="Waktu respons" unit="menit"
+                    :labels="$grafikRespons['labels']"
+                    :datasets="[['label' => 'Respons', 'data' => $grafikRespons['data'], 'valueLabels' => $grafikRespons['valueLabels'], 'color' => 'primary']]" />
+            </x-ui.panel>
+            <x-ui.panel>
+                <h3 class="mb-3 text-title-m">Durasi layanan</h3>
+                <x-ui.chart type="bar" title="Durasi layanan" unit="menit"
+                    :labels="$grafikDurasi['labels']"
+                    :datasets="[['label' => 'Durasi', 'data' => $grafikDurasi['data'], 'valueLabels' => $grafikDurasi['valueLabels'], 'color' => 'tertiary']]" />
+            </x-ui.panel>
+        </div>
     </x-ui.bagian>
 </x-layouts.app>
