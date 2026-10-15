@@ -36,6 +36,16 @@ enum JenisLayanan: string
         return $this === self::Rujukan;
     }
 
+    /** Ikon Lucide untuk kotak ikon x-ui.opsi-baris (docs/RETEMA_B.md 8.5). */
+    public function ikon(): string
+    {
+        return match ($this) {
+            self::Darurat => 'ambulance',
+            self::Rujukan => 'building-2',
+            self::Persalinan => 'users',
+        };
+    }
+
     /** Jenis ambulans yang disarankan (hanya urutan, bukan larangan). */
     public function jenisAmbulansSaran(): JenisAmbulans
     {

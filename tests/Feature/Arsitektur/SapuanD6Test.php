@@ -119,14 +119,15 @@ class SapuanD6Test extends TestCase
         $this->assertStringContainsString('bg-surface-container-lowest rounded-xl shadow-card', $html);
     }
 
-    public function test_buat_pesanan_tiap_bagian_formulir_adalah_kartu(): void
+    public function test_buat_pesanan_satu_panel_berisi_semua_bagian_formulir(): void
     {
+        // R8 (docs/RETEMA_B.md 8.5): satu x-ui.panel membungkus seluruh formulir, bukan satu kartu per bagian lagi.
         $html = $this->actingAs($this->buatWarga())->get(route('warga.pesanan.buat'))->assertOk()->getContent();
 
         $this->assertSame(5, substr_count($html, '<fieldset'));
-        $this->assertGreaterThanOrEqual(5, substr_count($html, 'bg-surface-container-lowest rounded-xl shadow-card p-'));
+        $this->assertSame(1, substr_count($html, 'bg-surface-container-lowest rounded-xl shadow-card p-'));
         $this->assertStringContainsString('Tinjau pesanan', $html);
-        $this->assertStringContainsString('max-w-xl', $html, 'Formulir tetap satu kolom.');
+        $this->assertStringContainsString('max-w-3xl', $html, 'Formulir tetap satu kolom.');
     }
 
     public function test_landing_memuat_langkah_cara_kerja_di_dalam_kartu(): void

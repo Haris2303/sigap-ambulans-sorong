@@ -230,10 +230,10 @@
                 <x-ui.area-teks nama="catatan" label="Catatan" nilai="Pasien sesak napas." />
                 <x-ui.centang nama="aktif" label="Akun aktif" :nilai="true" />
                 <div>
-                    <p class="mb-2 text-label-l text-on-surface-variant">Jenis layanan (kartu pilihan, lama tanpa ikon)</p>
+                    <p class="mb-2 text-label-l text-on-surface-variant">Baris pilihan dengan ikon dan deskripsi (petak ikon 40px, dipakai warga/pesanan/buat.blade.php R8)</p>
                     <div class="space-y-2">
                         @foreach (\App\Enums\JenisLayanan::cases() as $layanan)
-                            <x-ui.opsi-baris nama="jenis_layanan" :nilai="$layanan->value" :judul="$layanan->label()" deskripsi="Contoh deskripsi layanan." :terpilih="$loop->first" />
+                            <x-ui.opsi-baris nama="jenis_layanan" :nilai="$layanan->value" :judul="$layanan->label()" :deskripsi="$layanan->deskripsi()" :ikon="$layanan->ikon()" :terpilih="$loop->first" />
                         @endforeach
                     </div>
                 </div>

@@ -1,50 +1,47 @@
 <x-layouts.app judul="Pesan ambulans" :peta="true">
     <x-ui.judul-halaman judul="Pesan ambulans" deskripsi="Isi data pesanan. Anda dapat memeriksanya kembali sebelum dikirim." />
-    <x-ui.kontak-darurat varian="tautan" class="mb-6 max-w-xl">Formulir tidak bisa dipakai?</x-ui.kontak-darurat>
+    <x-ui.kontak-darurat varian="tautan" class="mb-6 max-w-3xl">Formulir tidak bisa dipakai?</x-ui.kontak-darurat>
 
-    <form method="POST" action="{{ route('warga.pesanan.tinjau') }}" class="max-w-xl">
-        @csrf
-        <div class="space-y-5">
-            <x-ui.panel>
-                <fieldset>
-                    <legend class="mb-2 text-title-l">Jenis layanan</legend>
+    <x-ui.panel class="max-w-3xl">
+        <form method="POST" action="{{ route('warga.pesanan.tinjau') }}" id="form-buat-pesanan">
+            @csrf
+            <div class="divide-y divide-outline-variant">
+                <fieldset class="pb-6">
+                    <legend class="mb-3 text-title-m">Jenis layanan</legend>
                     <div class="space-y-2">
                         @foreach (\App\Enums\JenisLayanan::cases() as $layanan)
                             <x-ui.opsi-baris nama="jenis_layanan" :nilai="$layanan->value" :judul="$layanan->label()" :deskripsi="$layanan->deskripsi()"
+                                :ikon="$layanan->ikon()"
                                 :terpilih="($draf['jenis_layanan'] ?? \App\Enums\JenisLayanan::Darurat->value) === $layanan->value" />
                         @endforeach
                     </div>
-                    @error('jenis_layanan')<p class="mt-1 text-body-m text-error">{{ $message }}</p>@enderror
+                    @error('jenis_layanan')<p class="mt-1 {{ \App\Support\Tampilan::GALAT_ISIAN }}">{{ $message }}</p>@enderror
                 </fieldset>
-            </x-ui.panel>
 
-            <x-ui.panel>
-
-                <fieldset>
-                    <legend class="mb-2 text-title-l">Tingkat darurat</legend>
-                    <div class="space-y-2">
+                <fieldset class="py-6">
+                    <legend class="mb-3 text-title-m">Tingkat darurat</legend>
+                    <x-ui.segmented label="Tingkat darurat" class="md:inline-flex">
                         @foreach (\App\Enums\TingkatDarurat::cases() as $tingkat)
-                            <x-ui.opsi-baris nama="tingkat_darurat" :nilai="$tingkat->value" :judul="$tingkat->label()" :deskripsi="$tingkat->deskripsi()"
-                                :terpilih="($draf['tingkat_darurat'] ?? \App\Enums\TingkatDarurat::Biasa->value) === $tingkat->value" />
+                            <x-ui.segmen nama="tingkat_darurat" :nilai="$tingkat->value"
+                                :terpilih="($draf['tingkat_darurat'] ?? \App\Enums\TingkatDarurat::Biasa->value) === $tingkat->value">{{ $tingkat->label() }}</x-ui.segmen>
+                        @endforeach
+                    </x-ui.segmented>
+                    <div class="mt-3 space-y-1.5">
+                        @foreach (\App\Enums\TingkatDarurat::cases() as $tingkat)
+                            <p class="text-body-s text-on-surface-variant"><span class="text-label-l text-on-surface">{{ $tingkat->label() }}.</span> {{ $tingkat->deskripsi() }}</p>
                         @endforeach
                     </div>
-                    @error('tingkat_darurat')<p class="mt-1 text-body-m text-error">{{ $message }}</p>@enderror
+                    @error('tingkat_darurat')<p class="mt-1 {{ \App\Support\Tampilan::GALAT_ISIAN }}">{{ $message }}</p>@enderror
                 </fieldset>
-            </x-ui.panel>
 
-            <x-ui.panel>
-
-                <fieldset class="space-y-3">
-                    <legend class="mb-2 text-title-l">Lokasi jemput</legend>
+                <fieldset class="space-y-3 py-6">
+                    <legend class="mb-3 text-title-m">Lokasi jemput</legend>
                     <x-peta.pemilih :nilai-lat="$draf['lat_jemput'] ?? null" :nilai-lng="$draf['lng_jemput'] ?? null" />
                     <x-ui.isian nama="lokasi_jemput" label="Alamat lokasi jemput" :nilai="$draf['lokasi_jemput'] ?? null" bantuan="Tulis nama jalan, patokan, atau kelurahan. Terisi otomatis bila Anda memilih titik di peta." :wajib="true" />
                 </fieldset>
-            </x-ui.panel>
 
-            <x-ui.panel>
-
-                <fieldset>
-                    <legend class="mb-2 text-title-l">Faskes tujuan</legend>
+                <fieldset class="py-6">
+                    <legend class="mb-3 text-title-m">Faskes tujuan</legend>
                     <x-ui.pilihan nama="faskes_tujuan_id" label="Faskes tujuan"
                         :opsi="$faskes->mapWithKeys(fn ($f) => [$f->id => $f->nama.' ('.$f->jenis->label().')'])->all()"
                         :nilai="$draf['faskes_tujuan_id'] ?? null" kosong="Belum ditentukan"
@@ -57,23 +54,26 @@
                         @endforeach
                     </div>
                 </fieldset>
-            </x-ui.panel>
 
-            <x-ui.panel>
-
-                <fieldset class="space-y-5">
-                    <legend class="mb-2 text-title-l">Data pasien</legend>
+                <fieldset class="space-y-5 pt-6">
+                    <legend class="mb-3 text-title-m">Data pasien</legend>
                     <x-ui.isian nama="nama_pasien" label="Nama pasien" :nilai="$draf['nama_pasien'] ?? null" :wajib="true" autocomplete="off" />
                     <x-ui.isian nama="no_telepon_kontak" label="Nomor kontak yang bisa dihubungi" tipe="tel" :nilai="$noTeleponAwal" :wajib="true" inputmode="tel" />
                     <x-ui.area-teks nama="catatan" label="Catatan untuk petugas" :nilai="$draf['catatan'] ?? null" bantuan="Contoh: kondisi pasien, patokan rumah, atau pintu masuk." />
                 </fieldset>
-            </x-ui.panel>
-        </div>
+            </div>
 
-        <div class="sticky bottom-0 -mx-4 mt-8 bg-surface-container p-4 shadow-level-1 md:static md:mx-0 md:bg-transparent md:p-0 md:shadow-none">
-            <x-ui.tombol tipe="submit" ukuran="lg" :blok="true">Tinjau pesanan</x-ui.tombol>
-        </div>
-    </form>
+            {{-- Desktop dan tablet (md ke atas): tombol di kanan bawah panel. --}}
+            <div class="mt-6 hidden items-center justify-end border-t border-outline-variant pt-5 md:flex">
+                <x-ui.tombol tipe="submit" ukuran="lg">Tinjau pesanan</x-ui.tombol>
+            </div>
+        </form>
+    </x-ui.panel>
+
+    {{-- Ponsel (di bawah md): bar aksi lekat ke dasar layar, selebar penuh, lepas dari padding kartu dan halaman. --}}
+    <div class="sticky bottom-0 -mx-4 mt-6 border-t border-outline-variant bg-surface-container-lowest px-4 py-3 md:hidden">
+        <x-ui.tombol tipe="submit" form="form-buat-pesanan" ukuran="lg" class="w-full">Tinjau pesanan</x-ui.tombol>
+    </div>
 
     @push('skrip')
         <script>

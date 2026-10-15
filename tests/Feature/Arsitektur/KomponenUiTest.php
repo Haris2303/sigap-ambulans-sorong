@@ -456,18 +456,25 @@ class KomponenUiTest extends TestCase
         }
 
         // Kartu pilihan arah B (DESIGN.md 6.4): terpilih batas dan cincin dalam primary, latar selected.
+        // Dengan deskripsi (baris, dipakai warga/pesanan/buat.blade.php sejak R8): petak ikon 40px (size-10).
         $opsi = $this->render('<x-ui.opsi-baris nama="jenis_layanan" nilai="darurat" judul="Darurat" deskripsi="Kecelakaan" ikon="ambulance" :terpilih="true" />');
         $this->assertStringContainsString('type="radio"', $opsi);
         $this->assertStringContainsString('border-primary bg-selected ring-1 ring-inset ring-primary', $opsi);
         $this->assertStringContainsString('bg-primary text-on-primary', $opsi, 'Petak ikon terpilih berlatar primary.');
-        foreach (['lapisan-keadaan', 'rounded-md', 'min-h-14', 'text-label-l', 'size-7.5'] as $kelas) {
+        foreach (['lapisan-keadaan', 'rounded-md', 'min-h-14', 'text-label-l', 'size-10'] as $kelas) {
             $this->assertStringContainsString($kelas, $opsi);
         }
         $this->assertStringContainsString('Kecelakaan', $opsi);
         $this->assertStringNotContainsString('bg-secondary-container', $opsi);
 
+        // Tanpa deskripsi (kisi 3 kolom): petak ikon tetap 30px (size-7.5).
+        $kisi = $this->render('<x-ui.opsi-baris nama="jenis_layanan_kisi" nilai="darurat" judul="Darurat" ikon="ambulance" :terpilih="true" />');
+        $this->assertStringContainsString('size-7.5', $kisi);
+        $this->assertStringNotContainsString('size-10', $kisi);
+
         $tanpaIkon = $this->render('<x-ui.opsi-baris nama="jenis_layanan" nilai="rujukan" judul="Rujukan" />');
         $this->assertStringNotContainsString('size-7.5', $tanpaIkon, 'Ikon opsional: tanpa petak bila tidak diberi.');
+        $this->assertStringNotContainsString('size-10', $tanpaIkon);
         $this->assertStringNotContainsString('checked', $tanpaIkon);
         $this->assertStringNotContainsString('border-primary bg-selected', $tanpaIkon);
     }
