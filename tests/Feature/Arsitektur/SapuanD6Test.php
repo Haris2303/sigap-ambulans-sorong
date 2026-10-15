@@ -33,20 +33,27 @@ class SapuanD6Test extends TestCase
 
         $html = $this->actingAs($petugas)->get(route('petugas.dashboard'))->assertOk()->getContent();
 
-        // Empat kartu statistik putih: jumlah tersedia dari total, per sumber daya milik Faskes ini.
-        foreach (['Ambulans tersedia', 'Bed IGD tersedia', 'Bed rawat inap tersedia', 'Dokter tersedia', 'dari 3 ambulans'] as $teks) {
+        // Baris statistik ala dasbor Dinkes: kartu navy hero (Pesanan aktif) + tiga kartu putih, angka yang sudah
+        // ada di halaman (tanpa query baru).
+        foreach (['Pesanan aktif', 'Ambulans tersedia', 'Sopir online', 'Dokter tersedia', 'dari 3 ambulans'] as $teks) {
             $this->assertStringContainsString($teks, $html);
         }
-        $this->assertStringContainsString('dari '.$faskes->bed_igd_total, $html);
-        $this->assertGreaterThanOrEqual(4, substr_count($html, 'text-stat-l tabular-nums'));
-        foreach (['bg-primary-container text-on-primary-container', 'bg-error-container text-on-error-container',
-            'bg-warning-container text-on-warning-container', 'bg-success-container text-on-success-container'] as $chip) {
+        $this->assertStringContainsString('text-stat-hero', $html, 'Kartu navy hero.');
+        $this->assertGreaterThanOrEqual(3, substr_count($html, 'text-stat-l tabular-nums'), 'Tiga kartu putih.');
+        foreach (['bg-primary-container text-on-primary-container', 'bg-warning-container text-on-warning-container',
+            'bg-success-container text-on-success-container'] as $chip) {
             $this->assertStringContainsString($chip, $html);
         }
 
-        // Keterangan kesegaran data dan petak jumlah ambulans per status.
+        // Ketersediaan Faskes: ring-tile Ambulans/Bed IGD/Bed rawat inap (jumlah tersedia dari total), dan
+        // keterangan kesegaran data + petak jumlah ambulans per status.
+        foreach (['Ambulans', 'Bed IGD', 'Bed rawat inap', 'Dokter umum', 'Dokter spesialis'] as $label) {
+            $this->assertStringContainsString($label, $html);
+        }
+        $this->assertStringContainsString('dari '.$faskes->bed_igd_total, $html);
         $this->assertStringContainsString('Diperbarui', $html);
-        $this->assertSame(3, substr_count($html, 'text-stat-m tabular-nums'));
+        // 2 (petak dokter umum/spesialis di kartu Ketersediaan) + 3 (petak jumlah ambulans per status di bawah).
+        $this->assertSame(5, substr_count($html, 'text-stat-m tabular-nums'));
         foreach ([StatusAmbulans::Tersedia, StatusAmbulans::Bertugas, StatusAmbulans::Servis] as $status) {
             $this->assertMatchesRegularExpression('/text-body-m text-on-surface-variant">'.preg_quote($status->label(), '/').'</', $html);
         }

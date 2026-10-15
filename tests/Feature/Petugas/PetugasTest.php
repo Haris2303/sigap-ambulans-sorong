@@ -74,16 +74,26 @@ class PetugasTest extends TestCase
         $this->assertNotNull($lain->id.$selesai->id);
     }
 
-    public function test_dasbor_menampilkan_lencana_gawat_di_sel_kode(): void
+    public function test_dasbor_menampilkan_lencana_gawat_di_baris_pesanan(): void
     {
+        // Dasbor Faskes memakai pesanan/_baris (P4): lencana Gawat tampil di baris pesanan itu, bukan di baris lain.
         $ambulans = Ambulans::factory()->create(['faskes_id' => $this->faskes->id]);
         $gawat = Pesanan::factory()->gawat()->berstatus(PesananStatus::Ditugaskan)->create(['ambulans_id' => $ambulans->id]);
         $biasa = Pesanan::factory()->berstatus(PesananStatus::Ditugaskan)->create(['ambulans_id' => $ambulans->id]);
 
         $html = $this->actingAs($this->petugas)->get(route('petugas.dashboard'))->assertOk()->getContent();
 
-        $this->assertMatchesRegularExpression('/'.$gawat->kode.'<\/a>\s*<div class="mt-1"><span[^>]*>.*?Gawat\s*<\/span>\s*<\/div>/s', $html);
-        $this->assertDoesNotMatchRegularExpression('/'.$biasa->kode.'<\/a>\s*<div class="mt-1">/', $html);
+        $baris = fn (string $kode) => preg_match(
+            '/<tr[^>]*>((?:(?!<\/tr>).)*?)'.preg_quote($kode, '/').'((?:(?!<\/tr>).)*?)<\/tr>/s',
+            $html,
+            $m
+        ) ? $m[0] : null;
+
+        $this->assertNotNull($baris($gawat->kode), 'Baris pesanan Gawat ditemukan.');
+        $this->assertStringContainsString('Gawat', $baris($gawat->kode));
+
+        $this->assertNotNull($baris($biasa->kode), 'Baris pesanan biasa ditemukan.');
+        $this->assertStringNotContainsString('Gawat', $baris($biasa->kode));
     }
 
     public function test_dasbor_tanpa_pesanan_menampilkan_keadaan_kosong(): void
