@@ -50,6 +50,7 @@ Route::middleware(['auth', 'role:warga'])->prefix('warga')->name('warga.')->grou
 // Petugas Faskes
 Route::middleware(['auth', 'role:petugas_faskes'])->prefix('petugas')->name('petugas.')->group(function () {
     Route::get('/', [PetugasDashboardController::class, 'dashboard'])->name('dashboard');
+    Route::get('/pesanan', [PetugasDashboardController::class, 'pesananIndex'])->name('pesanan.index');
     Route::get('/pesanan/{pesanan}', [PetugasDashboardController::class, 'pesananShow'])->name('pesanan.show');
     Route::get('/ketersediaan', [PetugasKetersediaanController::class, 'edit'])->name('ketersediaan.edit');
     Route::put('/ketersediaan', [PetugasKetersediaanController::class, 'update'])->name('ketersediaan.update');

@@ -106,10 +106,42 @@ class PetugasTest extends TestCase
         $tanpaFaskes = Pesanan::factory()->create();
 
         $this->actingAs($this->petugas);
-        $this->get(route('petugas.pesanan.show', $milikku))->assertOk()->assertSee('Pasien Detail')->assertSee('Riwayat status');
+        $this->get(route('petugas.pesanan.show', $milikku))->assertOk()->assertSee('Pasien Detail')->assertSee('Linimasa');
         $this->get(route('petugas.pesanan.show', $tujuanku))->assertOk();
         $this->get(route('petugas.pesanan.show', $bukanku))->assertForbidden();
         $this->get(route('petugas.pesanan.show', $tanpaFaskes))->assertForbidden();
+    }
+
+    // Daftar pesanan (docs/RETEMA_B.md 8.2, R6)
+
+    public function test_daftar_pesanan_hanya_menampilkan_milik_faskes_sendiri(): void
+    {
+        $ambulansSaya = Ambulans::factory()->create(['faskes_id' => $this->faskes->id]);
+        $ambulansLain = Ambulans::factory()->create(['faskes_id' => $this->lain->id]);
+        $milikku = Pesanan::factory()->berstatus(PesananStatus::Ditugaskan)->create(['ambulans_id' => $ambulansSaya->id, 'nama_pasien' => 'Pasien Daftar Faskes']);
+        $tujuanku = Pesanan::factory()->create(['faskes_tujuan_id' => $this->faskes->id, 'nama_pasien' => 'Pasien Tujuan Faskes']);
+        $bukanku = Pesanan::factory()->berstatus(PesananStatus::Ditugaskan)->create(['ambulans_id' => $ambulansLain->id, 'nama_pasien' => 'Pasien Faskes Lain']);
+
+        $html = $this->actingAs($this->petugas)->get(route('petugas.pesanan.index'))->assertOk()->getContent();
+
+        $this->assertStringContainsString($milikku->kode, $html);
+        $this->assertStringContainsString($tujuanku->kode, $html);
+        $this->assertStringNotContainsString($bukanku->kode, $html);
+    }
+
+    public function test_daftar_pesanan_mendukung_tab_dan_pencarian(): void
+    {
+        $tujuanku = Pesanan::factory()->berstatus(PesananStatus::Selesai)->create(['faskes_tujuan_id' => $this->faskes->id, 'nama_pasien' => 'Pasien Selesai Faskes']);
+        $menunggu = Pesanan::factory()->berstatus(PesananStatus::Menunggu)->create(['faskes_tujuan_id' => $this->faskes->id, 'nama_pasien' => 'Pasien Menunggu Faskes']);
+
+        $this->actingAs($this->petugas);
+        $html = $this->get(route('petugas.pesanan.index', ['tab' => 'perlu-tindakan']))->assertOk()->getContent();
+        $this->assertStringContainsString($menunggu->kode, $html);
+        $this->assertStringNotContainsString($tujuanku->kode, $html);
+
+        $html = $this->get(route('petugas.pesanan.index', ['q' => 'Pasien Selesai Faskes']))->assertOk()->getContent();
+        $this->assertStringContainsString($tujuanku->kode, $html);
+        $this->assertStringNotContainsString($menunggu->kode, $html);
     }
 
     // Ketersediaan

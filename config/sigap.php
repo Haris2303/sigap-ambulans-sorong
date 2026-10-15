@@ -75,6 +75,7 @@ return [
         ],
         'petugas_faskes' => [
             ['route' => 'petugas.dashboard', 'cocok' => 'petugas.dashboard', 'label' => 'Dasbor', 'ikon' => 'layout-dashboard'],
+            ['route' => 'petugas.pesanan.index', 'cocok' => 'petugas.pesanan.*', 'label' => 'Pesanan', 'ikon' => 'clipboard-list'],
             ['route' => 'petugas.ketersediaan.edit', 'cocok' => 'petugas.ketersediaan.*', 'label' => 'Ketersediaan', 'ikon' => 'bed-double'],
             ['route' => 'faskes.index', 'cocok' => 'faskes.*', 'label' => 'Info Faskes', 'ikon' => 'hospital'],
         ],
@@ -86,7 +87,7 @@ return [
     // Bilah atas (kartu melayang). `cari`: route daftar pesanan per peran yang menerima GET ?q=; peran yang tidak tercantum
     // tidak punya kolom cari. `lonceng`: jumlah pesanan menunggu verifikasi (bukan notifikasi umum), hanya Dinkes.
     'bilah_atas' => [
-        'cari' => ['admin' => 'admin.pesanan.index'],
+        'cari' => ['admin' => 'admin.pesanan.index', 'petugas_faskes' => 'petugas.pesanan.index'],
         'lonceng' => [
             'admin' => [
                 'route' => 'admin.pesanan.index',

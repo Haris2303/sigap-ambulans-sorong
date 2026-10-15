@@ -1,40 +1,52 @@
+{{-- Detail pesanan Faskes arah B (docs/RETEMA_B.md 8.2): sama pola dengan detail Dinkes, tanpa aksi (Faskes hanya melihat). --}}
 <x-layouts.app :judul="'Pesanan '.$pesanan->kode" :peta="$pesanan->lat_jemput !== null && $pesanan->lng_jemput !== null">
-    <x-ui.judul-halaman :judul="'Pesanan '.$pesanan->kode">
+    @php
+        $dibuat = $pesanan->created_at->timezone(config('app.timezone'));
+    @endphp
+    <x-ui.judul-halaman judul="Pesanan" deskripsi="Detail pesanan dan linimasa status.">
         <x-slot:aksi>
-            <x-ui.lencana-status :status="$pesanan->status" />
-            <x-ui.tombol nada="sekunder" ikon="arrow-left" :href="route('petugas.dashboard')">Dasbor</x-ui.tombol>
+            <x-ui.tombol nada="sekunder" ikon="arrow-left" :href="route('petugas.pesanan.index')">Daftar pesanan</x-ui.tombol>
         </x-slot:aksi>
     </x-ui.judul-halaman>
 
-    <div class="grid gap-5 lg:grid-cols-3">
-        <div class="space-y-5 lg:col-span-2">
-            <x-ui.bagian judul="Rincian pesanan" :jarak="false">
-                <x-ui.rincian>
-                    <x-ui.rincian-baris label="Nama pasien">{{ $pesanan->nama_pasien }}</x-ui.rincian-baris>
+    <x-ui.panel>
+        <div class="flex flex-wrap items-center gap-2.5">
+            <h2 class="text-title-xl tabular-nums">{{ $pesanan->kode }}</h2>
+            <x-ui.lencana-status :status="$pesanan->status" />
+            @if ($pesanan->tingkat_darurat === \App\Enums\TingkatDarurat::Gawat)
+                <x-ui.lencana nada="bahaya">{{ $pesanan->tingkat_darurat->label() }}</x-ui.lencana>
+            @endif
+        </div>
+        <p class="mt-1 text-body-s text-on-surface-variant">Dibuat {{ $dibuat->translatedFormat('j M Y') }}, {{ $dibuat->format('H.i') }} WIT</p>
+
+        <div class="mt-6 grid gap-8 md:grid-cols-2">
+            <div class="min-w-0">
+                <h3 class="mb-3 text-title-m">Data pesanan</h3>
+                <x-ui.rincian :bingkai="false" class="-mx-6">
+                    <x-ui.rincian-baris label="Pasien">{{ $pesanan->nama_pasien }}</x-ui.rincian-baris>
                     <x-ui.rincian-baris label="Nomor kontak"><span class="tabular-nums">{{ $pesanan->no_telepon_kontak }}</span></x-ui.rincian-baris>
-                    <x-ui.rincian-baris label="Jenis layanan">{{ $pesanan->jenis_layanan->label() }}</x-ui.rincian-baris>
-                    <x-ui.rincian-baris label="Tingkat darurat"><x-ui.lencana :nada="$pesanan->tingkat_darurat->nada()">{{ $pesanan->tingkat_darurat->label() }}</x-ui.lencana></x-ui.rincian-baris>
-                    <x-ui.rincian-baris label="Lokasi jemput">{{ $pesanan->lokasi_jemput }}</x-ui.rincian-baris>
-                    <x-ui.rincian-baris label="Faskes tujuan">{{ $pesanan->faskesTujuan?->nama ?? 'Belum ditentukan' }}</x-ui.rincian-baris>
+                    <x-ui.rincian-baris label="Layanan">{{ $pesanan->jenis_layanan->label() }}@if ($pesanan->tingkat_darurat === \App\Enums\TingkatDarurat::Gawat), {{ \Illuminate\Support\Str::lower($pesanan->tingkat_darurat->label()) }}@endif</x-ui.rincian-baris>
+                    <x-ui.rincian-baris label="Alamat jemput">{{ $pesanan->lokasi_jemput }}</x-ui.rincian-baris>
+                    <x-ui.rincian-baris label="Faskes tujuan">{{ $pesanan->faskesTujuan?->nama ?? 'Belum ditentukan oleh pemohon.' }}</x-ui.rincian-baris>
                     @if ($pesanan->ambulans)
-                        <x-ui.rincian-baris label="Ambulans">{{ $pesanan->ambulans->plat_nomor }} ({{ $pesanan->ambulans->faskes->nama }})</x-ui.rincian-baris>
-                        <x-ui.rincian-baris label="Sopir">{{ $pesanan->sopir?->name ?? '-' }}</x-ui.rincian-baris>
+                        <x-ui.rincian-baris label="Ambulans dan sopir">{{ $pesanan->ambulans->plat_nomor }}, {{ $pesanan->sopir?->name ?? '-' }}</x-ui.rincian-baris>
                     @endif
                     @if ($pesanan->catatan)
                         <x-ui.rincian-baris label="Catatan">{{ $pesanan->catatan }}</x-ui.rincian-baris>
                     @endif
                 </x-ui.rincian>
-            </x-ui.bagian>
 
-            @if ($pesanan->lat_jemput !== null && $pesanan->lng_jemput !== null)
-                <x-ui.bagian judul="Lokasi jemput" :jarak="false">
-                    <x-peta.pelacak :lat="$pesanan->lat_jemput" :lng="$pesanan->lng_jemput" />
-                </x-ui.bagian>
-            @endif
+                @if ($pesanan->lat_jemput !== null && $pesanan->lng_jemput !== null)
+                    <div class="mt-4">
+                        <x-peta.pelacak :lat="$pesanan->lat_jemput" :lng="$pesanan->lng_jemput" />
+                    </div>
+                @endif
+            </div>
+
+            <div class="min-w-0">
+                <h3 class="mb-3 text-title-m">Linimasa</h3>
+                <x-ui.linimasa :log="$pesanan->log" />
+            </div>
         </div>
-
-        <x-ui.bagian judul="Riwayat status" :jarak="false">
-            <x-ui.linimasa :log="$pesanan->log" />
-        </x-ui.bagian>
-    </div>
+    </x-ui.panel>
 </x-layouts.app>
