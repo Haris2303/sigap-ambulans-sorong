@@ -1,18 +1,8 @@
 <x-layouts.app judul="Beranda">
     {{-- Beranda Masyarakat arah B. Tidak dirinci RETEMA_B.md bagian 8 (bagian "Masyarakat dan Laporan" hanya menyebut
          Buat Pesanan dan kartu stat); disamakan dengan pola kepala dasbor Dinkes (sapaan jam, docs/RETEMA_B.md 5.1) dan
-         kartu navy hero (docs/RETEMA_B.md 6.8/8.1), karena beranda ini memang dasbor pribadi Masyarakat (PETA_HALAMAN_RETEMA.md).
-         Sapaan dihitung langsung di view (bukan pindah ke controller) supaya tidak mengubah lapisan di luar tampilan. --}}
-    @php
-        $jamSapaan = (int) now()->format('G');
-        $sapaan = match (true) {
-            $jamSapaan < 11 => 'pagi',
-            $jamSapaan < 15 => 'siang',
-            $jamSapaan < 18 => 'sore',
-            default => 'malam',
-        };
-    @endphp
-    <x-ui.judul-halaman :judul="'Selamat '.$sapaan.', '.\Illuminate\Support\Str::before(auth()->user()->name, ' ')" deskripsi="Ringkasan pesanan ambulans Anda." />
+         kartu navy hero (docs/RETEMA_B.md 6.8/8.1), karena beranda ini memang dasbor pribadi Masyarakat (PETA_HALAMAN_RETEMA.md). --}}
+    <x-ui.sapaan :nama="\Illuminate\Support\Str::before(auth()->user()->name, ' ')" deskripsi="Ringkasan pesanan ambulans Anda." />
 
     <div class="relative overflow-hidden rounded-xl bg-secondary p-6 text-on-secondary shadow-card">
         <span aria-hidden="true" class="absolute -top-12.5 -right-12.5 size-42.5 rounded-full bg-primary/25"></span>
