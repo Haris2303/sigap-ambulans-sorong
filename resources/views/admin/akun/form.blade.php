@@ -1,12 +1,12 @@
 <x-layouts.app :judul="($baru ? 'Tambah ' : 'Ubah ').$judulAkun">
     <x-ui.judul-halaman :judul="$baru ? 'Tambah '.$judulAkun : 'Ubah '.$akun->name" />
 
-    <form method="POST" action="{{ $baru ? route($rute.'.store') : route($rute.'.update', $akun) }}">
-        @csrf
-        @unless ($baru)
-            @method('PUT')
-        @endunless
-        <x-ui.panel class="max-w-xl">
+    <x-ui.panel class="max-w-3xl">
+        <form method="POST" action="{{ $baru ? route($rute.'.store') : route($rute.'.update', $akun) }}" id="form-akun">
+            @csrf
+            @unless ($baru)
+                @method('PUT')
+            @endunless
             <div class="space-y-5">
                 <x-ui.isian nama="name" label="Nama lengkap" :nilai="$akun->name" :wajib="true" />
                 <x-ui.isian nama="email" label="Email" tipe="email" :nilai="$akun->email" :wajib="true" />
@@ -16,10 +16,15 @@
                     :bantuan="$baru ? 'Paling sedikit 8 karakter.' : 'Kosongkan bila tidak diubah.'" autocomplete="new-password" />
                 <x-ui.centang nama="aktif" label="Akun aktif" :nilai="$akun->aktif" />
             </div>
-            <x-slot:kaki>
-                <x-ui.tombol tipe="submit">Simpan</x-ui.tombol>
+
+            <div class="mt-6 hidden items-center justify-end gap-2 border-t border-outline-variant pt-5 md:flex">
                 <x-ui.tombol nada="hantu" :href="route($rute.'.index')">Batal</x-ui.tombol>
-            </x-slot:kaki>
-        </x-ui.panel>
-    </form>
+                <x-ui.tombol tipe="submit">Simpan</x-ui.tombol>
+            </div>
+        </form>
+    </x-ui.panel>
+
+    <div class="sticky bottom-0 -mx-4 mt-6 border-t border-outline-variant bg-surface-container-lowest px-4 py-3 md:hidden">
+        <x-ui.tombol tipe="submit" form="form-akun" ukuran="lg" class="w-full">Simpan</x-ui.tombol>
+    </div>
 </x-layouts.app>
