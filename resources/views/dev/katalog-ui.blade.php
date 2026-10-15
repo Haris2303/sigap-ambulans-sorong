@@ -119,7 +119,7 @@
             <x-ui.tab :href="route('ui.katalog', ['periode' => '30'])" variant="floating">30 hari</x-ui.tab>
         </x-ui.tabs>
         <p class="mb-2 mt-5 text-label-m text-on-surface-variant">Segmented (radio dalam formulir)</p>
-        <x-ui.segmented label="Contoh tingkat darurat" class="inline-flex">
+        <x-ui.segmented label="Contoh tingkat darurat">
             <x-ui.segmen nama="tingkat_darurat_contoh" nilai="biasa" :terpilih="true">Biasa</x-ui.segmen>
             <x-ui.segmen nama="tingkat_darurat_contoh" nilai="gawat">Gawat</x-ui.segmen>
         </x-ui.segmented>
