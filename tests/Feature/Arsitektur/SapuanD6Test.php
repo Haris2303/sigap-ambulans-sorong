@@ -134,7 +134,8 @@ class SapuanD6Test extends TestCase
         $this->assertSame(5, substr_count($html, '<fieldset'));
         $this->assertSame(1, substr_count($html, 'bg-surface-container-lowest rounded-xl shadow-card p-'));
         $this->assertStringContainsString('Tinjau pesanan', $html);
-        $this->assertStringContainsString('max-w-3xl', $html, 'Formulir tetap satu kolom.');
+        // P4b: formulir dua kolom di lg ke atas (lebih dari 4 isian), lebar maksimum naik ke 72rem.
+        $this->assertStringContainsString('max-w-5xl', $html);
     }
 
     public function test_landing_memuat_langkah_cara_kerja_di_dalam_kartu(): void

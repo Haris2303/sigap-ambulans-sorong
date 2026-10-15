@@ -14,7 +14,7 @@
             class="{{ \App\Support\Tampilan::kelasIsian(false) }}">
         <x-ui.tombol nada="sekunder" ikon="search" aria-label="Cari" data-peta-cari />
     </div>
-    <p class="text-body-m text-on-surface-variant" role="status" data-peta-status></p>
+    <p class="text-body-m text-on-surface-variant empty:hidden" role="status" data-peta-status></p>
     <div class="divide-y divide-outline-variant rounded-sm bg-surface-container shadow-level-2 empty:hidden" data-peta-hasil></div>
     <div data-peta-kanvas class="isolate {{ $tinggi }} rounded-md border border-outline-variant bg-surface-container-highest"
         data-ubin="{{ $peta['ubin_url'] }}" data-pusat-lat="{{ $peta['pusat_lat'] }}" data-pusat-lng="{{ $peta['pusat_lng'] }}" data-zoom="{{ $peta['zoom'] }}"></div>

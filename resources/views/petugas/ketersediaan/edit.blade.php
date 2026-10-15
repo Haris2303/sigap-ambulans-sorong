@@ -1,7 +1,7 @@
 <x-layouts.app judul="Ketersediaan">
     <x-ui.judul-halaman judul="Ketersediaan" :deskripsi="$faskes->nama.'. Data ini tampil di halaman Info Faskes dan dipakai Dinkes untuk penugasan.'" />
 
-    <x-ui.panel class="max-w-3xl">
+    <x-ui.panel class="max-w-5xl">
         <p class="mb-3 text-title-m">Ringkasan saat ini</p>
         <div class="grid grid-cols-2 gap-4 sm:grid-cols-4">
             <x-ui.ring-tile :tersedia="$faskes->bed_igd_tersedia" :total="$faskes->bed_igd_total" label="Bed IGD" />
@@ -22,7 +22,7 @@
             @csrf
             @method('PUT')
             <div class="mt-5 space-y-5 border-t border-outline-variant pt-5">
-                <div class="grid gap-4 sm:grid-cols-2">
+                <div class="grid grid-cols-1 gap-4 sm:grid-cols-2 lg:grid-cols-3 lg:gap-x-6 lg:gap-y-5">
                     <x-ui.isian nama="bed_igd_tersedia" label="Bed IGD tersedia" tipe="number" min="0" :nilai="$faskes->bed_igd_tersedia" :wajib="true" />
                     <x-ui.isian nama="bed_igd_total" label="Total bed IGD" tipe="number" min="0" :nilai="$faskes->bed_igd_total" :wajib="true" />
                     <x-ui.isian nama="bed_rawat_inap_tersedia" label="Bed rawat inap tersedia" tipe="number" min="0" :nilai="$faskes->bed_rawat_inap_tersedia" :wajib="true" />
@@ -33,7 +33,7 @@
                 <x-ui.area-teks nama="dokter_spesialis_keterangan" label="Keterangan dokter spesialis" :nilai="$faskes->dokter_spesialis_keterangan" bantuan="Contoh: spesialis yang sedang bertugas." />
             </div>
 
-            <div class="mt-6 hidden items-center justify-end gap-2 border-t border-outline-variant pt-5 md:flex">
+            <div class="mt-6 hidden items-center justify-end gap-2 border-t border-outline-variant pt-5 md:flex lg:sticky lg:bottom-0 lg:z-10 lg:-mx-6 lg:-mb-6 lg:rounded-b-xl lg:bg-surface-container-lowest lg:px-6 lg:py-4">
                 <x-ui.tombol nada="hantu" :href="route('petugas.dashboard')">Batal</x-ui.tombol>
                 <x-ui.tombol tipe="submit">Simpan</x-ui.tombol>
             </div>
