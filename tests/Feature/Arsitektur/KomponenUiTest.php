@@ -459,8 +459,10 @@ class KomponenUiTest extends TestCase
         // Dengan deskripsi (baris, dipakai warga/pesanan/buat.blade.php sejak R8): petak ikon 40px (size-10).
         $opsi = $this->render('<x-ui.opsi-baris nama="jenis_layanan" nilai="darurat" judul="Darurat" deskripsi="Kecelakaan" ikon="ambulance" :terpilih="true" />');
         $this->assertStringContainsString('type="radio"', $opsi);
-        $this->assertStringContainsString('border-primary bg-selected ring-1 ring-inset ring-primary', $opsi);
-        $this->assertStringContainsString('bg-primary text-on-primary', $opsi, 'Petak ikon terpilih berlatar primary.');
+        // Gaya terpilih reaktif lewat has-[:checked]/group-has-[:checked] (bukan kelas kondisional PHP),
+        // supaya klik radio langsung mengubah tampilan tanpa muat ulang halaman.
+        $this->assertStringContainsString('has-[:checked]:border-primary has-[:checked]:bg-selected has-[:checked]:ring-1 has-[:checked]:ring-inset has-[:checked]:ring-primary', $opsi);
+        $this->assertStringContainsString('group-has-[:checked]:bg-primary group-has-[:checked]:text-on-primary', $opsi, 'Petak ikon terpilih berlatar primary.');
         foreach (['rounded-md', 'min-h-14', 'text-label-l', 'size-10'] as $kelas) {
             $this->assertStringContainsString($kelas, $opsi);
         }
@@ -480,7 +482,9 @@ class KomponenUiTest extends TestCase
         $tanpaIkon = $this->render('<x-ui.opsi-baris nama="jenis_layanan" nilai="rujukan" judul="Rujukan" />');
         $this->assertStringNotContainsString('size-7.5', $tanpaIkon, 'Ikon opsional: tanpa petak bila tidak diberi.');
         $this->assertStringNotContainsString('size-10', $tanpaIkon);
-        $this->assertStringNotContainsString('checked', $tanpaIkon);
+        // "checked" muncul di kelas has-[:checked]:... (statis, dipakai di semua baris): yang dicek di sini
+        // adalah atribut HTML checked pada <input>-nya sendiri, bukan potongan nama kelas.
+        $this->assertDoesNotMatchRegularExpression('/<input[^>]*\bchecked\b/', $tanpaIkon);
         $this->assertStringNotContainsString('border-primary bg-selected', $tanpaIkon);
     }
 

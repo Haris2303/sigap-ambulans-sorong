@@ -260,7 +260,9 @@ class KomponenDasborTest extends TestCase
         }
         $this->assertStringContainsString('type="radio"', $html);
         $this->assertMatchesRegularExpression('/value="biasa" checked[^>]*class="sr-only"/', $html);
-        $this->assertStringContainsString('bg-surface-container-lowest text-on-surface shadow-chip', $html);
+        // Gaya terpilih reaktif lewat has-[:checked] (bukan kelas kondisional PHP), supaya klik radio langsung
+        // mengubah tampilan tanpa muat ulang halaman.
+        $this->assertStringContainsString('has-[:checked]:bg-surface-container-lowest has-[:checked]:text-on-surface has-[:checked]:shadow-chip', $html);
         $this->assertStringContainsString('min-h-9', $html);
     }
 
