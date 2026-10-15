@@ -240,8 +240,8 @@ class ShotSeeder extends Seeder
             }
         }
 
-        $this->contohDitugaskan();
         $this->persisTerbaru();
+        $this->contohDitugaskan();
     }
 
     /**
