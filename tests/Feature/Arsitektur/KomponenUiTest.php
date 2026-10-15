@@ -389,7 +389,7 @@ class KomponenUiTest extends TestCase
         $this->assertStringContainsString('(wajib)', $biasa);
         $this->assertStringContainsString(Tampilan::kelasIsian(false), $biasa);
         // Tinggi 48px, sudut md, fokus batas primary + cincin (DESIGN.md 6.3).
-        foreach (['border-outline', 'min-h-12', 'rounded-md', 'bg-surface-container-lowest', 'focus-visible:border-primary', 'focus-visible:ring-primary/20', 'text-label-l text-on-surface-variant'] as $kelas) {
+        foreach (['border-outline', 'min-h-12', 'rounded-md', 'bg-surface-container-lowest', 'focus-visible:border-primary', 'focus-visible:ring-primary/20', 'text-label-l text-on-surface'] as $kelas) {
             $this->assertStringContainsString($kelas, $biasa);
         }
         $this->assertStringNotContainsString('min-h-14', $biasa);
@@ -461,11 +461,16 @@ class KomponenUiTest extends TestCase
         $this->assertStringContainsString('type="radio"', $opsi);
         $this->assertStringContainsString('border-primary bg-selected ring-1 ring-inset ring-primary', $opsi);
         $this->assertStringContainsString('bg-primary text-on-primary', $opsi, 'Petak ikon terpilih berlatar primary.');
-        foreach (['lapisan-keadaan', 'rounded-md', 'min-h-14', 'text-label-l', 'size-10'] as $kelas) {
+        foreach (['rounded-md', 'min-h-14', 'text-label-l', 'size-10'] as $kelas) {
             $this->assertStringContainsString($kelas, $opsi);
         }
         $this->assertStringContainsString('Kecelakaan', $opsi);
         $this->assertStringNotContainsString('bg-secondary-container', $opsi);
+        // Baris terpilih tanpa lapisan hover/tekan: hover tidak lagi menggelapkan latar bg-selected.
+        $this->assertStringNotContainsString('lapisan-keadaan', $opsi);
+
+        $takTerpilih = $this->render('<x-ui.opsi-baris nama="jenis_layanan" nilai="rujukan" judul="Rujukan" deskripsi="Pindah Faskes" ikon="building-2" />');
+        $this->assertStringContainsString('lapisan-keadaan', $takTerpilih, 'Baris belum terpilih tetap punya lapisan hover.');
 
         // Tanpa deskripsi (kisi 3 kolom): petak ikon tetap 30px (size-7.5).
         $kisi = $this->render('<x-ui.opsi-baris nama="jenis_layanan_kisi" nilai="darurat" judul="Darurat" ikon="ambulance" :terpilih="true" />');

@@ -14,7 +14,7 @@ class Tampilan
     /** Enam tone arah B (docs/RETEMA_B.md 4.3): sumber tunggal warna lencana, chip ikon, dan grafik. */
     public const TONE = ['primary', 'warning', 'success', 'error', 'tertiary', 'neutral'];
 
-    public const LABEL_ISIAN = 'mb-1 block text-label-l text-on-surface-variant';
+    public const LABEL_ISIAN = 'mb-2 block text-label-l text-on-surface';
 
     public const BANTUAN_ISIAN = 'mt-1 text-label-m text-on-surface-variant';
 

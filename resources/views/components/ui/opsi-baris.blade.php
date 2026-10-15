@@ -9,7 +9,7 @@
     $kotakIkon = $deskripsi ? 'size-10' : 'size-7.5';
     $ukuranIkon = $deskripsi ? 21 : 18;
 @endphp
-<label class="lapisan-keadaan has-[:focus-visible]:outline-2 has-[:focus-visible]:outline-offset-2 has-[:focus-visible]:outline-primary flex min-h-14 cursor-pointer items-center gap-2.5 rounded-md border px-2.5 py-3 transition-colors {{ $dipilih ? 'border-primary bg-selected ring-1 ring-inset ring-primary text-on-surface' : 'border-outline text-on-surface' }}">
+<label class="{{ $dipilih ? '' : 'lapisan-keadaan' }} has-[:focus-visible]:outline-2 has-[:focus-visible]:outline-offset-2 has-[:focus-visible]:outline-primary flex min-h-14 cursor-pointer items-center gap-2.5 rounded-md border px-2.5 py-3 transition-colors {{ $dipilih ? 'border-primary bg-selected ring-1 ring-inset ring-primary text-on-surface' : 'border-outline text-on-surface' }}">
     <input type="radio" name="{{ $nama }}" value="{{ $nilai }}" @checked($dipilih) class="sr-only">
     @if ($ikon)
         <span class="inline-flex {{ $kotakIkon }} shrink-0 items-center justify-center rounded-sm {{ $dipilih ? 'bg-primary text-on-primary' : 'bg-surface-container text-on-surface-variant' }}">

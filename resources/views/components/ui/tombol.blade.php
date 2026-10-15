@@ -30,7 +30,7 @@
     if ($hanyaIkon) {
         $kelas .= ' aspect-square px-0';
     } elseif ($ikon) {
-        $kelas .= $teks ? ' pl-3 pr-5' : ' pl-4 pr-5';
+        $kelas .= $teks ? ' px-1' : ' pl-4 pr-5';
     } else {
         $kelas .= $teks ? ' px-3' : ' px-5';
     }
