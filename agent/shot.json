@@ -5,7 +5,9 @@
     "admin": { "email": "admin@sigap.test", "password": "password" },
     "warga": { "email": "warga@sigap.test", "password": "password" },
     "petugas": { "email": "petugas@sigap.test", "password": "password" },
-    "sopir": { "email": "sopir@sigap.test", "password": "password" }
+    "sopir": { "email": "sopir@sigap.test", "password": "password" },
+    "sopir_ditugaskan": { "email": "sopir2@sigap.test", "password": "password" },
+    "sopir_kosong": { "email": "sopir3@sigap.test", "password": "password" }
   },
   "halaman": [
     { "nama": "masuk", "path": "/login", "peran": null },
@@ -44,6 +46,8 @@
     { "nama": "dasbor-faskes", "path": "/petugas", "peran": "petugas" },
     { "nama": "ketersediaan-faskes", "path": "/petugas/ketersediaan", "peran": "petugas" },
     { "nama": "dasbor-sopir", "path": "/sopir", "peran": "sopir" },
+    { "nama": "dasbor-sopir-ditugaskan", "path": "/sopir", "peran": "sopir_ditugaskan" },
+    { "nama": "dasbor-sopir-kosong", "path": "/sopir", "peran": "sopir_kosong" },
 
     { "nama": "daftar-ambulans", "path": "/admin/ambulans", "peran": "admin" },
     { "nama": "form-ambulans", "path": "/admin/ambulans/create", "peran": "admin" },

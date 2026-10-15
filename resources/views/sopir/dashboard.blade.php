@@ -1,5 +1,5 @@
 <x-layouts.app judul="Penugasan" :peta="$penugasan !== null && $penugasan->lat_jemput !== null">
-    <x-ui.judul-halaman judul="Penugasan" deskripsi="Aktifkan Online agar Dinkes dapat menugaskan Anda. Posisi GPS dikirim selama Online." />
+    <x-ui.sapaan :nama="\Illuminate\Support\Str::before($sopir->name, ' ')" deskripsi="Aktifkan Online agar Dinkes dapat menugaskan Anda. Posisi GPS dikirim selama Online." />
 
     <div data-sopir data-url-penugasan="{{ route('sopir.penugasan') }}" data-url-lokasi="{{ route('sopir.lokasi') }}"
         data-detik="{{ config('sigap.polling.sopir_detik') }}" data-detik-lokasi="{{ config('sigap.polling.sopir_lokasi_detik') }}"
@@ -25,18 +25,19 @@
                 <x-ui.kosong :pesan="$sopir->sedang_online ? 'Belum ada penugasan. Halaman ini diperbarui otomatis.' : 'Anda offline. Tekan Online untuk menerima penugasan.'" />
             </x-ui.bagian>
         @else
-            {{-- Penugasan aktif: satu kartu besar, satu kolom (mobile-first), tindakan di bawah rincian. --}}
+            {{-- Penugasan aktif: satu kartu besar, satu kolom (mobile-first), tindakan di bawah rincian.
+                 Kepala kartu sama pola dengan detail pesanan (docs/RETEMA_B.md 8.2): kode title-xl + lencana. --}}
             <x-ui.panel class="mt-5 max-w-3xl" data-penugasan-aktif>
                 <div class="flex flex-wrap items-start justify-between gap-3">
                     <div class="min-w-0">
-                        <h2 class="text-card-title">Penugasan aktif</h2>
-                        <p class="text-body-m tabular-nums text-on-surface-variant">{{ $penugasan->kode }}</p>
-                    </div>
-                    <div class="flex flex-wrap items-center gap-2">
-                        @if ($penugasan->tingkat_darurat === \App\Enums\TingkatDarurat::Gawat)
-                            <x-ui.lencana nada="bahaya">{{ $penugasan->tingkat_darurat->label() }}</x-ui.lencana>
-                        @endif
-                        <x-ui.lencana-status :status="$penugasan->status" />
+                        <div class="flex flex-wrap items-center gap-2.5">
+                            <h2 class="text-title-xl tabular-nums">{{ $penugasan->kode }}</h2>
+                            <x-ui.lencana-status :status="$penugasan->status" />
+                            @if ($penugasan->tingkat_darurat === \App\Enums\TingkatDarurat::Gawat)
+                                <x-ui.lencana nada="bahaya">{{ $penugasan->tingkat_darurat->label() }}</x-ui.lencana>
+                            @endif
+                        </div>
+                        <p class="mt-1 text-body-s text-on-surface-variant">Tugas aktif</p>
                     </div>
                 </div>
 
@@ -98,23 +99,15 @@
     </div>
 
     <x-ui.bagian judul="Penugasan terakhir">
-        @if ($riwayat->isEmpty())
-            <x-ui.kosong pesan="Belum ada penugasan yang selesai." />
-        @else
-            <x-ui.tabel>
-                <x-slot:kepala>
-                    <th>Kode</th>
-                    <th>Pasien</th>
-                    <th>Selesai</th>
-                </x-slot:kepala>
-                @foreach ($riwayat as $p)
-                    <tr>
-                        <td class="tabular-nums">{{ $p->kode }}</td>
-                        <td>{{ $p->nama_pasien }}</td>
-                        <td><x-ui.waktu :nilai="$p->selesai_pada" /></td>
-                    </tr>
-                @endforeach
-            </x-ui.tabel>
-        @endif
+        <x-ui.panel :flush="true">
+            <div class="px-5 pb-5 pt-5 lg:px-6 lg:pb-6 lg:pt-6">
+                @include('pesanan._baris', [
+                    'daftar' => $riwayat,
+                    'pesanKosong' => 'Belum ada penugasan yang selesai.',
+                    'kolomWaktu' => 'selesai_pada',
+                    'labelWaktu' => 'Selesai',
+                ])
+            </div>
+        </x-ui.panel>
     </x-ui.bagian>
 </x-layouts.app>

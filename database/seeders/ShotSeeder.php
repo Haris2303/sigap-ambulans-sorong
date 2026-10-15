@@ -120,6 +120,8 @@ class ShotSeeder extends Seeder
 
         // Sopir online kedua, bebas (tanpa pesanan aktif): supaya panel "Tugaskan" di R6 punya pilihan sungguhan
         // (bukan hanya peringatan "tidak ada sopir online"), karena $this->sopir dipegang SGP-000038 terus-menerus.
+        // Catatan P4: contohDitugaskan() di bawah akhirnya menugaskan sopir ini juga (status "Ditugaskan"), dipakai
+        // untuk menangkap dasbor Sopir pada status itu (agent/shot.json "dasbor-sopir-ditugaskan").
         $this->sopir2 = User::create([
             'name' => 'Yulianus Kafiar',
             'email' => 'sopir2'.self::DOMAIN,
@@ -129,6 +131,21 @@ class ShotSeeder extends Seeder
             'faskes_id' => $this->faskes->id,
             'sedang_online' => true,
             'no_telepon' => '081100000005',
+            'email_verified_at' => now(),
+        ]);
+
+        // Sopir ketiga, online tetapi benar-benar tanpa tugas (tidak pernah ditugaskan): menangkap keadaan kosong
+        // dasbor Sopir (docs/PETA_HALAMAN_RETEMA.md P4, agent/shot.json "dasbor-sopir-kosong"), bukan sekadar "bebas
+        // sesaat" seperti sopir2 di atas.
+        User::create([
+            'name' => 'Sopir Siaga',
+            'email' => 'sopir3'.self::DOMAIN,
+            'password' => 'password',
+            'role' => Role::Sopir,
+            'aktif' => true,
+            'faskes_id' => $this->faskes->id,
+            'sedang_online' => true,
+            'no_telepon' => '081100000006',
             'email_verified_at' => now(),
         ]);
 
