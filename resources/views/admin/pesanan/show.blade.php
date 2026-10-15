@@ -83,9 +83,7 @@
                     @endif
                     <x-ui.rincian-baris label="Pemohon">{{ $pesanan->pemohon->name }}</x-ui.rincian-baris>
                     <x-ui.rincian-baris label="Email pemohon">{{ $pesanan->pemohon->email }}</x-ui.rincian-baris>
-                    @if ($pesanan->catatan)
-                        <x-ui.rincian-baris label="Catatan">{{ $pesanan->catatan }}</x-ui.rincian-baris>
-                    @endif
+                    <x-ui.rincian-baris label="Catatan">{{ $pesanan->catatan ?: '-' }}</x-ui.rincian-baris>
                     @if ($pesanan->diverifikasiOleh)
                         <x-ui.rincian-baris label="Diverifikasi oleh">{{ $pesanan->diverifikasiOleh->name }} ({{ $pesanan->diverifikasi_pada->timezone(config('app.timezone'))->translatedFormat('j M Y, H.i') }})</x-ui.rincian-baris>
                     @endif

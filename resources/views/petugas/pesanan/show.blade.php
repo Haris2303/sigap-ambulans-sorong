@@ -31,9 +31,7 @@
                     @if ($pesanan->ambulans)
                         <x-ui.rincian-baris label="Ambulans dan sopir">{{ $pesanan->ambulans->plat_nomor }} ({{ $pesanan->ambulans->faskes->nama }}), {{ $pesanan->sopir?->name ?? '-' }}</x-ui.rincian-baris>
                     @endif
-                    @if ($pesanan->catatan)
-                        <x-ui.rincian-baris label="Catatan">{{ $pesanan->catatan }}</x-ui.rincian-baris>
-                    @endif
+                    <x-ui.rincian-baris label="Catatan">{{ $pesanan->catatan ?: '-' }}</x-ui.rincian-baris>
                 </x-ui.rincian>
 
                 @if ($pesanan->lat_jemput !== null && $pesanan->lng_jemput !== null)
