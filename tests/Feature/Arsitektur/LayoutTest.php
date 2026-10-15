@@ -74,17 +74,21 @@ class LayoutTest extends TestCase
         $this->assertStringContainsString('Ke dasbor', $masuk);
     }
 
-    public function test_layout_auth_kolom_tunggal_dengan_tanda_merek_dan_flash(): void
+    public function test_layout_auth_satu_kartu_putih_dengan_tanda_merek_dan_flash(): void
     {
         session()->flash('galat', 'Email atau kata sandi salah.');
         $html = Blade::render('<x-layouts.auth judul="Masuk">formulir</x-layouts.auth>');
 
-        $this->assertStringContainsString('max-w-sm', $html);
-        $this->assertStringContainsString('text-title-l', $html);
+        $this->assertStringContainsString('max-w-md', $html);
+        // Kartu putih arah B: rounded-2xl, bg-surface-container-lowest, shadow-card (bukan x-ui.panel biasa, radius dan padding berbeda).
+        foreach (['rounded-2xl', 'bg-surface-container-lowest', 'shadow-card'] as $kelas) {
+            $this->assertStringContainsString($kelas, $html);
+        }
+        $this->assertStringContainsString('text-brand', $html);
         $this->assertStringContainsString('Email atau kata sandi salah.', $html);
         $this->assertStringContainsString('formulir', $html);
-        // Tanda merek 48px (docs/RETEMA_B.md 5.3) di atas judul, bukan sekadar tautan teks.
-        $this->assertMatchesRegularExpression('/<span class="inline-flex size-12 shrink-0 items-center justify-center rounded-md bg-primary text-on-primary">\s*<svg/', $html);
+        // Tanda merek (docs/RETEMA_B.md 5.3) di dalam kartu, sejajar "SIGAP", bukan sekadar tautan teks.
+        $this->assertMatchesRegularExpression('/<span class="inline-flex size-10\.5 shrink-0 items-center justify-center rounded-md bg-primary text-on-primary">\s*<svg/', $html);
     }
 
     public function test_layout_app_menu_sesuai_peran(): void
