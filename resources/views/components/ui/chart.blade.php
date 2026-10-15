@@ -73,9 +73,14 @@
         $data = ['tipe' => 'donat', 'segments' => array_map(fn (array $s) => array_intersect_key($s, array_flip(['label', 'value', 'color'])), $ada), 'unit' => $unit];
     @endphp
     <div {{ $attributes->merge(['class' => 'flex flex-col gap-3']) }}>
-        <div class="relative mx-auto my-1 size-42.5 shrink-0">
-            <canvas role="img" aria-label="{{ $keterangan }}" data-chart="{{ json_encode($data, JSON_UNESCAPED_UNICODE) }}" class="size-full"></canvas>
-            <div class="pointer-events-none absolute inset-0 flex flex-col items-center justify-center" aria-hidden="true">
+        {{-- isolate: membatasi permainan z-index di bawah ke kotak ini saja (pola sama dengan .lapisan-keadaan di
+             tambahan.css) - tanpa ini, -z-10 pada lapisan angka lolos ke konteks tumpuk leluhur dan bisa tersembunyi
+             total di belakang latar kartu, bukan sekadar di belakang kanvas. --}}
+        <div class="relative isolate mx-auto my-1 size-42.5 shrink-0">
+            <canvas role="img" aria-label="{{ $keterangan }}" data-chart="{{ json_encode($data, JSON_UNESCAPED_UNICODE) }}" class="relative z-0 size-full"></canvas>
+            {{-- -z-10: tanpa ini, lubang donat yang transparan membiarkan angka total menimpa balon hover Chart.js
+                 yang digambar di dalam kanvas, karena posisi absolute tanpa z-index tetap di atas kanvas statis. --}}
+            <div class="pointer-events-none absolute inset-0 -z-10 flex flex-col items-center justify-center" aria-hidden="true">
                 <span class="text-stat-l tabular-nums text-on-surface">{{ $total }}</span>
                 @if ($centerLabel)
                     <span class="text-body-s text-on-surface-variant">{{ $centerLabel }}</span>

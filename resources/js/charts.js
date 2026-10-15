@@ -19,6 +19,10 @@ import { bacaTema } from './grafik-opsi';
 
 Chart.register(LineController, DoughnutController, BarController, LineElement, PointElement, BarElement, ArcElement, LinearScale, CategoryScale, Tooltip, Filler);
 
+// Posisi tooltip batang mengikuti kursor sungguhan, bukan titik tengah batang bawaan Chart.js ('average'/'nearest'
+// sama-sama memakai anchor elemen, bukan posisi kursor) - penting untuk batang panjang di grafik Faskes/respons/durasi.
+Tooltip.positioners.kursor = (_elemen, posisi) => posisi;
+
 const format = new Intl.NumberFormat('id-ID');
 const kurangGerak = () => window.matchMedia?.('(prefers-reduced-motion: reduce)').matches ?? false;
 
@@ -210,15 +214,18 @@ function konfigBatang(data, tema) {
             },
             plugins: {
                 legend: { display: false },
-                tooltip: tooltipGelap(tema, {
-                    title: (butir) => butir[0].label,
-                    label: (butir) => {
-                        const d = datasets[butir.datasetIndex];
-                        const teks = d.valueLabels?.[butir.dataIndex];
+                tooltip: {
+                    ...tooltipGelap(tema, {
+                        title: (butir) => butir[0].label,
+                        label: (butir) => {
+                            const d = datasets[butir.datasetIndex];
+                            const teks = d.valueLabels?.[butir.dataIndex];
 
-                        return teks ?? `${format.format(butir.parsed.x)}${satuan}`;
-                    },
-                }),
+                            return teks ?? `${format.format(butir.parsed.x)}${satuan}`;
+                        },
+                    }),
+                    position: 'kursor',
+                },
             },
         },
     };
