@@ -4,7 +4,9 @@
     @if ($daftar->isEmpty())
         <x-ui.kosong pesan="Belum ada Faskes aktif." />
     @else
-        <x-ui.tabel>
+    <x-ui.panel :flush="true">
+        <div class="p-5 lg:p-6">
+        <x-ui.tabel :bingkai="false" lebar-min="min-w-200">
             <x-slot:kepala>
                 <th>Faskes</th>
                 <th>Bed IGD (tersedia, total)</th>
@@ -52,5 +54,7 @@
                 </tr>
             @endforeach
         </x-ui.tabel>
+        </div>
+    </x-ui.panel>
     @endif
 </x-layouts.app>
