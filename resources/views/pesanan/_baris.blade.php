@@ -8,10 +8,18 @@
       kolom Pesanan sendiri, tidak memuat relasi tambahan).
     - $rute: nama route "show" pesanan untuk peran yang melihat (admin.pesanan.show, petugas.pesanan.show, warga.pesanan.show).
     - $pesanKosong (opsional): teks x-ui.kosong saat $daftar kosong. Bawaan "Belum ada pesanan di tab ini."
+    - $kosongAksiHref, $kosongAksiLabel (opsional, bersama): satu tombol aksi sekunder pada keadaan kosong (mis.
+      "Pesan ambulans" di riwayat Masyarakat).
 --}}
 @php $pesanKosong ??= 'Belum ada pesanan di tab ini.'; @endphp
 @if ($daftar->isEmpty())
-    <x-ui.kosong :pesan="$pesanKosong" />
+    <x-ui.kosong :pesan="$pesanKosong">
+        @isset($kosongAksiHref)
+            <x-slot:aksi>
+                <x-ui.tombol nada="sekunder" :href="$kosongAksiHref">{{ $kosongAksiLabel }}</x-ui.tombol>
+            </x-slot:aksi>
+        @endisset
+    </x-ui.kosong>
 @else
     <x-ui.tabel :bingkai="false" class="hidden md:block">
         <x-slot:kepala>

@@ -281,7 +281,7 @@ class PesananWargaTest extends TestCase
             ->assertOk()
             ->assertSee($pesanan->kode)
             ->assertSee('Budi Santoso')
-            ->assertSee('Riwayat status')
+            ->assertSee('Linimasa')
             ->assertSee('Menunggu verifikasi')
             ->assertSee('Batalkan pesanan')
             ->assertDontSee('Ambulans dan sopir');

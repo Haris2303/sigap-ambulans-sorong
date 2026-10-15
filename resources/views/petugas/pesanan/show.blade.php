@@ -29,7 +29,7 @@
                     <x-ui.rincian-baris label="Alamat jemput">{{ $pesanan->lokasi_jemput }}</x-ui.rincian-baris>
                     <x-ui.rincian-baris label="Faskes tujuan">{{ $pesanan->faskesTujuan?->nama ?? 'Belum ditentukan oleh pemohon.' }}</x-ui.rincian-baris>
                     @if ($pesanan->ambulans)
-                        <x-ui.rincian-baris label="Ambulans dan sopir">{{ $pesanan->ambulans->plat_nomor }}, {{ $pesanan->sopir?->name ?? '-' }}</x-ui.rincian-baris>
+                        <x-ui.rincian-baris label="Ambulans dan sopir">{{ $pesanan->ambulans->plat_nomor }} ({{ $pesanan->ambulans->faskes->nama }}), {{ $pesanan->sopir?->name ?? '-' }}</x-ui.rincian-baris>
                     @endif
                     @if ($pesanan->catatan)
                         <x-ui.rincian-baris label="Catatan">{{ $pesanan->catatan }}</x-ui.rincian-baris>
