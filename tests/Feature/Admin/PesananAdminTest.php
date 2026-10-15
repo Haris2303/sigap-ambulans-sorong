@@ -53,15 +53,19 @@ class PesananAdminTest extends TestCase
 
         $html = $this->actingAs($this->admin)->get(route('admin.pesanan.index'))->assertOk()->getContent();
 
-        // Sel kode memuat lencana Gawat yang hanya tampil di bawah md (kolom Layanan tersembunyi di sana).
+        // Kolom Layanan (tabel di md ke atas) menampilkan lencana Gawat di samping jenis layanan.
         $this->assertMatchesRegularExpression(
-            '/<td class="tabular-nums">\s*<a [^>]*>'.$gawat->kode.'<\/a>\s*<div class="mt-1 md:hidden"><span[^>]*>.*?Gawat\s*<\/span>\s*<\/div>/s',
+            '/Darurat\s*<span class="inline-flex min-h-6[^"]*bg-error-container[^"]*">\s*<span[^>]*><\/span>\s*Gawat\s*<\/span>/s',
             $html,
         );
-        $this->assertDoesNotMatchRegularExpression('/'.$biasa->kode.'<\/a>\s*<div class="mt-1 md:hidden">/', $html);
-        // Kolom Layanan tetap menampilkan lencana di md ke atas, dan kolomnya tersembunyi di ponsel.
-        $this->assertStringContainsString('<th class="hidden md:table-cell">Layanan</th>', $html);
-        $this->assertSame(2, preg_match_all('/Gawat\s*<\/span>/', $html), 'Satu di sel kode dan satu di kolom Layanan.');
+        // Baris ponsel (daftar di bawah md) menampilkan lencana Gawat juga, tepat di bawah kode dan jenis layanan.
+        $this->assertMatchesRegularExpression(
+            '/'.$gawat->kode.', Darurat<\/p>\s*<span class="inline-flex min-h-6[^"]*bg-error-container[^"]*">\s*<span[^>]*><\/span>\s*Gawat\s*<\/span>/s',
+            $html,
+        );
+        $this->assertDoesNotMatchRegularExpression('/'.$biasa->kode.', Darurat<\/p>\s*<span class="inline-flex min-h-6[^"]*bg-error-container/s', $html);
+        // Gawat tampil tepat dua kali untuk pesanan gawat itu: sekali di tabel (md ke atas), sekali di daftar ponsel.
+        $this->assertSame(2, preg_match_all('/>\s*Gawat\s*<\/span>/', $html));
     }
 
     public function test_daftar_menampilkan_waktu_tunggu_hanya_untuk_pesanan_yang_belum_ditugaskan(): void
@@ -73,11 +77,13 @@ class PesananAdminTest extends TestCase
 
         $html = $this->actingAs($this->admin)->get(route('admin.pesanan.index'))->assertOk()->getContent();
 
-        $this->assertSame(2, substr_count($html, 'data-waktu-tunggu'), 'Hanya Menunggu dan Terverifikasi.');
+        // Baris daftar pesanan arah B dirender dua kali (tabel md ke atas dan daftar baris di bawah md,
+        // docs/RETEMA_B.md 6.9), jadi tiap pesanan menunggu/terverifikasi membawa dua lencana waktu tunggu.
+        $this->assertSame(4, substr_count($html, 'data-waktu-tunggu'), 'Hanya Menunggu dan Terverifikasi, dua kali lipat (tabel + daftar ponsel).');
         $this->assertMatchesRegularExpression('/data-nada="bahaya"[^>]*>\s*<span class="size-1\.5[^>]*><\/span>\s*<span data-teks>Menunggu 12 mnt<\/span>/', $html);
         $this->assertMatchesRegularExpression('/data-nada="netral"[^>]*>\s*<span class="size-1\.5[^>]*><\/span>\s*<span data-teks>Menunggu 3 mnt<\/span>/', $html);
-        // Di sel kode, tepat di bawah tautan kode (terlihat di ponsel).
-        $this->assertMatchesRegularExpression('/<td class="tabular-nums">\s*<a [^>]*>SGP-\d+<\/a>\s*<div class="mt-1"><span data-waktu-tunggu/', $html);
+        // Tepat di bawah kode pesanan di tabel (md ke atas), terlihat di ponsel lewat daftar baris terpisah.
+        $this->assertMatchesRegularExpression('/text-on-surface-variant tabular-nums">SGP-\d+<\/p>\s*<span data-waktu-tunggu/', $html);
     }
 
     public function test_detail_menampilkan_waktu_tunggu_di_samping_status(): void
@@ -225,7 +231,7 @@ class PesananAdminTest extends TestCase
         $this->assertNotFalse($kartu);
         $this->assertLessThan($tab, $kartu, 'Tab berada di dalam kartu.');
         $this->assertLessThan($tabel, $tab, 'Tabel berada di bawah tab, di kartu yang sama.');
-        $this->assertStringContainsString('<div class="overflow-x-auto">', $html, 'Tabel tanpa bingkai ganda di dalam kartu.');
+        $this->assertStringContainsString('<div class="overflow-x-auto hidden md:block">', $html, 'Tabel tanpa bingkai ganda di dalam kartu.');
         $this->assertStringContainsString('Pasien Daftar', $html);
         $this->assertStringContainsString('rounded-full px-2.5', $html);
     }

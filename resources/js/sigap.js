@@ -187,6 +187,20 @@ document.addEventListener('click', (e) => {
     }
 });
 
+// Dialog aksi pesanan arah B (tolak/batalkan/lepas, docs/RETEMA_B.md 6.11 dan 8.2): tombol membuka <dialog> berisi
+// form sendiri (data-dialog-buka="id"); ditutup lewat tombol di dalamnya (data-dialog-tutup) tanpa mengirim form.
+document.addEventListener('click', (e) => {
+    const pemicu = e.target.closest('[data-dialog-buka]');
+    if (pemicu) {
+        document.getElementById(pemicu.dataset.dialogBuka)?.showModal();
+    }
+});
+document.addEventListener('click', (e) => {
+    if (e.target.closest('[data-dialog-tutup]')) {
+        e.target.closest('dialog')?.close();
+    }
+});
+
 // Snackbar: tombol Tutup menghapus pesan.
 document.addEventListener('click', (e) => {
     if (e.target.closest('[data-snackbar-tutup]')) {

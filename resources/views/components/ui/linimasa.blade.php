@@ -1,8 +1,8 @@
 @props(['log'])
 {{-- x-ui.timeline arah B (DESIGN.md 6.12): garis 2px outline-variant, titik 12px (langkah lampau putih berbatas
      outline-variant, langkah sekarang terisi primary), judul langkah sekarang lebih tebal (label-l; token tipografi
-     tidak punya body berbobot 700, lihat Do's and Don'ts bobot hanya dari gaya). Kolom waktu (format dan lebar 56px)
-     menunggu perubahan format jam lintas halaman (docs/RETEMA_B.md bagian 3), belum diubah di R2. --}}
+     tidak punya body berbobot 700, lihat Do's and Don'ts bobot hanya dari gaya). Kolom waktu: lebar tetap 56px, format
+     "21.12" (docs/RETEMA_B.md bagian 3 "Jam"), diterapkan di R6 bersama halaman Pesanan (satu-satunya pemakai). --}}
 @if ($log->isEmpty())
     <p class="text-body-m text-on-surface-variant">Belum ada riwayat.</p>
 @else
@@ -13,7 +13,7 @@
                 $status = $langkah->ke_status;
             @endphp
             <li class="relative flex flex-col pb-5 last:pb-0 sm:flex-row sm:gap-3">
-                <x-ui.waktu :nilai="$langkah->created_at" class="pl-6 text-body-s text-on-surface-variant sm:w-36 sm:shrink-0 sm:pl-0" />
+                <span class="pl-6 text-body-s text-on-surface-variant tabular-nums sm:w-14 sm:shrink-0 sm:pl-0">{{ $langkah->created_at->format('H.i') }}</span>
                 <div class="flex min-w-0 flex-1 gap-3">
                     <span class="relative flex w-3 shrink-0 justify-center" aria-hidden="true">
                         @unless ($terakhir)

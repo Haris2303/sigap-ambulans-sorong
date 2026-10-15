@@ -1,4 +1,4 @@
-@props(['nama', 'label', 'opsi', 'nilai' => null, 'kosong' => null, 'bantuan' => null, 'wajib' => false, 'galat' => null])
+@props(['nama', 'label', 'opsi', 'nilai' => null, 'kosong' => null, 'bantuan' => null, 'wajib' => false, 'galat' => null, 'labelTersembunyi' => false])
 {{-- $opsi: nilai => label, atau judul kelompok => [nilai => label] (dirender sebagai optgroup). appearance-none dengan
      ikon chevron-down 18px di kanan (DESIGN.md 6.3). --}}
 @php
@@ -8,7 +8,7 @@
     $deskripsi = collect([$bantuan ? $id.'-bantuan' : null, $galat ? $id.'-galat' : null])->filter()->implode(' ');
 @endphp
 <div>
-    <label for="{{ $id }}" class="{{ \App\Support\Tampilan::LABEL_ISIAN }}">{{ $label }}@if ($wajib) (wajib)@endif</label>
+    <label for="{{ $id }}" class="{{ $labelTersembunyi ? 'sr-only' : \App\Support\Tampilan::LABEL_ISIAN }}">{{ $label }}@if ($wajib) (wajib)@endif</label>
     <div class="relative">
         <select id="{{ $id }}" name="{{ $nama }}"
             @if ($wajib) required @endif

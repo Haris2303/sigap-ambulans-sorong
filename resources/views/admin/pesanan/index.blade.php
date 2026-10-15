@@ -1,40 +1,40 @@
+{{-- Daftar pesanan Dinkes arah B (docs/RETEMA_B.md 8.2, acuan kartu "Pesanan terbaru" B1-dasbor-1440.png). --}}
 <x-layouts.app judul="Pesanan">
     <x-ui.judul-halaman judul="Pesanan" deskripsi="Pesanan gawat dan yang paling lama menunggu tampil paling atas." />
 
-    {{-- Filter di dalam kartu. Kata kunci dan tab dipertahankan lewat input tersembunyi; kata kunci diisi dari kolom cari di bilah atas. --}}
-    <x-ui.panel class="mb-5">
-        <form method="GET" action="{{ route('admin.pesanan.index') }}" class="grid gap-4 sm:grid-cols-2 lg:grid-cols-4">
-            <input type="hidden" name="tab" value="{{ $tab->value }}">
-            @if (($filter['q'] ?? '') !== '')
-                <input type="hidden" name="q" value="{{ $filter['q'] }}">
-            @endif
-            <x-ui.pilihan nama="status" label="Status" :opsi="\App\Enums\PesananStatus::opsi()" :nilai="$filter['status'] ?? null" kosong="Semua status" />
-            <x-ui.pilihan nama="jenis_layanan" label="Jenis layanan" :opsi="\App\Enums\JenisLayanan::opsi()" :nilai="$filter['jenis_layanan'] ?? null" kosong="Semua jenis" />
-            <x-ui.isian nama="dari" label="Dari tanggal" tipe="date" :nilai="$filter['dari'] ?? null" />
-            <x-ui.isian nama="sampai" label="Sampai tanggal" tipe="date" :nilai="$filter['sampai'] ?? null" />
-            <div class="flex items-center gap-2 sm:col-span-2 lg:col-span-4">
-                <x-ui.tombol nada="sekunder" tipe="submit" ikon="search">Terapkan</x-ui.tombol>
+    <x-ui.panel :flush="true" data-shot="tabel-pesanan">
+        <div class="flex flex-wrap items-center gap-3 px-5 pt-5 lg:px-6 lg:pt-6">
+            <x-ui.tabs label="Filter status pesanan" class="shrink-0">
+                @foreach (\App\Enums\TabPesanan::cases() as $t)
+                    <x-ui.tab :href="route('admin.pesanan.index', $queryTab + ['tab' => $t->value])" :aktif="$tab === $t">{{ $t->label() }}</x-ui.tab>
+                @endforeach
+            </x-ui.tabs>
+
+            <form method="GET" action="{{ route('admin.pesanan.index') }}" class="flex flex-wrap items-center gap-2">
+                <input type="hidden" name="tab" value="{{ $tab->value }}">
+                @if (($filter['q'] ?? '') !== '')
+                    <input type="hidden" name="q" value="{{ $filter['q'] }}">
+                @endif
+                <x-ui.pilihan nama="status" label="Status" :label-tersembunyi="true" :opsi="\App\Enums\PesananStatus::opsi()" :nilai="$filter['status'] ?? null" kosong="Semua status" class="w-40" />
+                <x-ui.pilihan nama="jenis_layanan" label="Jenis layanan" :label-tersembunyi="true" :opsi="\App\Enums\JenisLayanan::opsi()" :nilai="$filter['jenis_layanan'] ?? null" kosong="Semua jenis" class="w-40" />
+                <x-ui.isian nama="dari" label="Dari tanggal" :label-tersembunyi="true" tipe="date" :nilai="$filter['dari'] ?? null" class="w-36" />
+                <x-ui.isian nama="sampai" label="Sampai tanggal" :label-tersembunyi="true" tipe="date" :nilai="$filter['sampai'] ?? null" class="w-36" />
+                <x-ui.tombol nada="sekunder" tipe="submit" ikon="search" ikon-ukuran="18">Terapkan</x-ui.tombol>
                 @if ($adaFilter)
                     <x-ui.tombol nada="hantu" :href="route('admin.pesanan.index', ['tab' => $tab->value])">Atur ulang</x-ui.tombol>
                 @endif
-            </div>
-        </form>
-    </x-ui.panel>
+            </form>
 
-    <x-ui.panel :flush="true">
-        <x-ui.tabs label="Filter status pesanan">
-            @foreach (\App\Enums\TabPesanan::cases() as $t)
-                <x-ui.tab :href="route('admin.pesanan.index', $queryTab + ['tab' => $t->value])" :aktif="$tab === $t">{{ $t->label() }}</x-ui.tab>
-            @endforeach
-        </x-ui.tabs>
+            <x-ui.cari :aksi="route('admin.pesanan.index')" label="Cari kode pesanan atau nama pasien" :nilai="$filter['q'] ?? ''" placeholder="Kode pesanan atau nama pasien" class="ml-auto max-w-xs lg:max-w-sm" />
+        </div>
 
-        @if ($daftar->isEmpty())
-            <p class="px-6 py-8 text-body-l text-on-surface-variant">
-                {{ $adaFilter ? 'Tidak ada pesanan yang cocok dengan filter.' : ($tab === \App\Enums\TabPesanan::Semua ? 'Belum ada pesanan.' : 'Belum ada pesanan di tab ini.') }}
-            </p>
-        @else
-            @include('admin._tabel-pesanan', ['daftar' => $daftar])
-        @endif
+        <div class="px-5 pb-5 pt-4 lg:px-6 lg:pb-6">
+            @include('pesanan._baris', [
+                'daftar' => $daftar,
+                'rute' => 'admin.pesanan.show',
+                'pesanKosong' => $adaFilter ? 'Tidak ada pesanan yang cocok dengan filter.' : ($tab === \App\Enums\TabPesanan::Semua ? 'Belum ada pesanan.' : 'Belum ada pesanan di tab ini.'),
+            ])
+        </div>
     </x-ui.panel>
 
     @if ($daftar->isNotEmpty())
