@@ -13,12 +13,10 @@
                 <x-ui.pilihan nama="kepemilikan" label="Kepemilikan" :opsi="\App\Enums\Kepemilikan::opsi()" :nilai="$faskes->kepemilikan" kosong="Belum diketahui" />
                 <x-ui.isian nama="telepon" label="Telepon" tipe="tel" :nilai="$faskes->telepon" />
                 <x-ui.isian nama="alamat" label="Alamat" :nilai="$faskes->alamat" bantuan="Terisi otomatis bila Anda memilih titik di peta." />
-                <div>
+                <x-ui.centang nama="aktif" label="Faskes aktif" :nilai="$faskes->aktif" />
+                <div class="lg:col-span-2">
                     <p class="mb-2 text-label-l text-on-surface">Titik koordinat</p>
                     <x-peta.pemilih lat="lat" lng="lng" alamat="alamat" :nilai-lat="$faskes->lat" :nilai-lng="$faskes->lng" tinggi="h-64 lg:h-56" />
-                </div>
-                <div class="lg:col-span-2">
-                    <x-ui.centang nama="aktif" label="Faskes aktif" :nilai="$faskes->aktif" />
                 </div>
             </div>
 
