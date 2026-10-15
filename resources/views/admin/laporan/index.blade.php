@@ -21,17 +21,19 @@
         <x-ui.stat tone="primary" icon="ambulance" :value="\App\Services\LaporanPesanan::formatDurasi($data['durasi']['rata'])" label="Rata-rata durasi layanan" :hint="$data['durasi']['jumlah'].' pesanan selesai'" class="min-w-0 flex-[1_1_14rem]" />
     </div>
 
-    <x-ui.bagian judul="Pesanan per status">
-        <x-ui.panel>
-            <x-ui.chart type="doughnut" title="Pesanan per status" unit="pesanan" center-label="pesanan" :segments="$segmenStatus" />
-        </x-ui.panel>
-    </x-ui.bagian>
+    <div class="grid grid-cols-1 gap-5 lg:grid-cols-2">
+        <x-ui.bagian judul="Pesanan per status">
+            <x-ui.panel>
+                <x-ui.chart type="doughnut" title="Pesanan per status" unit="pesanan" center-label="pesanan" :segments="$segmenStatus" />
+            </x-ui.panel>
+        </x-ui.bagian>
 
-    <x-ui.bagian judul="Pesanan per jenis layanan">
-        <x-ui.panel>
-            <x-ui.chart type="doughnut" title="Pesanan per jenis layanan" unit="pesanan" center-label="pesanan" :segments="$segmenJenis" />
-        </x-ui.panel>
-    </x-ui.bagian>
+        <x-ui.bagian judul="Pesanan per jenis layanan">
+            <x-ui.panel>
+                <x-ui.chart type="doughnut" title="Pesanan per jenis layanan" unit="pesanan" center-label="pesanan" :segments="$segmenJenis" />
+            </x-ui.panel>
+        </x-ui.bagian>
+    </div>
 
     <x-ui.bagian judul="Penugasan per Faskes asal">
         @if (empty($data['per_faskes']))
