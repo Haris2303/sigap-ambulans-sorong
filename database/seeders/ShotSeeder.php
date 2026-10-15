@@ -33,6 +33,8 @@ class ShotSeeder extends Seeder
 
     private User $sopir;
 
+    private User $sopir2;
+
     private Ambulans $ambulansSopir;
 
     private Faskes $faskes;
@@ -116,6 +118,20 @@ class ShotSeeder extends Seeder
             'email_verified_at' => now(),
         ]);
 
+        // Sopir online kedua, bebas (tanpa pesanan aktif): supaya panel "Tugaskan" di R6 punya pilihan sungguhan
+        // (bukan hanya peringatan "tidak ada sopir online"), karena $this->sopir dipegang SGP-000038 terus-menerus.
+        $this->sopir2 = User::create([
+            'name' => 'Yulianus Kafiar',
+            'email' => 'sopir2'.self::DOMAIN,
+            'password' => 'password',
+            'role' => Role::Sopir,
+            'aktif' => true,
+            'faskes_id' => $this->faskes->id,
+            'sedang_online' => true,
+            'no_telepon' => '081100000005',
+            'email_verified_at' => now(),
+        ]);
+
         User::create([
             'name' => 'Warga Demo',
             'email' => 'warga'.self::DOMAIN,
@@ -137,8 +153,10 @@ class ShotSeeder extends Seeder
     }
 
     /**
-     * 23 ambulans tambahan tanpa sopir tetap, hanya untuk angka ketersediaan (B1: 19 dari 24).
-     * 19 tersedia + 3 servis di sini, ditambah ambulans sopir yang berakhir "bertugas" pada SGP-000038 = 19 tersedia dari 24.
+     * 23 ambulans tambahan tanpa sopir tetap, hanya untuk angka ketersediaan (B1: 19 dari 24 sebelum R6).
+     * 19 tersedia + 4 servis di sini, ditambah ambulans sopir yang berakhir "bertugas" pada SGP-000038 dan satu lagi
+     * pada contoh Ditugaskan R6 (contohDitugaskan()) = 18 tersedia dari 24 setelah R6. Selisih dari B1 ini adalah
+     * selisih data (contoh tambahan diminta R6 untuk menangkap panel "Ganti ambulans"), bukan markup.
      */
     private function ambulansTambahan(): void
     {
@@ -222,7 +240,34 @@ class ShotSeeder extends Seeder
             }
         }
 
+        $this->contohDitugaskan();
         $this->persisTerbaru();
+    }
+
+    /**
+     * Satu pesanan contoh berstatus Ditugaskan (ditugaskan tapi belum diterima sopir): satu-satunya status yang
+     * tidak tercakup SGP-000037 sampai 000041, dibutuhkan R6 untuk menangkap panel "Ganti ambulans" (Lepas
+     * penugasan) pada halaman detail. Tanggal jauh di luar jendela 30 hari grafik dasbor dan di luar lima pesanan
+     * terbaru, supaya tidak mengubah angka yang sudah dicocokkan dengan B1 pada langkah "DB".
+     */
+    private function contohDitugaskan(): void
+    {
+        $this->waktu = Carbon::parse('2026-09-01 09:00:00', config('app.timezone'));
+        Carbon::setTestNow($this->waktu);
+        $ambulans = Ambulans::where('faskes_id', $this->faskes->id)
+            ->where('status', StatusAmbulans::Tersedia)->where('id', '!=', $this->ambulansSopir->id)->firstOrFail();
+        $pesanan = $this->alur->buat($this->wargaFiller(), [
+            'nama_pasien' => 'Yosina Sremba',
+            'no_telepon_kontak' => '081100000099',
+            'jenis_layanan' => JenisLayanan::Darurat,
+            'tingkat_darurat' => TingkatDarurat::Biasa,
+            'lokasi_jemput' => 'Jalan Pramuka, Sorong',
+        ]);
+        $this->maju(3);
+        $this->alur->verifikasi($pesanan, $this->admin);
+        $this->maju(3);
+        $this->alur->tugaskan($pesanan, $this->admin, $ambulans, $this->sopir2);
+        // Tetap "Ditugaskan": belum diterima sopir, supaya panel "Ganti ambulans" (Lepas penugasan) tampil di detail.
     }
 
     private ?User $warga = null;
