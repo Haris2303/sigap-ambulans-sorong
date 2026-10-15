@@ -52,7 +52,8 @@ class BerandaFaskesTest extends TestCase
             ->assertOk()
             ->assertSee('RS Segar')
             ->assertSee('Jalan Merdeka')
-            ->assertSee('5/7')
+            // Ketersediaan kini petak ring (docs/RETEMA_B.md 8.5 arah B, R8): aria-label cincin membawa angka, bukan lagi teks "5/7".
+            ->assertSee('Bed IGD: 5 dari 7', false)
             ->assertSee('Puskesmas Baru')
             ->assertSee('Belum diperbarui')
             ->assertSee('Puskesmas Lama')

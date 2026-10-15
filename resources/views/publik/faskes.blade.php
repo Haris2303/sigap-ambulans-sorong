@@ -16,27 +16,37 @@
     @if ($faskes->isEmpty())
         <x-ui.kosong pesan="Belum ada Faskes untuk jenis ini." />
     @else
-        <x-ui.tabel>
-            <x-slot:kepala>
-                <th>Faskes</th>
-                <th>Ketersediaan</th>
-            </x-slot:kepala>
-            @foreach ($faskes as $f)
-                <tr>
-                    <td class="align-top">
-                        <p class="text-label-l">{{ $f->nama }}</p>
-                        <p class="text-body-s text-on-surface-variant">{{ $f->jenis->label() }}</p>
-                        @if ($f->alamat)
-                            <p class="text-body-s text-on-surface-variant">{{ $f->alamat }}</p>
-                        @endif
-                        @if ($f->telepon)
-                            <p class="text-body-s tabular-nums text-on-surface-variant">{{ $f->telepon }}</p>
-                        @endif
-                    </td>
-                    <td><x-ui.ketersediaan :faskes="$f" /></td>
-                </tr>
-            @endforeach
-        </x-ui.tabel>
+        <x-ui.panel flush>
+            <div class="divide-y divide-outline-variant">
+                @foreach ($faskes as $f)
+                    <div class="flex flex-col gap-4 p-5 sm:flex-row sm:items-start lg:px-6">
+                        <div class="flex min-w-0 flex-1 items-start gap-3">
+                            <x-ui.icon-chip tone="neutral" icon="building-2" />
+                            <div class="min-w-0">
+                                <p class="text-title-m">{{ $f->nama }}</p>
+                                <p class="text-body-s text-on-surface-variant">{{ $f->jenis->label() }}</p>
+                                @if ($f->alamat)
+                                    <p class="text-body-s text-on-surface-variant">{{ $f->alamat }}</p>
+                                @endif
+                                @if ($f->telepon)
+                                    <p class="text-body-s tabular-nums text-on-surface-variant">{{ $f->telepon }}</p>
+                                @endif
+                                <x-ui.pembaruan :faskes="$f" class="mt-2" />
+                            </div>
+                        </div>
+                        <div class="flex flex-wrap items-start gap-3 sm:shrink-0">
+                            <x-ui.ring-tile :tersedia="$f->bed_igd_tersedia" :total="$f->bed_igd_total" label="Bed IGD" class="w-25" />
+                            <x-ui.ring-tile :tersedia="$f->bed_rawat_inap_tersedia" :total="$f->bed_rawat_inap_total" label="Bed rawat inap" class="w-25" />
+                            <div class="text-body-s text-on-surface-variant">
+                                <p>Dokter umum <span class="tabular-nums text-on-surface">{{ $f->dokter_umum_tersedia }}</span></p>
+                                <p>Dokter spesialis <span class="tabular-nums text-on-surface">{{ $f->dokter_spesialis_tersedia }}</span></p>
+                                <p>Ambulans tersedia <span class="tabular-nums text-on-surface">{{ $f->ambulans_tersedia_count ?? '-' }}</span></p>
+                            </div>
+                        </div>
+                    </div>
+                @endforeach
+            </div>
+        </x-ui.panel>
     @endif
 
     <x-ui.bagian judul="Peta Faskes">

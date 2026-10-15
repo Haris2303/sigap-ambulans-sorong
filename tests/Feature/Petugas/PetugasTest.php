@@ -190,7 +190,9 @@ class PetugasTest extends TestCase
         $this->actingAs($this->petugas)->put(route('petugas.ketersediaan.update'), $this->ketersediaan());
         auth()->logout();
 
-        $this->get(route('faskes.index'))->assertSee('Faskes Saya')->assertSee('3/8')->assertSee('7/20');
+        // Ketersediaan kini petak ring (docs/RETEMA_B.md 8.5 arah B, R8): aria-label cincin membawa angka, bukan lagi teks "3/8".
+        $this->get(route('faskes.index'))->assertSee('Faskes Saya')
+            ->assertSee('Bed IGD: 3 dari 8', false)->assertSee('Bed rawat inap: 7 dari 20', false);
     }
 
     // Status ambulans

@@ -198,7 +198,9 @@ class AlurPenuhTest extends TestCase
         ])->assertSessionHas('sukses');
 
         auth()->logout();
-        $this->get(route('faskes.index'))->assertSee('5/12')->assertSee('18/40')->assertDontSee('Belum diperbarui');
+        // Ketersediaan kini petak ring (docs/RETEMA_B.md 8.5 arah B, R8): aria-label cincin membawa angka, bukan lagi teks "5/12".
+        $this->get(route('faskes.index'))->assertSee('Bed IGD: 5 dari 12', false)->assertSee('Bed rawat inap: 18 dari 40', false)
+            ->assertDontSee('Belum diperbarui');
 
         $json = $this->getJson(route('faskes.data'))->json('data.faskes.0');
         $this->assertSame(5, $json['bed_igd_tersedia']);

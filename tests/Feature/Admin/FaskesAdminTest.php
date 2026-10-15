@@ -192,7 +192,9 @@ class FaskesAdminTest extends TestCase
         $this->admin()->put(route('admin.ketersediaan.update', $f), $this->ketersediaan());
 
         auth()->logout();
-        $this->get(route('faskes.index'))->assertOk()->assertSee('Faskes Publik')->assertSee('4/10')->assertSee('12/30')
+        // Ketersediaan kini petak ring (docs/RETEMA_B.md 8.5 arah B, R8): aria-label cincin membawa angka, bukan lagi teks "4/10".
+        $this->get(route('faskes.index'))->assertOk()->assertSee('Faskes Publik')
+            ->assertSee('Bed IGD: 4 dari 10', false)->assertSee('Bed rawat inap: 12 dari 30', false)
             ->assertDontSee('Belum diperbarui');
     }
 }
