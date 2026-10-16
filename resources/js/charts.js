@@ -198,7 +198,10 @@ function konfigBatang(data, tema) {
             responsive: true,
             maintainAspectRatio: false,
             animation: kurangGerak() ? false : { duration: 700, easing: 'easeOutQuart' },
-            interaction: { mode: 'index', intersect: false },
+            // axis: 'y' wajib untuk batang horizontal (indexAxis: 'y') - tanpa ini mode 'index' bawaan Chart.js
+            // mencocokkan posisi kursor lewat sumbu x (nilai), bukan baris (label) tempat kursor berada, sehingga
+            // dua batang dengan nilai sama bisa saling tertukar tooltip-nya.
+            interaction: { mode: 'index', intersect: false, axis: 'y' },
             scales: {
                 x: {
                     min: 0,
