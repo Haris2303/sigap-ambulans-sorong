@@ -2,8 +2,11 @@
 
 namespace App\Http\Controllers\Publik;
 
+use App\Enums\JenisLayanan;
 use App\Enums\Role;
 use App\Http\Controllers\Controller;
+use App\Models\Ambulans;
+use App\Models\Faskes;
 use Illuminate\Contracts\View\View;
 
 class BerandaController extends Controller
@@ -22,6 +25,12 @@ class BerandaController extends Controller
             ];
         }
 
-        return view('publik.beranda', ['aksiUtama' => $aksi]);
+        $statistik = [
+            'faskes' => Faskes::where('aktif', true)->count(),
+            'ambulans' => Ambulans::count(),
+            'layanan' => count(JenisLayanan::cases()),
+        ];
+
+        return view('publik.beranda', ['aksiUtama' => $aksi, 'statistik' => $statistik]);
     }
 }
