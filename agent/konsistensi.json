@@ -148,7 +148,7 @@
     {
       "id": "elemen-mentah",
       "tipe": "larang",
-      "pesan": "Elemen form/tabel/tombol mentah di halaman. Pakai <x-ui.tombol>, <x-ui.tabel>, <x-ui.isian>, <x-ui.pilihan>, <x-ui.area-teks> (input hidden boleh).",
+      "pesan": "Elemen form/tabel/tombol mentah di halaman. Pakai <x-ui.tombol>, <x-ui.tabel>, <x-ui.isian>, <x-ui.pilihan>, <x-ui.area-teks> (input hidden boleh). Pengecualian sempit: publik/beranda.blade.php (keputusan pemilik proyek, dua tombol JS murni tanpa aksi server di demo beranda publik).",
       "folder": [
         "resources/views"
       ],
@@ -157,7 +157,8 @@
       ],
       "kecuali": [
         "^resources/views/components/",
-        "^resources/views/pdf/"
+        "^resources/views/pdf/",
+        "^resources/views/publik/beranda\\.blade\\.php$"
       ],
       "pola": "<(?:button|table|select|textarea)\\b|<input\\b(?![^>]*\\btype\\s*=\\s*[\\\"']hidden[\\\"'])"
     },
