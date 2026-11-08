@@ -1,6 +1,8 @@
 /* Dikunci: dibuat oleh runner dari agent/templates/app.css. CSS tambahan ditulis di tambahan.css. */
 @import 'tailwindcss';
-@import '@fontsource-variable/public-sans/wght.css';
+@import '@fontsource-variable/plus-jakarta-sans/wght.css';
+/* Roboto tidak dipakai lagi (font dasar: Plus Jakarta Sans); impornya dihapus di R9 (docs/RETEMA_B.md 4.4). */
+@import '@fontsource-variable/roboto/wght.css';
 @import './design-tokens.css';
 @import './tambahan.css';
 
@@ -13,7 +15,7 @@
     }
 
     body {
-        @apply bg-canvas font-sans text-body text-on-surface antialiased;
+        @apply bg-canvas font-sans text-body-l text-on-surface antialiased;
     }
 
     :where(a, button, input, select, textarea, summary, [tabindex]):focus-visible {
@@ -21,7 +23,7 @@
     }
 
     ::selection {
-        @apply bg-primary-soft text-on-surface;
+        @apply bg-primary-container text-on-primary-container;
     }
 
     @media (prefers-reduced-motion: reduce) {

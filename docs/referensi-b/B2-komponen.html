@@ -1,0 +1,126 @@
+<!doctype html>
+<html lang="id">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Arah B, Terang lembut</title>
+
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+<style>
+body{margin:0}
+
+.k-root{background:var(--bg);color:var(--text);font-family:var(--font);font-size:14px;line-height:20px;padding:36px 40px 56px;min-height:100vh}
+.k-root *{box-sizing:border-box}
+.k-top{display:flex;gap:40px;align-items:flex-end;justify-content:space-between;flex-wrap:wrap}
+.k-h1{font-size:30px;line-height:36px;font-weight:var(--wh);margin:0;letter-spacing:var(--trk)}
+.k-lead{color:var(--dim);margin:6px 0 0;max-width:560px}
+.k-sw{display:flex;gap:10px;flex-wrap:wrap}
+.k-sw div{width:92px}
+.k-sw i{display:block;height:44px;border-radius:var(--ri);border:1px solid var(--line)}
+.k-sw b{display:block;font-size:12px;line-height:16px;font-weight:600;margin-top:6px}
+.k-sw span{font-size:11px;line-height:14px;color:var(--dim);font-variant-numeric:tabular-nums}
+.k-grid{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:24px;margin-top:28px;align-items:start}
+.k-card{background:var(--panel);border:var(--border);border-radius:var(--r);box-shadow:var(--shadow);padding:24px;min-width:0}
+.k-t{font-size:17px;line-height:24px;font-weight:var(--wh);margin:0}
+.k-s{color:var(--dim);font-size:13px;line-height:18px}
+.k-sec{margin:22px 0 10px;font-size:12px;line-height:16px;font-weight:600;color:var(--dim)}
+.k-btn{display:inline-flex;align-items:center;justify-content:center;gap:8px;height:44px;padding:0 20px;border-radius:var(--rb);font-weight:600;font-size:14px;border:1px solid transparent;text-decoration:none;white-space:nowrap;font-family:inherit}
+.k-btn.p{background:var(--acc);color:var(--acc-ink)}
+.k-btn.s{background:var(--panel2);color:var(--text);border-color:var(--line-strong)}
+.k-btn.g{color:var(--acc-text);padding:0 12px}
+.k-btn.d{background:var(--err-bg);color:var(--err-fg)}
+.k-btn.sm{height:36px;padding:0 14px}
+.k-row{display:flex;gap:10px;flex-wrap:wrap;align-items:center}
+.k-field{display:flex;flex-direction:column;gap:6px;margin-bottom:14px}
+.k-field>b{font-weight:600;font-size:13px}
+.k-in{height:48px;border-radius:var(--ri);border:1px solid var(--field,var(--line-strong));background:var(--input);padding:0 14px;display:flex;align-items:center;justify-content:space-between;color:var(--text)}
+.k-in.f{border-color:var(--acc-text);box-shadow:0 0 0 3px var(--ring)}
+.k-in.e{border-color:var(--err,var(--err-fg))}
+.k-in.ta{height:84px;align-items:flex-start;padding-top:12px}
+.k-help{font-size:12px;line-height:16px;color:var(--dim)}
+.k-help.e{color:var(--err,var(--err-fg));font-weight:500}
+.k-opts{display:grid;grid-template-columns:repeat(3,1fr);gap:10px}
+.k-opt{border:1px solid var(--field,var(--line-strong));border-radius:var(--ri);padding:12px 10px;display:flex;flex-direction:column;gap:8px;align-items:flex-start;background:var(--input);font-weight:600;font-size:13px}
+.k-opt.on{border-color:var(--acc-text);box-shadow:inset 0 0 0 1px var(--acc-text);background:var(--sel-bg)}
+.k-opt .ico{width:30px;height:30px;border-radius:9px;background:var(--panel2);display:flex;align-items:center;justify-content:center;color:var(--dim)}
+.k-opt.on .ico{background:var(--acc);color:var(--acc-ink)}
+.k-seg{display:flex;background:var(--panel2);border-radius:var(--rb);padding:4px;gap:4px;border:1px solid var(--line)}
+.k-seg span{flex:1;height:36px;display:flex;align-items:center;justify-content:center;border-radius:calc(var(--rb) - 3px);font-weight:600;color:var(--dim)}
+.k-seg span.on{background:var(--panel);color:var(--text);box-shadow:var(--shadow-s)}
+.k-badge{display:inline-flex;align-items:center;gap:6px;height:24px;padding:0 10px;border-radius:12px;font-size:12px;font-weight:600;white-space:nowrap}
+.k-badge i{width:6px;height:6px;border-radius:50%;background:currentColor}
+.b-ok{background:var(--ok-bg);color:var(--ok-fg)}.b-warn{background:var(--warn-bg);color:var(--warn-fg)}.b-err{background:var(--err-bg);color:var(--err-fg)}.b-info{background:var(--info-bg);color:var(--info-fg)}.b-neu{background:var(--neu-bg);color:var(--neu-fg)}.b-vio{background:var(--vio-bg,var(--info-bg));color:var(--vio-fg,var(--info-fg))}
+.k-tabs{display:flex;gap:4px;border-bottom:1px solid var(--line);margin:16px 0 4px}
+.k-tab{height:44px;padding:0 14px;display:flex;align-items:center;font-weight:600;color:var(--dim);border-bottom:3px solid transparent;margin-bottom:-1px}
+.k-tab.on{color:var(--acc-text);border-bottom-color:var(--acc-text)}
+.k-ptabs{display:flex;background:var(--panel2);border-radius:var(--rb);padding:4px;gap:2px;margin:16px 0 4px}
+.k-ptabs span{height:36px;padding:0 14px;display:flex;align-items:center;border-radius:calc(var(--rb) - 3px);font-weight:600;color:var(--dim);font-size:13px}
+.k-ptabs span.on{background:var(--panel);color:var(--text);box-shadow:var(--shadow-s)}
+.k-li{display:grid;grid-template-columns:minmax(0,1fr) auto;gap:12px;align-items:center;padding:14px 0;border-bottom:1px solid var(--line)}
+.k-li:last-child{border-bottom:0}
+.k-code{font-weight:600;font-variant-numeric:tabular-nums}
+.k-mut{color:var(--dim);font-size:13px}
+.k-av{width:36px;height:36px;border-radius:50%;background:var(--info-bg);color:var(--info-fg);display:flex;align-items:center;justify-content:center;font-weight:700;font-size:13px;flex:none}
+.k-empty{margin-top:18px;border:1px dashed var(--line-strong);border-radius:var(--ri);padding:22px;text-align:center;display:flex;flex-direction:column;align-items:center;gap:8px}
+.k-empty .ico{width:44px;height:44px;border-radius:14px;background:var(--panel2);color:var(--dim);display:flex;align-items:center;justify-content:center}
+.k-info{display:flex;flex-direction:column;gap:16px}
+.k-info b{display:block;font-size:12px;line-height:16px;color:var(--dim);font-weight:600}
+.k-tl{position:relative;padding-left:26px;margin-top:6px}
+.k-tl::before{content:"";position:absolute;left:6px;top:8px;bottom:12px;width:2px;background:var(--line)}
+.k-st{position:relative;display:grid;grid-template-columns:56px minmax(0,1fr);gap:10px;padding:8px 0}
+.k-st::before{content:"";position:absolute;left:-25px;top:13px;width:12px;height:12px;border-radius:50%;background:var(--panel);border:2px solid var(--line-strong)}
+.k-st.now::before{background:var(--acc);border-color:var(--acc)}
+.k-st .t{color:var(--dim);font-variant-numeric:tabular-nums}
+.k-st.now .w{font-weight:700}
+.k-dlg{border-radius:calc(var(--r) + 4px);background:var(--panel);border:var(--border);box-shadow:var(--shadow-l);padding:24px}
+.k-snack{display:flex;align-items:center;gap:20px;background:var(--snack-bg);color:var(--snack-fg);border-radius:var(--ri);padding:14px 16px;margin-top:18px}
+.k-snack b{margin-left:auto;color:var(--snack-act);font-weight:700}
+.k-note{display:flex;gap:10px;align-items:flex-start;background:var(--warn-bg);color:var(--warn-fg);border-radius:var(--ri);padding:12px 14px;margin-top:14px;font-weight:500}
+.k-phone{width:340px;margin:0 auto;border-radius:40px;border:10px solid var(--bezel);background:var(--bg);overflow:hidden;display:flex;flex-direction:column;height:690px;box-shadow:var(--shadow-l)}
+.k-pb{height:60px;display:flex;align-items:center;gap:12px;padding:0 16px;font-weight:var(--wh);font-size:17px;background:var(--panel);border-bottom:1px solid var(--line)}
+.k-pc{flex:1;padding:16px;overflow:hidden}
+.k-bar{height:6px;border-radius:3px;background:var(--panel2);overflow:hidden;margin:8px 0 16px}
+.k-bar i{display:block;height:6px;width:66%;border-radius:3px;background:var(--acc)}
+.k-pf{padding:12px 16px 16px;background:var(--panel);border-top:1px solid var(--line)}
+
+</style>
+
+</head>
+<body>
+
+<div class="k-root" style="--bg:#F3F5FB;--panel:#FFFFFF;--panel2:#F3F5FB;--line:#E7EAF3;--line-strong:#D0D6E4;--text:#1B2437;--dim:#5F6B80;--acc:#1368CE;--acc-ink:#FFFFFF;--acc-text:#1368CE;--ring:rgba(19,104,206,.18);--input:#FFFFFF;--r:24px;--ri:14px;--rb:14px;--shadow:0 10px 30px -12px rgba(30,41,100,.14);--shadow-s:0 2px 8px -2px rgba(30,41,100,.2);--shadow-l:0 24px 60px -20px rgba(30,41,100,.35);--border:0;--wh:800;--trk:-.025em;--font:'Plus Jakarta Sans',system-ui,sans-serif;--ok-bg:#DDF6EA;--ok-fg:#0B7A53;--warn-bg:#FFF1D6;--warn-fg:#8A5200;--err-bg:#FFE9E4;--err-fg:#B8341F;--info-bg:#E4EEFF;--info-fg:#0F55A8;--neu-bg:#EEF1F7;--neu-fg:#475066;--vio-bg:#EDE8FF;--vio-fg:#5B3FD0;--field:#7F8AA0;--err:#CC3A24;--sel-bg:#EEF4FF;--snack-bg:#1B2437;--snack-fg:#FFFFFF;--snack-act:#8DB8FF;--bezel:#1B2437">
+ <div class="k-top"><div><h1 class="k-h1">Arah B, Terang lembut</h1><p class="k-lead">Terang dan ramah: sudut besar, bayangan halus, warna-warni terkendali pada chip, grafik, dan avatar. Ada sapaan dan filter periode.</p></div><div class="k-sw"><div><i style="background:#F3F5FB"></i><b>Latar</b><span>#F3F5FB</span></div><div><i style="background:#FFFFFF"></i><b>Kartu</b><span>#FFFFFF</span></div><div><i style="background:#1368CE"></i><b>Aksen</b><span>#1368CE</span></div><div><i style="background:#1B2437"></i><b>Teks</b><span>#1B2437</span></div><div><i style="background:#5F6B80"></i><b>Sekunder</b><span>#5F6B80</span></div><div><i style="background:#0FA582"></i><b>Sukses</b><span>#0FA582</span></div><div><i style="background:#F5A524"></i><b>Waspada</b><span>#F5A524</span></div><div><i style="background:#FF6B57"></i><b>Bahaya</b><span>#FF6B57</span></div></div></div>
+ <div class="k-grid">
+  <div class="k-card"><h2 class="k-t">Tombol, isian, pilihan</h2><div class="k-s">Berlaku di semua form: buat pesanan, ketersediaan, data master, masuk.</div><div class="k-sec" style="margin-top:18px">Tombol</div><div class="k-row"><a class="k-btn p" href="#">Verifikasi</a><a class="k-btn s" href="#">Tugaskan</a><a class="k-btn g" href="#">Batal</a><a class="k-btn d" href="#">Tolak</a></div><div class="k-row" style="margin-top:10px"><a class="k-btn p sm" href="#"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 5v14M5 12h14"/></svg>Buat pesanan</a><a class="k-btn s sm" href="#">Ekspor</a></div><div class="k-sec">Isian</div><div class="k-field"><b>Nama pasien</b><div class="k-in">Maria Kambu</div></div><div class="k-field"><b>Nomor telepon</b><div class="k-in f"><span>0812 3456 78</span></div><span class="k-help">Dipakai sopir untuk menghubungi pemesan.</span></div><div class="k-field"><b>Alamat jemput</b><div class="k-in e"><span style="color:var(--dim)">Jalan, nomor, kelurahan</span></div><span class="k-help e">Alamat jemput wajib diisi.</span></div><div class="k-field"><b>Faskes tujuan</b><div class="k-in"><span>RSUD Kota</span><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="m6 9 6 6 6-6"/></svg></div></div><div class="k-sec">Pilihan layanan</div><div class="k-opts"><div class="k-opt on"><span class="ico"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M10 10H6"/><path d="M14 18V6a2 2 0 0 0-2-2H4a2 2 0 0 0-2 2v11a1 1 0 0 0 1 1h2"/><path d="M19 18h2a1 1 0 0 0 1-1v-3.28a1 1 0 0 0-.684-.948l-1.923-.641a1 1 0 0 1-.578-.502l-1.539-3.076A1 1 0 0 0 16.382 8H14"/><path d="M8 8v4"/><path d="M9 18h6"/><circle cx="17" cy="18" r="2"/><circle cx="7" cy="18" r="2"/></svg></span>Darurat</div><div class="k-opt"><span class="ico"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M16 21v-2a4 4 0 0 0-4-4H6a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M22 21v-2a4 4 0 0 0-3-3.87"/><path d="M16 3.13a4 4 0 0 1 0 7.75"/></svg></span>Persalinan</div><div class="k-opt"><span class="ico"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M6 22V4a2 2 0 0 1 2-2h8a2 2 0 0 1 2 2v18Z"/><path d="M6 12H4a2 2 0 0 0-2 2v6a2 2 0 0 0 2 2h2"/><path d="M18 9h2a2 2 0 0 1 2 2v9a2 2 0 0 1-2 2h-2"/><path d="M10 6h4M10 10h4M10 14h4M10 18h4"/></svg></span>Rujukan</div></div></div>
+  <div class="k-card"><h2 class="k-t">Daftar, tab, status</h2><div class="k-s">Dipakai di Pesanan, Faskes, Ambulans, Sopir, Petugas.</div><div class="k-ptabs"><span class="on">Semua</span><span>Perlu tindakan</span><span>Berjalan</span></div><div class="k-li"><div style="display:flex;gap:12px;align-items:center;min-width:0"><span class="k-av">MK</span><div style="min-width:0"><div class="k-code">SGP-000041</div><div class="k-mut">Maria Kambu, Darurat</div></div></div><span class="k-badge b-warn"><i></i>Menunggu verifikasi</span></div><div class="k-li"><div style="display:flex;gap:12px;align-items:center;min-width:0"><span class="k-av">AR</span><div style="min-width:0"><div class="k-code">SGP-000039</div><div class="k-mut">Abdul Rahman, Rujukan</div></div></div><span class="k-badge b-info"><i></i>Terverifikasi</span></div><div class="k-li"><div style="display:flex;gap:12px;align-items:center;min-width:0"><span class="k-av">SA</span><div style="min-width:0"><div class="k-code">SGP-000038</div><div class="k-mut">Siti Aisyah, Darurat</div></div></div><span class="k-badge b-vio"><i></i>Dalam perjalanan</span></div><div class="k-li"><div style="display:flex;gap:12px;align-items:center;min-width:0"><span class="k-av">FU</span><div style="min-width:0"><div class="k-code">SGP-000037</div><div class="k-mut">Frans Ukru, Rujukan</div></div></div><span class="k-badge b-ok"><i></i>Selesai</span></div><div class="k-sec">Status</div><div class="k-row"><span class="k-badge b-ok"><i></i>Selesai</span><span class="k-badge b-warn"><i></i>Menunggu verifikasi</span><span class="k-badge b-info"><i></i>Terverifikasi</span><span class="k-badge b-vio"><i></i>Dalam perjalanan</span><span class="k-badge b-err"><i></i>Ditolak</span><span class="k-badge b-neu"><i></i>Dibatalkan</span></div><div class="k-empty"><span class="ico"><svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect width="8" height="4" x="8" y="2" rx="1"/><path d="M16 4h2a2 2 0 0 1 2 2v14a2 2 0 0 1-2 2H6a2 2 0 0 1-2-2V6a2 2 0 0 1 2-2h2"/><path d="M12 11h4M12 16h4M8 11h.01M8 16h.01"/></svg></span><b>Belum ada pesanan di tab ini.</b><span class="k-mut">Pesanan baru muncul di sini setelah dibuat.</span><a class="k-btn s sm" href="#">Lihat semua pesanan</a></div></div>
+  <div class="k-card" style="background:transparent;border:0;box-shadow:none;padding:0"><div class="k-s" style="text-align:center;margin-bottom:12px">Ponsel: masyarakat membuat pesanan</div><div class="k-phone">
+ <div class="k-pb"><span style="color:var(--dim)"><svg style="transform:rotate(180deg)" width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="m9 18 6-6-6-6"/></svg></span>Buat pesanan</div>
+ <div class="k-pc">
+   <div style="display:flex;justify-content:space-between;font-weight:600"><span>Data pasien</span><span class="k-mut">Langkah 2 dari 3</span></div>
+   <div class="k-bar"><i></i></div>
+   <div class="k-field" style="margin-bottom:12px"><b>Nama pasien</b><div class="k-in">Maria Kambu</div></div>
+   <b style="font-size:13px;display:block;margin-bottom:6px">Jenis layanan</b>
+   <div class="k-opts" style="margin-bottom:12px"><div class="k-opt on"><span class="ico"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M10 10H6"/><path d="M14 18V6a2 2 0 0 0-2-2H4a2 2 0 0 0-2 2v11a1 1 0 0 0 1 1h2"/><path d="M19 18h2a1 1 0 0 0 1-1v-3.28a1 1 0 0 0-.684-.948l-1.923-.641a1 1 0 0 1-.578-.502l-1.539-3.076A1 1 0 0 0 16.382 8H14"/><path d="M8 8v4"/><path d="M9 18h6"/><circle cx="17" cy="18" r="2"/><circle cx="7" cy="18" r="2"/></svg></span>Darurat</div><div class="k-opt"><span class="ico"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M16 21v-2a4 4 0 0 0-4-4H6a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M22 21v-2a4 4 0 0 0-3-3.87"/><path d="M16 3.13a4 4 0 0 1 0 7.75"/></svg></span>Persalinan</div><div class="k-opt"><span class="ico"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M6 22V4a2 2 0 0 1 2-2h8a2 2 0 0 1 2 2v18Z"/><path d="M6 12H4a2 2 0 0 0-2 2v6a2 2 0 0 0 2 2h2"/><path d="M18 9h2a2 2 0 0 1 2 2v9a2 2 0 0 1-2 2h-2"/><path d="M10 6h4M10 10h4M10 14h4M10 18h4"/></svg></span>Rujukan</div></div>
+   <b style="font-size:13px;display:block;margin-bottom:6px">Tingkat darurat</b>
+   <div class="k-seg" style="margin-bottom:12px"><span>Biasa</span><span class="on">Gawat</span></div>
+   <div class="k-field" style="margin-bottom:6px"><b>Alamat jemput</b><div class="k-in"><span>Jl. Ahmad Yani 12</span></div></div>
+   <a class="k-btn g sm" href="#" style="padding:0 4px"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="11" cy="11" r="8"/><path d="m21 21-4.3-4.3"/></svg>Gunakan lokasi saya</a>
+ </div>
+ <div class="k-pf"><a class="k-btn p" href="#" style="width:100%">Kirim pesanan</a></div>
+</div></div>
+  <div class="k-card" style="grid-column:span 2"><h2 class="k-t">Detail pesanan dan linimasa</h2><div class="k-s" style="margin-bottom:18px">Halaman yang paling sering dibuka operator dan sopir.</div><div style="display:flex;justify-content:space-between;align-items:flex-start;gap:16px;flex-wrap:wrap">
+ <div><div style="display:flex;gap:10px;align-items:center"><h3 class="k-t" style="font-size:22px;line-height:28px;font-variant-numeric:tabular-nums">SGP-000038</h3><span class="k-badge b-vio"><i></i>Dalam perjalanan</span><span class="k-badge b-err"><i></i>Gawat</span></div><div class="k-s" style="margin-top:4px">Dibuat 11 Okt 2026, 20.31 WIT</div></div>
+ <div class="k-row"><a class="k-btn s sm" href="#">Ganti ambulans</a><a class="k-btn d sm" href="#">Batalkan</a></div></div>
+ <div style="display:grid;grid-template-columns:1fr 1fr;gap:40px;margin-top:22px"><div><div class="k-sec" style="margin-top:0">Data pesanan</div><div class="k-info"><div><b>Pasien</b>Siti Aisyah, 34 tahun</div><div><b>Layanan</b>Darurat, gawat</div><div><b>Alamat jemput</b>Jl. Ahmad Yani 12, Klademak</div><div><b>Faskes tujuan</b>RSUD Kota</div><div><b>Ambulans dan sopir</b>AMB-07, Yohanis</div></div></div>
+ <div><div class="k-sec" style="margin-top:0">Linimasa</div><div class="k-tl"><div class="k-st"><span class="t">21.12</span><div><div class="w">Pesanan dibuat</div><div class="k-mut">Maria Kambu, pemesan</div></div></div><div class="k-st"><span class="t">21.20</span><div><div class="w">Diverifikasi</div><div class="k-mut">Admin Dinkes</div></div></div><div class="k-st"><span class="t">21.24</span><div><div class="w">Ambulans ditugaskan</div><div class="k-mut">AMB-07, sopir Yohanis</div></div></div><div class="k-st now"><span class="t">21.31</span><div><div class="w">Dalam perjalanan</div><div class="k-mut">Menuju alamat jemput</div></div></div></div></div></div></div>
+  <div class="k-card"><h2 class="k-t">Dialog dan umpan balik</h2><div class="k-s" style="margin-bottom:16px">Konfirmasi, galat per isian, snackbar, pesan data lama.</div><div class="k-dlg"><h3 class="k-t">Tolak pesanan SGP-000041?</h3><p class="k-s" style="margin:6px 0 14px">Pemesan akan diberi tahu. Alasan penolakan ditampilkan di linimasa.</p>
+ <div class="k-field" style="margin-bottom:16px"><b>Alasan penolakan</b><div class="k-in ta e"><span style="color:var(--dim)">Tulis alasan singkat</span></div><span class="k-help e">Alasan wajib diisi.</span></div>
+ <div class="k-row" style="justify-content:flex-end"><a class="k-btn g" href="#">Batal</a><a class="k-btn d" href="#">Tolak pesanan</a></div></div>
+ <div class="k-snack"><span>Pesanan berhasil diverifikasi.</span><b>Tutup</b></div>
+ <div class="k-note"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="12" cy="12" r="10"/><path d="M12 6v6l4 2"/></svg><span>Ketersediaan RSUD Kota terakhir diperbarui 14 menit lalu.</span></div></div>
+ </div>
+</div>
+
+</body>
+</html>

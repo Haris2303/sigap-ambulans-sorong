@@ -1,0 +1,68 @@
+{
+  "port": 8113,
+  "lebar": [1440, 390],
+  "akun": {
+    "admin": { "email": "admin@sigap.test", "password": "password" },
+    "warga": { "email": "warga@sigap.test", "password": "password" },
+    "petugas": { "email": "petugas@sigap.test", "password": "password" },
+    "sopir": { "email": "sopir@sigap.test", "password": "password" },
+    "sopir_ditugaskan": { "email": "sopir2@sigap.test", "password": "password" },
+    "sopir_kosong": { "email": "sopir3@sigap.test", "password": "password" }
+  },
+  "halaman": [
+    { "nama": "masuk", "path": "/login", "peran": null },
+    { "nama": "dasbor-admin", "path": "/admin", "peran": "admin", "banding": { "1440": "B1-dasbor-1440.png" },
+      "potongan": {
+        "rujukan": "B1-dasbor-1440.png",
+        "kotak": {
+          "samping": [16, 16, 264, 1380],
+          "stat": [284, 16, 1416, 356],
+          "grafik": [284, 376, 1416, 862],
+          "bawah": [284, 882, 1416, 1340]
+        }
+      }
+    },
+    { "nama": "daftar-pesanan", "path": "/admin/pesanan", "peran": "admin",
+      "potongan": {
+        "rujukan": "B1-dasbor-1440.png",
+        "kotak": { "tabel-pesanan": [284, 882, 1032, 1340] }
+      }
+    },
+    { "nama": "detail-pesanan", "path": "/admin/pesanan/38", "peran": "admin",
+      "potongan": {
+        "rujukan": "B2-komponen-1440.png",
+        "kotak": { "detail": [40, 1100, 939, 1550] }
+      }
+    },
+    { "nama": "komponen", "path": "/_ui", "peran": "admin", "banding": { "1440": "B2-komponen-1440.png" } },
+    { "nama": "warga-pesan", "path": "/warga/pesanan/buat", "peran": "warga" },
+
+    { "nama": "daftar-pesanan-faskes", "path": "/petugas/pesanan", "peran": "petugas" },
+    { "nama": "detail-pesanan-faskes", "path": "/petugas/pesanan/38", "peran": "petugas" },
+    { "nama": "riwayat-pesanan-warga", "path": "/warga/pesanan", "peran": "warga" },
+    { "nama": "detail-pesanan-warga", "path": "/warga/pesanan/38", "peran": "warga" },
+
+    { "nama": "beranda-warga", "path": "/warga", "peran": "warga" },
+    { "nama": "dasbor-faskes", "path": "/petugas", "peran": "petugas" },
+    { "nama": "ketersediaan-faskes", "path": "/petugas/ketersediaan", "peran": "petugas" },
+    { "nama": "dasbor-sopir", "path": "/sopir", "peran": "sopir" },
+    { "nama": "dasbor-sopir-ditugaskan", "path": "/sopir", "peran": "sopir_ditugaskan" },
+    { "nama": "dasbor-sopir-kosong", "path": "/sopir", "peran": "sopir_kosong" },
+
+    { "nama": "daftar-ambulans", "path": "/admin/ambulans", "peran": "admin" },
+    { "nama": "form-ambulans", "path": "/admin/ambulans/create", "peran": "admin" },
+    { "nama": "daftar-faskes", "path": "/admin/faskes", "peran": "admin" },
+    { "nama": "form-faskes", "path": "/admin/faskes/create", "peran": "admin" },
+    { "nama": "daftar-petugas", "path": "/admin/petugas", "peran": "admin" },
+    { "nama": "form-petugas", "path": "/admin/petugas/create", "peran": "admin" },
+    { "nama": "daftar-sopir", "path": "/admin/sopir", "peran": "admin" },
+    { "nama": "form-sopir", "path": "/admin/sopir/create", "peran": "admin" },
+    { "nama": "ketersediaan-admin", "path": "/admin/ketersediaan", "peran": "admin" },
+    { "nama": "laporan", "path": "/admin/laporan", "peran": "admin" },
+
+    { "nama": "daftar", "path": "/register", "peran": null },
+    { "nama": "beranda-publik", "path": "/", "peran": null },
+    { "nama": "direktori-faskes", "path": "/faskes", "peran": null },
+    { "nama": "galat-404", "path": "/rute-tidak-ada-contoh", "peran": null }
+  ]
+}

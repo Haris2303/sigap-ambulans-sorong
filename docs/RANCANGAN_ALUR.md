@@ -40,7 +40,7 @@ Prinsip yang tidak boleh dilanggar (penyebab ketidakkonsistenan pada versi sebel
 | Jenis layanan | `jenis_layanan`: `darurat`, `rujukan`, `persalinan` | Darurat, Rujukan, Persalinan |
 | Tingkat darurat | `tingkat_darurat`: `biasa`, `gawat` | Biasa, Gawat |
 | Jenis ambulans | `ambulans.jenis`: `darurat`, `transport` | Darurat, Transport |
-| Jenis faskes | `faskes.jenis`: `rumah_sakit`, `puskesmas`, `klinik` | Rumah Sakit, Puskesmas, Klinik |
+| Jenis faskes | `faskes.jenis`: `rumah_sakit`, `puskesmas`, `klinik` | Rumah sakit, Puskesmas, Klinik |
 
 Larangan istilah (diperiksa otomatis): `rs_id`, `rs_tujuan`, `rumah_sakit_id`, `pengemudi`, `supir`, `ambulan` (tanpa "s"), `ambulance`, `RumahSakit`. Label tampilan selalu diambil dari Enum (`->label()`), bukan diketik ulang.
 Aturan penamaan lain: tabel/kolom/route/URI berbahasa Indonesia, huruf kecil, `snake_case` (kolom/route) dan `kebab-case` (URI); kolom waktu berakhiran `_pada`; kolom pelaku berakhiran `_oleh_id`; seluruh model menulis nama tabel eksplisit (`#[Table(name: '...')]`).
@@ -75,7 +75,7 @@ Fresh migration (boleh `php artisan migrate:fresh` pada database v2). Satu berka
 
 ## 5. Mesin status pesanan
 
-Status & label: `menunggu` "Menunggu Verifikasi", `terverifikasi` "Terverifikasi", `ditugaskan` "Ditugaskan", `diterima` "Diterima Sopir", `dalam_perjalanan` "Dalam Perjalanan", `selesai` "Selesai", `ditolak` "Ditolak", `dibatalkan` "Dibatalkan".
+Status & label: `menunggu` "Menunggu verifikasi", `terverifikasi` "Terverifikasi", `ditugaskan` "Ditugaskan", `diterima` "Diterima sopir", `dalam_perjalanan` "Dalam perjalanan", `selesai` "Selesai", `ditolak` "Ditolak", `dibatalkan` "Dibatalkan".
 Final: `selesai`, `ditolak`, `dibatalkan`. Memegang sumber daya (ambulans+sopir): `ditugaskan`, `diterima`, `dalam_perjalanan`. Tidak ada penjadwalan ulang.
 
 | # | Dari | Ke | Aktor | Syarat | Efek |
@@ -115,7 +115,7 @@ Semua route bernama. Middleware: publik tanpa; `guest` untuk `login`/`register`;
 
 - **Landing**: faktual dan singkat (bukan halaman pemasaran): H1, satu paragraf, tombol "Pesan ambulans" dan "Info Faskes", serta daftar bernomor empat langkah alur. Rincian di `docs/KIT_UI.md` §5.
 - **Warga › Buat Pesanan** (mobile-first, satu layar, dibaca orang yang sedang panik): pilih jenis layanan (3 baris pilihan besar, `ui.opsi-baris`), tingkat darurat, tombol besar "Gunakan lokasi saya" + peta + cari alamat + kolom alamat teks, Faskes tujuan (opsional kecuali rujukan; tampilkan ringkasan ketersediaan Faskes terpilih), nama pasien, nomor kontak (prefill profil), catatan. → **Tinjau/Konfirmasi** (ringkasan + tombol "Ubah" dan "Kirim Pesanan") → **Lacak** (linimasa 8 status dari `PesananLog`, info ambulans & sopir mulai `ditugaskan`, peta + posisi sopir mulai `diterima`, polling).
-- **Admin › Dashboard**: ringkasan angka "Menunggu verifikasi" (hidup, polling), ringkasan ketersediaan (ambulans tersedia, bed IGD & rawat inap tersedia, dokter), pesanan 7 hari (grafik batang CSS), pesanan terbaru.
+- **Admin › Dashboard**: ringkasan angka "Menunggu verifikasi" (hidup, polling), ringkasan ketersediaan (ambulans tersedia, bed IGD & rawat inap tersedia, dokter), pesanan 7 hari (grafik batang Chart.js), pesanan terbaru.
 - **Admin › Pesanan**: daftar (filter status/jenis layanan/tanggal/kata kunci; urut gawat dulu lalu terlama) → **Detail** (pemohon, lokasi + peta, Faskes tujuan, linimasa, aksi sesuai status). Menugaskan = pilih ambulans tersedia (kelompok per Faskes, disarankan dulu: `darurat` → ambulans `darurat`; `rujukan`/`persalinan` → `transport`; `persalinan` → Faskes `puskesmas` dulu — hanya urutan, bukan larangan) lalu sopir online dari Faskes yang sama.
 - **Admin › Master**: Faskes (CRUD + pemilih koordinat peta + `aktif` + ketersediaan), Ambulans, Sopir, Petugas Faskes; **Ketersediaan** (tabel semua Faskes, bisa disunting); **Laporan** (periode, per status, per jenis layanan, per Faskes, rata-rata waktu respons menunggu→ditugaskan, durasi layanan; PDF (`barryvdh/laravel-dompdf` sudah terpasang oleh runner) dan CSV).
 - **Petugas › Dashboard**: identitas Faskes, penugasan masuk/aktif, ambulans & sopir Faskes, form ketersediaan.
@@ -135,7 +135,7 @@ Sumber: hasil wawancara Dinkes. Koordinat dikosongkan (Dinkes mengisi lewat UI �
 
 ## 9. Aturan kualitas
 
-1. **Laravel 13 / PHP 8.3** (kerangka `laravel/laravel:^13.0`, PHPUnit 12). Ikuti idiom kerangka: middleware dan alias `role` di `bootstrap/app.php` (tidak ada `Kernel.php`), atribut Eloquent dan `casts()`, `PreventRequestForgery` (CSRF) dibiarkan aktif. Tanpa paket Composer baru (hanya kerangka + `barryvdh/laravel-dompdf`, dipasang runner). **Frontend**: Tailwind CSS 4.3 + Vite; paket npm dipasang runner (`tailwindcss`, `@tailwindcss/vite`, `vite`, `laravel-vite-plugin`, `@fontsource-variable/public-sans`, `lucide-static`, `leaflet@1.9.4`, `leaflet-routing-machine@3.2.12`, `yaml`, `@google/design.md`); agen dilarang `npm install`/`npx`, hanya boleh `npm run build`. Tanpa CDN. Gaya visual: `DESIGN.md` (token) dan `docs/KIT_UI.md`.
+1. **Laravel 13 / PHP 8.3** (kerangka `laravel/laravel:^13.0`, PHPUnit 12). Ikuti idiom kerangka: middleware dan alias `role` di `bootstrap/app.php` (tidak ada `Kernel.php`), atribut Eloquent dan `casts()`, `PreventRequestForgery` (CSRF) dibiarkan aktif. Tanpa paket Composer baru (hanya kerangka + `barryvdh/laravel-dompdf`, dipasang runner). **Frontend**: Tailwind CSS 4.3 + Vite; paket npm dipasang runner (`tailwindcss`, `@tailwindcss/vite`, `vite`, `laravel-vite-plugin`, `@fontsource-variable/roboto`, `lucide-static`, `leaflet@1.9.4`, `leaflet-routing-machine@3.2.12`, `yaml`, `@google/design.md`); agen dilarang `npm install`/`npx`, hanya boleh `npm run build`. Tanpa CDN. Gaya visual: `DESIGN.md` (token) dan `docs/KIT_UI.md`.
 2. Bahasa antarmuka, pesan validasi, flash: **Indonesia**. `config/app.php`: default `locale` dan `fallback_locale` = `id`, `faker_locale` = `id_ID`, `timezone` = `Asia/Jayapura` (runner juga mengisi `APP_LOCALE`, `APP_FALLBACK_LOCALE`, `APP_FAKER_LOCALE` di `.env`). Berkas `lang/id/*` lengkap (validation, auth, pagination, passwords + atribut).
 3. Validasi form non-trivial memakai `FormRequest`; otorisasi memakai Policy + middleware `role`. Semua mutasi POST/PUT + CSRF (middleware bawaan `PreventRequestForgery`; token `@csrf` di tiap form).
 4. Pesan flash hanya dua kunci session: `sukses` dan `galat`, ditampilkan lewat satu komponen. Tanggal/waktu ditampilkan lewat komponen `ui.waktu` (zona Asia/Jayapura, "d M Y H:i").

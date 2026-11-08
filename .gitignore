@@ -3,6 +3,7 @@
 .env
 .env.backup
 .env.production
+.env.shot
 .phpactor.json
 .phpunit.result.cache
 /.fleet
@@ -12,12 +13,14 @@
 /.vscode
 /.zed
 /auth.json
+/database/shot.sqlite
 /node_modules
 /public/build
 /public/hot
 /public/storage
 /storage/*.key
 /storage/pail
+/storage/shots
 /vendor
 Homestead.json
 Homestead.yaml

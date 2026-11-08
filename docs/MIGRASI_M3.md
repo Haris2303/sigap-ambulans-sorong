@@ -1,0 +1,73 @@
+# Migrasi tampilan ke Material Design 3
+
+Catatan kemajuan untuk pergantian gaya dari "buku catatan dispatch" ke Material Design 3 baseline (bukan Expressive). Sumber kebenaran visual: `DESIGN.md`; kontrak kode: `docs/KIT_UI.md`. Daftar ini dipisah dari `docs/PROGRESS.md` agar status agen otonom tidak terganggu.
+
+## Keputusan
+
+- Font Roboto Variable (`@fontsource-variable/roboto`), lokal lewat npm.
+- Benih `#0B5C80`, varian TonalSpot, spesifikasi M3 2021, skema terang. Skema dibekukan sebagai heksadesimal di `DESIGN.md`; paket penghasilnya (`@material/material-color-utilities` 0.4.0) dan skripnya tidak disimpan. Parameter lengkap ada di `DESIGN.md` bagian Colors.
+- Warna kustom `success` (sumber `#2E7D32`) dan `warning` (sumber `#F9A825`) diharmonisasi ke benih. Hanya peran color, container, dan on-container yang dibuat.
+- Mode gelap ditunda; seluruh warna memakai peran M3 sehingga skema gelap dapat ditambahkan nanti.
+- Isian outlined dengan label tetap di atas kolom. Target sentuh minimal 48px (tombol 40px dengan area sentuh diperluas).
+- Peran `secondary`, `tertiary`, `surface-dim`, `surface-bright`, `background`, `on-success`, `on-warning` tidak dibuat karena tidak dipakai.
+- Lebar laci navigasi 280px (spesifikasi M3: 360px).
+
+## Langkah
+
+- [x] M1 Fondasi: `CLAUDE.md` mode interaktif; `DESIGN.md` M3; `agent/tokens.mjs`; `app.css` dan templatnya; `docs/KIT_UI.md`; `agent/konsistensi.json` beserta kasus uji; `tambahan.css` (`lapisan-keadaan`, `target-sentuh`); `TokenDesainTest`.
+- [x] M2 Komponen primitif: `tombol` (nada baru `tonal` dan `terbalik`), `isian`, `pilihan`, `area-teks`, `centang`, `lencana`, `peringatan`, `flash`, `snackbar` (baru), `dialog`, `panel`, `tabel`, `opsi-baris`, `ikon` (hanya ukuran 18 dan 24). `KomponenUiTest` diubah lebih dulu, lalu komponennya; ditambah penjaga `test_komponen_m3_tidak_memuat_nama_token_lama` yang daftarnya bertambah tiap langkah. Sisa M2 yang sengaja ditunda ke M5: `ukuran="sm"` pada pemanggil tombol (kini diperlakukan sebagai `md`).
+- [x] M3 Layout: `dasar`, `app` (laci navigasi tetap di lg+, laci modal dengan scrim dan bilah atas 64px di bawah lg), `publik`, `auth`. `LayoutTest` diubah lebih dulu; ditambah penjaga nama lama untuk keempat layout (trait `MemindaiNamaLama`, dipakai bersama `KomponenUiTest`). `sigap.js`: laci (tombol, scrim, Escape, fokus), bayangan bilah atas saat gulir, hitungan menu lewat atribut `hidden`.
+- [x] M4 Komponen turunan: `judul-halaman`, `bagian`, `ringkasan`, `ringkasan-sel`, `rincian`, `rincian-baris`, `linimasa`, `paginasi`, `ketersediaan`, `kosong`, `lencana-status`, `waktu`, `grafik-batang`, `peta.*` (dan pencarian alamat di `peta.js`), katalog `/_ui`. Kriteria penerimaan dari tampilan `/admin` ditulis sebagai tes (`DashboardTest::test_dasbor_memakai_gaya_material_3`): hierarki judul dan keterangan, judul bagian, ringkasan, label grafik tanpa pecah baris, sel teks dan lencana sejajar (`inline-flex items-center gap-2`), label Enum berhuruf kapital awal kalimat (dijaga `EnumTest`), dan menu laci dengan bilah gulir tipis (`gulir-tipis`).
+- [x] M5 Penyapuan halaman per peran (publik, auth, warga, admin, petugas, sopir, errors): 18 berkas disapu (nama kelas lama dan 9 `ukuran="sm"` dihapus; bilah tombol bawah di Buat Pesanan memakai `bg-surface-container shadow-level-1`). Semua kelas warna, teks, sudut, bayangan, dan bobot di seluruh view diperiksa terhadap token dan tidak ada yang tak dikenal. `PenyapuanM3Test` menjaga seluruh view (kecuali `pdf/`) sampai M6 mengaktifkan aturan umumnya.
+- [x] M6 Aturan `token-lama` di `agent/konsistensi.json` (token dan kelas lama, `font-semibold`, `ukuran="sm"`; pada `resources/views`, `resources/js`, dan `app/Support`; pesannya memuat pemetaan ke nama baru) beserta kasus uji di `KonsistensiTest`. `PenyapuanM3Test`, trait `MemindaiNamaLama`, dan dua penjaga sementara di `KomponenUiTest` serta `LayoutTest` dihapus karena digantikan aturan ini. `KIT_UI` §10 dihapus. Catatan: `bg-surface` kini token M3 yang sah (latar halaman), jadi pemakaiannya sebagai "putih lama" tidak lagi bisa dideteksi otomatis; penyapuan M5 sudah menggantinya.
+- [x] M7 Verifikasi penutup: `php artisan test` (298 lulus), `npm run build`, `designmd lint DESIGN.md` (0 galat, 0 peringatan), token sinkron; pemeriksaan bahwa semua kelas di view, JS, dan `Tampilan.php` ada di CSS hasil build; `docs/HASIL_AKHIR.md` diperbarui (bagian Tampilan Material 3, keterbatasan uji visual, checklist uji tampilan). **Belum dilakukan:** pemeriksaan visual di browser oleh pengguna.
+
+## Kondisi sekarang
+
+Setelah M5, tidak ada nama token lama di `resources/views` (kecuali `pdf/`, yang berdiri sendiri) dan komponen, layout, serta halaman semuanya Material 3. Yang tersisa adalah M6 (aturan pemindai umum) dan M7 (verifikasi penutup, termasuk pemeriksaan visual di browser oleh pengguna; sesi ini tidak punya browser).
+
+## Lanjutan: dasbor Material (D1 sampai D7)
+
+Setelah M1 sampai M7, pemilik proyek memilih gaya dasbor Material yang lebih kaya. Keputusannya ada di `docs/DESAIN_DASBOR_MATERIAL.md` dan mengalahkan aturan Don't dan Layout lama di `DESIGN.md`, `docs/KIT_UI.md`, dan `agent/konsistensi.json`. Satu langkah per sesi.
+
+- [x] D1 Aturan dan token: `DESIGN.md` (warna `canvas` dan `chart-sky`, lima gaya tipe dasbor, bayangan `card`, `card-raised`, `nav-active`, token komponen baru dan yang berubah, prosa dan Do's and Don'ts), `agent/tokens.mjs` (bayangan dengan warna per tingkat dan lapisan ambient opsional), `agent/konsistensi.json` (`token-lama` tidak lagi melarang `canvas`; `warna-css` mengizinkan tiga token bayangan baru) beserta kasus uji, dan `docs/KIT_UI.md` bagian 10 (rencana komponen). Belum ada perubahan pada Blade dan `app.css`; latar `canvas` dipasang di D4.
+- [x] D2 Komponen dasar: `panel` (kartu berbayang, prop `flush`), `stat` (putih dan utama), `icon-chip`, `tile`, `tabs` dan `tab`, `avatar`, lencana pil, tombol `on-primary`, ikon `user-check`, ukuran ikon 18/20/22/24/26, kelas bersama di `Tampilan` (`KARTU`, `kelasChip`, `inisial`). Tes render di `KomponenDasborTest`, `KomponenUiTest`, `TampilanTest`, dan katalog `/_ui`. Aturan `istilah-baku` diberi satu pengecualian sempit untuk nama ikon Lucide `ambulance`.
+- [x] D3 Grafik: `x-ui.chart.bar` dan `x-ui.chart.donut` (SVG sisi server tanpa pustaka), `App\Support\Chart\BarGeometry`, `DonutGeometry`, `Angka`, `Warna`, `PesananStatus::warnaGrafik()`; uji unit geometri terhadap data pratinjau, tes render, dan bagian Grafik di katalog `/_ui`. `x-ui.grafik-batang` lama tetap sampai D5/D7. Bagian SVG dan kelas geometri ini kemudian digantikan Chart.js di D3b.
+- [x] D3b Grafik Chart.js (keputusan pemilik proyek): paket `chart.js` 4.x (npm, impor modular: BarController, DoughnutController, BarElement, ArcElement, CategoryScale, LinearScale, Tooltip, Legend), `x-ui.chart.bar` dan `x-ui.chart.donut` dengan API Blade yang sama tetapi berupa `canvas[data-grafik]` (data JSON, tabel `sr-only`), `resources/js/grafik.js` dan `grafik-opsi.js`, bundel terpisah lewat `import()` di `app.js`, `@theme static` di pembuat token supaya variabel token ada di runtime, aturan konsistensi `warna-js`, `GrafikChartJsTest`. Dihapus: `BarGeometry`, `DonutGeometry`, `Angka`, dan tes unitnya.
+- [x] D4 Kerangka aplikasi: `layouts.app` (bilah atas kartu melayang dengan pencarian, lonceng pesanan menunggu, dan avatar; laci putih dengan label grup, item pil 48px, item aktif `primary` + `shadow-nav-active`, blok pengguna dan keluar sebagai form POST; satu bilah gulir vertikal), `layouts.publik` (bilah atas kartu), latar `canvas` di `app.css`, padding halaman `px-4 lg:px-7`, komponen baru `x-ui.cari`, prop `ikon-ukuran` pada tombol, konfigurasi `sigap.bilah_atas` dan `grup` menu. Pencarian `?q=` belum menyaring daftar (D6); kolom cari hanya muncul untuk Dinkes sampai saat itu.
+- [x] D5 Dasbor Dinkes: `admin.dashboard` sesuai bagian 6 (statistik, grafik batang dan donat, ketersediaan, pesanan terbaru dengan tab), `App\Services\RingkasanDasbor`, `App\Enums\TabPesanan`, `RingkasanDinkes` dipangkas menjadi 4 query (statistik 2, ketersediaan 2), `pesanan.ringkasan` ikut memuat ketersediaan, `judul-halaman` memakai `text-page-title`, prop `bingkai`/`lebar-min` pada `tabel` dan `format` pada `waktu`. Seluruh halaman memakai 7 query. Tab dan `?q=` pada daftar pesanan menyusul di D6.
+- [x] D6 Peran lain dan sapuan halaman: `tabel`, `kosong`, dan `rincian` menjadi kartu berbayang (`rincian` punya `bingkai`), komponen `pembaruan`, daftar pesanan Dinkes dengan tab `?tab=` dan pencarian `?q=` (`Pesanan::cari()`), dasbor Faskes (`stat` dan `tile`), kartu penugasan sopir, beranda Masyarakat dan Laporan dengan `stat`, Buat Pesanan dengan `panel`, landing dengan `panel`, aturan `komponen-lama`. Belum: laci pada halaman Masyarakat ("tanpa laci" di dokumen arah) menunggu keputusan.
+- [x] D7 Penutupan: gerbang penuh hijau; kontras pasangan chip dan teks dihitung (tabel di bawah); komponen `ringkasan`, `ringkasan-sel`, `grafik-batang` dan `Tampilan::kelasTeks` dihapus beserta tesnya; `KIT_UI`, `PROGRESS`, `HASIL_AKHIR`, dan ringkasan perubahan diperbarui. Token `level-*` dan skala tipe M3 lengkap sengaja dipertahankan.
+
+### Kontras pasangan warna (dihitung dari `design-tokens.css`, WCAG 2.x)
+
+| Pasangan (teks di latar) | Kontras | Minimum | Pemakaian |
+|---|---|---|---|
+| on-primary-container di primary-container | 7,23:1 | 4,5 | chip biru, lencana info, avatar |
+| on-warning-container di warning-container | 13,26:1 | 4,5 | chip kuning, lencana peringatan |
+| on-success-container di success-container | 13,26:1 | 4,5 | chip hijau, lencana sukses |
+| on-error-container di error-container | 7,24:1 | 4,5 | chip merah, lencana bahaya |
+| on-surface-variant di surface-container-highest | 7,21:1 | 4,5 | lencana netral |
+| on-primary di primary | 6,49:1 | 4,5 | kartu statistik utama, item menu aktif, tombol utama |
+| primary-container di primary | 5,03:1 | 4,5 | keterangan di kartu statistik utama |
+| primary di on-primary | 6,49:1 | 4,5 | tombol `on-primary` di atas kartu utama |
+| on-error di error | 6,46:1 | 4,5 | tombol bahaya, hitungan menu dan lonceng |
+| on-surface di surface-container-lowest | 17,13:1 | 4,5 | teks di kartu putih |
+| on-surface-variant di surface-container-lowest / low / canvas | 9,30 / 8,42 / 8,17:1 | 4,5 | teks sekunder, petak, kepala tabel |
+| primary di surface-container-lowest / canvas | 6,49 / 5,70:1 | 4,5 | tautan dan tab aktif |
+| error, success, warning di surface-container-lowest | 6,46 / 6,42 / 6,47:1 | 4,5 | teks galat dan angka bernada |
+| inverse-primary dan inverse-on-surface di inverse-surface | 7,72 / 11,58:1 | 4,5 | snackbar |
+| ikon on-primary di chip on-primary 18% pada primary | 4,33:1 | 3 | chip ikon kartu utama |
+| outline di surface-container-lowest / canvas | 4,48 / 3,93:1 | 3 | batas isian dan tombol outlined |
+| primary di surface-container-lowest | 6,49:1 | 3 | batang hari ini |
+| **chart-sky di surface-container-lowest** | **2,13:1** | 3 | batang dan segmen grafik: di bawah minimum |
+
+Satu-satunya pasangan di bawah minimum adalah `chart-sky`, yang sudah diketahui di dokumen arah: nilai grafik selalu tertulis sebagai teks dan legenda berupa teks, jadi informasi tidak bergantung pada warnanya.
+
+## Ringkasan perubahan dasbor Material (D1 sampai D7)
+
+- **Token** (D1): `canvas`, `chart-sky`, bayangan `card`, `card-raised`, `nav-active` (warna `on-surface`), lima gaya tipe dasbor, token komponen baru.
+- **Komponen** (D2 sampai D4, D6): `panel` kartu, `stat`, `icon-chip`, `tile`, `tabs` dan `tab`, `avatar`, `cari`, `pembaruan`, lencana pil, tombol `on-primary`, `chart.bar` dan `chart.donut` (Chart.js pada kanvas, data lewat atribut JSON), kerangka aplikasi baru (bilah atas kartu, laci putih), `tabel`, `kosong`, dan `rincian` sebagai kartu.
+- **Halaman** (D5, D6): Dasbor Dinkes sesuai referensi dengan `RingkasanDasbor` (7 query), daftar pesanan Dinkes dengan tab dan `?q=`, dasbor Faskes, kartu penugasan sopir, beranda Masyarakat, Laporan, Buat Pesanan, landing.
+- **Aturan**: `istilah-baku` (pengecualian ikon `ambulance`), `token-lama` (`canvas` sah), `warna-css` (tiga bayangan baru), `komponen-lama`, `warna-js`; semua dengan kasus lolos dan gagal.
+- **Dihapus** (D7): `ringkasan`, `ringkasan-sel`, `grafik-batang`, `Tampilan::kelasTeks`.

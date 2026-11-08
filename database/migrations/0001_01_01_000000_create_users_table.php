@@ -17,6 +17,14 @@ return new class extends Migration
             $table->string('email')->unique();
             $table->timestamp('email_verified_at')->nullable();
             $table->string('password');
+            $table->string('role', 20)->default('warga')->index();
+            $table->boolean('aktif')->default(true);
+            $table->foreignId('faskes_id')->nullable()->constrained('faskes')->nullOnDelete();
+            $table->string('no_telepon', 20)->nullable();
+            $table->boolean('sedang_online')->default(false);
+            $table->decimal('lat', 10, 7)->nullable();
+            $table->decimal('lng', 10, 7)->nullable();
+            $table->timestamp('lokasi_diperbarui_pada')->nullable();
             $table->rememberToken();
             $table->timestamps();
         });

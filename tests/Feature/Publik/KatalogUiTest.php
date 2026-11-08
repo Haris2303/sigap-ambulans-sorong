@@ -1,0 +1,155 @@
+<?php
+
+namespace Tests\Feature\Publik;
+
+use Illuminate\Foundation\Testing\RefreshDatabase;
+use Illuminate\Support\Facades\Route;
+use PHPUnit\Framework\Attributes\DataProvider;
+use Tests\Concerns\MenyediakanRuteSementara;
+use Tests\TestCase;
+
+class KatalogUiTest extends TestCase
+{
+    use MenyediakanRuteSementara, RefreshDatabase;
+
+    protected function setUp(): void
+    {
+        parent::setUp();
+        $this->sediakanRuteSementara();
+    }
+
+    public function test_404_di_lingkungan_selain_local_dan_testing(): void
+    {
+        $this->app->detectEnvironment(fn () => 'production');
+
+        $this->get('/_ui')->assertNotFound();
+    }
+
+    public function test_katalog_ui_menampilkan_semua_komponen(): void
+    {
+        $this->get('/_ui')
+            ->assertOk()
+            ->assertSee('Katalog gaya')
+            ->assertSee('Menunggu verifikasi')
+            ->assertSee('Belum diperbarui')
+            ->assertSee('Data lama')
+            ->assertSee('Belum ada pesanan.')
+            ->assertSee('Nomor kontak wajib diisi.')
+            ->assertSee('Menampilkan 21–40 dari 134')
+            ->assertSee('Gunakan lokasi saya')
+            ->assertSee('Belum ada Faskes dengan titik koordinat.')
+            ->assertSee('data-konfirmasi', false);
+    }
+
+    public function test_katalog_ui_memuat_kedua_varian_kontak_darurat_dengan_nomor_contoh(): void
+    {
+        $html = $this->get('/_ui')->assertOk()->assertSee('Kontak darurat')->getContent();
+
+        $this->assertSame(2, substr_count($html, 'href="tel:000000000000"'));
+        $this->assertStringContainsString('Hubungi Dinkes di 0000 0000 0000', $html);
+    }
+
+    public function test_katalog_ui_memuat_tiga_nada_waktu_tunggu(): void
+    {
+        $html = $this->get('/_ui')->assertOk()->assertSee('Waktu tunggu')->getContent();
+
+        $this->assertSame(3, substr_count($html, 'data-waktu-tunggu'), 'Pesanan Ditugaskan tidak menampilkan lencana.');
+        foreach (['netral', 'peringatan', 'bahaya'] as $nada) {
+            $this->assertStringContainsString('data-nada="'.$nada.'"', $html);
+        }
+    }
+
+    public function test_katalog_ui_memuat_pengungkap_bilah_aksi_dan_navigasi(): void
+    {
+        $this->get('/_ui')
+            ->assertOk()
+            ->assertSee('Pengungkap dan bilah aksi')
+            ->assertSee('data-bilah-aksi', false)
+            ->assertSee('<details', false)
+            ->assertSee('Buka navigasi')
+            ->assertSee('geo:-0.8762,131.2558', false)
+            ->assertSee('geo:0,0?q=Jalan%20Basuki%20Rahmat%20Km%208', false);
+    }
+
+    public function test_katalog_ui_memuat_komponen_dasar_dasbor(): void
+    {
+        $this->get('/_ui')
+            ->assertOk()
+            ->assertSee('Kartu statistik')
+            ->assertSee('bg-secondary', false)
+            ->assertSee('text-stat-hero', false)
+            ->assertSee('bg-surface-container-lowest text-secondary', false)
+            ->assertSee('size-11', false)
+            ->assertSee('aria-current="page"', false)
+            ->assertSee('>AD<', false)
+            ->assertSee('Bed IGD tersedia');
+    }
+
+    public function test_katalog_ui_memuat_komponen_retema_b_baru(): void
+    {
+        $html = $this->get('/_ui')->assertOk()->getContent();
+
+        // Badge size="sm" dan dot=false (chip keterangan/delta).
+        $this->assertStringContainsString('+5 dari 7 hari sebelumnya', $html);
+        $this->assertStringContainsString('min-h-6.5', $html);
+
+        // Tab variant="floating" (filter periode) dan segmented.
+        $this->assertStringContainsString('shadow-control', $html);
+        $this->assertStringContainsString('role="radiogroup"', $html);
+        $this->assertStringContainsString('Biasa', $html);
+        $this->assertStringContainsString('Gawat', $html);
+
+        // x-ui.choice-group (opsi-kisi): kisi 3 kolom dengan ikon.
+        $this->assertStringContainsString('grid grid-cols-3', $html);
+        $this->assertStringContainsString('size-7.5', $html);
+        $this->assertStringContainsString('Persalinan', $html);
+
+        // x-ui.empty (kosong) dengan judul dan ikon.
+        $this->assertStringContainsString('border-dashed', $html);
+
+        // x-ui.ring-tile (docs/RETEMA_B.md 6.10): cincin SVG sisi-server.
+        $this->assertStringContainsString('text-ring-value', $html);
+        $this->assertStringContainsString('dari 24', $html);
+    }
+
+    public function test_katalog_ui_memuat_grafik_dengan_data_pratinjau(): void
+    {
+        $this->get('/_ui')
+            ->assertOk()
+            ->assertSee('Pesanan 7 hari terakhir')
+            ->assertSee('data-grafik=', false)
+            ->assertSee('&quot;tipe&quot;:&quot;batang&quot;', false)
+            ->assertSee('&quot;tipe&quot;:&quot;donat&quot;', false)
+            ->assertSee('Diagram cincin status 10 pesanan terbaru: 5 selesai, 2 dibatalkan, 1 ditolak, 1 terverifikasi, 1 dalam perjalanan', false)
+            ->assertSee('Dalam perjalanan')
+            ->assertSee('bg-chart-sky', false)
+            ->assertSee('tidak ada data', false);
+    }
+
+    #[DataProvider('kodeGalat')]
+    public function test_halaman_galat_memakai_layout(int $kode, string $judul): void
+    {
+        Route::get('/_uji/galat/'.$kode, fn () => abort($kode))->middleware('web');
+
+        $this->get('/_uji/galat/'.$kode)
+            ->assertStatus($kode)
+            ->assertSee($judul)
+            ->assertSee('SIGAP Ambulans')
+            ->assertSee('Ke beranda');
+    }
+
+    public static function kodeGalat(): array
+    {
+        return [
+            [403, 'Akses ditolak'],
+            [404, 'Halaman tidak ditemukan'],
+            [419, 'Sesi berakhir'],
+            [500, 'Terjadi kesalahan'],
+        ];
+    }
+
+    public function test_route_tidak_dikenal_menghasilkan_404_berlayout(): void
+    {
+        $this->get('/tidak-ada-halaman-ini')->assertNotFound()->assertSee('Halaman tidak ditemukan');
+    }
+}

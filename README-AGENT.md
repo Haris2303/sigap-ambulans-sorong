@@ -15,7 +15,7 @@ Aplikasi lama dan database lamanya **tidak disentuh**; hanya dibaca sebagai refe
 
 `DESIGN.md` di akar paket ini adalah sistem desain yang sudah jadi, bukan template kosong:
 
-- **Arah**: "buku catatan dispatch" — tenang, resmi, padat informasi. Baris rapi dengan garis tipis, angka tabular, satu font (Public Sans, dipasang lokal lewat npm, tanpa Google Fonts), satu warna aksen (biru petrol `#0B5C80`), lima nada status (netral, info, peringatan, sukses, bahaya). Satu hal sengaja menonjol: linimasa pesanan.
+- **Arah**: Material Design 3 (baseline, bukan Expressive) yang padat informasi untuk layanan publik: skema tonal dari benih biru petrol `#0B5C80`, satu aksen, lima nada status (netral, info, peringatan, sukses, bahaya), satu font (Roboto, dipasang lokal lewat npm, tanpa Google Fonts), mode gelap ditunda. Satu hal sengaja menonjol: linimasa pesanan.
 - **Dilarang** (tertulis di bagian *Do's and Don'ts* dan **dipindai otomatis**): gradien, blur, bayangan dekoratif, emoji, kartu di dalam kartu, kisi kartu fitur, hero/ilustrasi/testimoni, animasi masuk, huruf kapital semua + jarak huruf lebar, miring, panah/titik tengah/em dash berspasi ala templat, warna di luar token, font/CDN luar.
 - **Dari dokumen ke kode**: `agent/tokens.mjs` membaca `DESIGN.md` → menulis `resources/css/design-tokens.css` (blok `@theme` Tailwind). Palet bawaan Tailwind, ukuran huruf bawaan, bayangan, dan radius bawaan **dimatikan**, jadi yang tersedia hanya token proyek ini (`bg-surface`, `text-on-surface-muted`, `border-line`, `bg-primary`, `rounded-md`, `text-h2`, dst.).
 - **Kit UI dulu**: tahap 2 membangun layout dan komponen `x-ui.*` beserta katalog `/_ui`; halaman peran hanya boleh merakit komponen itu. Resepnya ada di `docs/KIT_UI.md`.
@@ -53,7 +53,7 @@ Angka biaya memakai taksiran Claude Code; pada langganan (bukan API) itu hanya p
 ## Yang dikerjakan skrip pada run pertama
 
 1. `composer create-project laravel/laravel:^13.0` lalu `composer require barryvdh/laravel-dompdf` (satu-satunya paket PHP tambahan).
-2. `npm install` (kerangka: Vite 8, Tailwind 4, plugin Laravel) ditambah `@google/design.md` (linter), `@fontsource-variable/public-sans`, `lucide-static`, `yaml`, dan `leaflet@1.9.4` + `leaflet-routing-machine@3.2.12` (versi dikunci). **Agen dilarang memasang paket**; hanya runner yang boleh.
+2. `npm install` (kerangka: Vite 8, Tailwind 4, plugin Laravel) ditambah `@google/design.md` (linter), `@fontsource-variable/roboto`, `lucide-static`, `yaml`, dan `leaflet@1.9.4` + `leaflet-routing-machine@3.2.12` (versi dikunci). **Agen dilarang memasang paket**; hanya runner yang boleh.
 3. Frontend: menyalin `app.css`, `vite.config.js`, ikon Lucide terpilih (`agent\icons.txt`, 36 ikon) → `designmd lint` → `agent\tokens.mjs` → `npm run build` (harus berhasil sebelum agen dimulai).
 4. `.env` baru: `APP_NAME`, locale `id`, `DB_DATABASE=sigap_ambulans_v2`; **host/port/user/sandi MySQL disalin dari `.env` proyek lama** (tidak pernah ditampilkan atau dicatat; bila proyek lama tidak ada → `127.0.0.1:3306`, `root`, tanpa sandi). Lalu `CREATE DATABASE IF NOT EXISTS` dan `php artisan migrate --force` (database baru, kosong).
 5. `legacy\` ← `git archive` dari proyek lama (hanya berkas yang ter-commit; **tanpa `.env`**). Proyek lama tidak diubah.

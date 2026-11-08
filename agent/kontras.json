@@ -1,0 +1,50 @@
+{
+  "keterangan": "Pasangan kontras wajib token warna DESIGN.md (docs/RETEMA_B.md 4.8). Dibaca KontrasTokenTest: rasio kontras WCAG 2 dihitung dari front matter DESIGN.md, tes gagal bila ada pasangan di bawah batas. Setiap pasangan [depan, latar] memakai nama token warna. Teks minimal 4,5:1; bukan teks (batas isian, garis grafik utama, ikon) minimal 3:1. Nilai terendah yang lolos dan perlu dijaga: on-tertiary pada tertiary (4,52), primary pada primary-container (4,61), error pada surface (4,59), on-success-container pada success-container (4,70).",
+  "teks": {
+    "minimal": 4.5,
+    "pasangan": [
+      ["on-surface", "surface"],
+      ["on-surface", "surface-container-lowest"],
+      ["on-surface", "selected"],
+      ["on-surface-variant", "surface"],
+      ["on-surface-variant", "surface-container-lowest"],
+      ["on-surface-variant", "surface-container-low"],
+      ["on-surface-variant", "surface-container-high"],
+      ["on-surface-variant", "primary-container"],
+      ["on-primary", "primary"],
+      ["primary", "surface"],
+      ["primary", "surface-container-lowest"],
+      ["primary", "primary-container"],
+      ["primary", "selected"],
+      ["on-primary-container", "primary-container"],
+      ["on-secondary", "secondary"],
+      ["primary-container", "secondary"],
+      ["secondary", "surface-container-lowest"],
+      ["on-secondary-container", "secondary-container"],
+      ["on-tertiary", "tertiary"],
+      ["on-tertiary-container", "tertiary-container"],
+      ["on-success", "success"],
+      ["on-success-container", "success-container"],
+      ["on-warning", "warning"],
+      ["on-warning-container", "warning-container"],
+      ["on-error", "error"],
+      ["on-error-container", "error-container"],
+      ["error", "surface"],
+      ["error", "surface-container-lowest"],
+      ["inverse-on-surface", "inverse-surface"],
+      ["inverse-primary", "inverse-surface"]
+    ]
+  },
+  "bukan_teks": {
+    "minimal": 3,
+    "pasangan": [
+      ["outline", "surface-container-lowest"],
+      ["outline", "surface"],
+      ["primary", "surface-container-lowest"],
+      ["tertiary", "surface-container-lowest"],
+      ["chart-mint", "surface-container-lowest"],
+      ["warning", "warning-container"],
+      ["success", "success-container"]
+    ]
+  }
+}
